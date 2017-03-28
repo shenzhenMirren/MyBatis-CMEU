@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="510.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pers.cmeu.controller.HistoryConfigController">
+   <center>
+ 
+   </center>
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <TableView fx:id="tblConfigInfo" prefHeight="582.0" prefWidth="510.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+            <Label layoutX="101.0" layoutY="579.0" text="温馨提示:系统启动时会默认加载default配置文件,如果是常用的配置可以将名字存储为default" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

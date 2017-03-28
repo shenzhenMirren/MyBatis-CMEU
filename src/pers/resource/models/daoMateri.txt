@@ -1,0 +1,12 @@
+
+import java.util.List;
+{*import*}
+
+public interface {*dname*} {
+
+{*count*}
+{*select*}
+{*insert*}
+{*delete*}
+{*update*}
+}

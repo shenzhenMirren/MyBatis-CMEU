@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane prefHeight="660.0" prefWidth="800.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pers.cmeu.controller.AddMoreAttributeController">
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <ListView fx:id="lvTableList" layoutX="7.0" layoutY="168.0" prefHeight="374.0" prefWidth="165.0" />
+            <TableView fx:id="tblEntityProperty" layoutX="176.0" layoutY="168.0" prefHeight="374.0" prefWidth="866.0" AnchorPane.leftAnchor="176.0" AnchorPane.rightAnchor="6.0">
+              <columns>
+                <TableColumn fx:id="tdCheck" prefWidth="76.0" text="是否创建" />
+                <TableColumn fx:id="tdColumn" prefWidth="130.0" text="数据库列名" />
+                  <TableColumn fx:id="tdJDBCType" prefWidth="130.0" text="JDBC数据类型" />
+                  <TableColumn fx:id="tdJAVAType" prefWidth="130.0" text="JAVA数据类型" />
+                  <TableColumn fx:id="tdPropertyName" prefWidth="162.0" text="属性名" />
+              </columns>
+            </TableView>
+            <Button fx:id="btnSuccess" layoutX="554.0" layoutY="577.0" mnemonicParsing="false" onAction="#success" prefHeight="39.0" prefWidth="89.0" text="确定">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <styleClass>
+                  <String fx:value="btn" />
+                  <String fx:value="btn-success" />
+               </styleClass>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="btnCancel" layoutX="666.0" layoutY="577.0" mnemonicParsing="false" onAction="#cancel" text="取消">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <styleClass>
+                  <String fx:value="btn" />
+                  <String fx:value="btn-default" />
+               </styleClass>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <CheckBox fx:id="chkCreateJDBCtype" layoutX="55.0" layoutY="64.0" mnemonicParsing="false" text="指定生成Mapper.XML配置文件的JDBC数据类型">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <tooltip>
+                  <Tooltip text="属性不为空值或者不为map集合等时可以不指定" />
+               </tooltip>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </CheckBox>
+            <CheckBox fx:id="chkUnlineCamel" layoutX="55.0" layoutY="7.0" mnemonicParsing="false" onAction="#unlineCamel" selected="true" text="去除下划线并以驼峰命名">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <tooltip>
+                  <Tooltip text=" 示例 : _USER_NAME  -&gt; userName" />
+               </tooltip>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </CheckBox>
+            <CheckBox fx:id="chkSerializable" layoutX="55.0" layoutY="35.0" mnemonicParsing="false" text="对象序列化: implements Serializable">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <tooltip>
+                  <Tooltip text="实现序列化 private static final long serialVersionUID = 1L;" />
+               </tooltip>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </CheckBox>
+            <Line endX="800.0" layoutY="125.0" />
+            <Label layoutX="510.0" layoutY="136.0" text="主键名称:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <CheckBox fx:id="chkConstructAll" layoutX="414.0" layoutY="93.0" mnemonicParsing="false" selected="true" text="创建带参构造方法">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </CheckBox>
+            <CheckBox fx:id="chkConstruct" layoutX="232.0" layoutY="93.0" mnemonicParsing="false" selected="true" text="创建无参构造方法">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </CheckBox>
+            <CheckBox fx:id="chkGetAndSet" layoutX="55.0" layoutY="93.0" mnemonicParsing="false" selected="true" text="创建get与set方法">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </CheckBox>
+            <TextField fx:id="txtClassName" layoutX="310.0" layoutY="133.0" prefHeight="26.0" prefWidth="180.0">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="txtPrimaryKey" layoutX="589.0" layoutY="133.0" prefHeight="26.0" prefWidth="180.0">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="txtCustomType" layoutX="107.0" layoutY="562.0" prefHeight="28.0" prefWidth="174.0" promptText="示例 : Animal">
+               <font>
+                  <Font size="14.0" />
+               </font></TextField>
+            <TextField fx:id="txtCustomName" layoutX="107.0" layoutY="608.0" prefHeight="28.0" prefWidth="173.0" promptText="示例 : dog">
+               <font>
+                  <Font size="14.0" />
+               </font></TextField>
+            <Label layoutX="14.0" layoutY="566.0" text="自定义属性:">
+               <font>
+                  <Font size="16.0" />
+               </font></Label>
+            <Label layoutX="61.0" layoutY="612.0" text="名称:">
+               <font>
+                  <Font size="16.0" />
+               </font></Label>
+            <Button fx:id="btnAddToTableView" layoutX="295.0" layoutY="580.0" mnemonicParsing="false" onAction="#addToTable" prefHeight="30.0" prefWidth="64.0" text="添加">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <styleClass>
+                  <String fx:value="btn" />
+                  <String fx:value="btn-executable" />
+               </styleClass>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <TextField fx:id="txtTableName" disable="true" layoutX="99.0" layoutY="133.0" prefHeight="26.0" prefWidth="151.0">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </TextField>
+            <Label layoutX="55.0" layoutY="136.0" text="表名:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label layoutX="262.0" layoutY="136.0" text="类名:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+         </children></AnchorPane>
+   </center>
+</BorderPane>
