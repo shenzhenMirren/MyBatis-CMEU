@@ -21,7 +21,7 @@
                   <String fx:value="btn-executable" />
                </styleClass>
                <tooltip>
-                  <Tooltip text="选择添加子表,右边的窗口会自动添加成List&lt;表名&gt;跟表名+s">
+                  <Tooltip text="选择添加子表,本窗口会自动添加成List&lt;表名&gt;跟表名+s">
                      <font>
                         <Font size="16.0" />
                      </font>

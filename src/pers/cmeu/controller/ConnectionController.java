@@ -67,7 +67,13 @@ public class ConnectionController extends BaseController {
 		
 			
 	}
-	
+	/**
+	 * 关闭当前窗口
+	 * @param event
+	 */
+	public void onCancel(ActionEvent event) {
+		closeDialogStage();
+	}
 	
 	/**
 	 * 测试连接
