@@ -6,7 +6,6 @@ import java.util.List;
  * Encoding format is UTF-8
  */
 public class Assist {
-
 	// 去重
 	private String distinct;
 	// 自定义排序
@@ -18,17 +17,15 @@ public class Assist {
 	// 分页取多少行数据 Mysql/PostgreSql
 	private Integer rowSize;
 	// 条件集
-	private List<String> require = null;
+	private List<whereRequire> require = null;
 
 	/**
-	 * 该方法用于使用Assist的静态条件方法,动态添加条件
-	 * 
-	 * @param require
-	 *            示例:Assist.and_lt(a,10),...
+	 * 添加查询条件,参数为Assist的内部类whereRequire,推荐使用Assist的静态条件方法添加条件;
+	 * @param require 示例:Assist.and_lt("id",10),...
 	 */
-	public void setRequires(String... require) {
+	public void setRequires(whereRequire... require) {
 		if (this.require == null) {
-			this.require = new ArrayList<String>();
+			this.require = new ArrayList<Assist.whereRequire>();
 		}
 		for (int i = 0; i < require.length; i++) {
 			this.require.add(require[i]);
@@ -36,341 +33,150 @@ public class Assist {
 	}
 
 	/**
-	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
+	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static String and_eq(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "and " + column + " = '" + req + "'";
+	public static whereRequire and_eq(String column, String req) {
+		return new Assist().new whereRequire("and " + column + " = ", req);
+	}
+
+
+	/**
+	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * @param column
+	 * @param req
+	 * @return
+	 */
+	public static whereRequire or_eq(String column, String req) {
+		return new Assist().new whereRequire("or " + column + " = ", req);
+	}
+
+
+	/**
+	 * 参数(列名)1 <>(不等于) 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * @param column
+	 * @param req
+	 * @return
+	 */
+	public static whereRequire and_neq(String column, String req) {
+		return new Assist().new whereRequire("and " + column + " &lt;&gt; ", req);
+	}
+
+
+	/**
+	 * 参数(列名)1 <>(不等于) 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * @param column
+	 * @param req
+	 * @return
+	 */
+	public static whereRequire or_neq(String column, String req) {
+		return new Assist().new whereRequire("or " + column + " &lt;&gt; ", req);
 	}
 
 	/**
-	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
+	 * 参数(列名)1 < 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static String and_eq(String column, long req) {
-		valiSQL(column);
-		valiSQL(req + "");
-		return "and " + column + " = " + req;
+	public static whereRequire and_lt(String column, String req) {
+		return new Assist().new whereRequire("and " + column + "&lt; ", req);
 	}
 
 	/**
-	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
+	 * 参数(列名)1 < 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static String or_eq(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "or " + column + " = '" + req + "'";
+	public static whereRequire or_lt(String column, String req) {
+		return new Assist().new whereRequire("or " + column + " &lt; ", req);
 	}
 
 	/**
-	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
+	 * 参数(列名)1 <= 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static String or_eq(String column, long req) {
-		valiSQL(column);
-		valiSQL(req + "");
-		return "or " + column + " = " + req;
+	public static whereRequire and_lte(String column, String req) {
+		return new Assist().new whereRequire("and " + column + " &lt;= ", req);
+	}
+
+	
+	/**
+	 * 参数(列名)1 <= 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * @param column
+	 * @param req
+	 * @return
+	 */
+	public static whereRequire or_lte(String column, String req) {
+		return new Assist().new whereRequire("or " + column + " &lt;= ", req);
+	}
+
+
+	/**
+	 * 参数(列名)1 > 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * @param column
+	 * @param req
+	 * @return
+	 */
+	public static whereRequire and_gt(String column, String req) {
+		return new Assist().new whereRequire("and " + column + " &gt; ", req);
 	}
 
 	/**
-	 * 参数(列名)1 <>(不等于) 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
+	 * 参数(列名)1 > 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static String and_neq(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "and " + column + " &lt;&gt; '" + req + "'";
+	public static whereRequire or_gt(String column, String req) {
+		return new Assist().new whereRequire("or " + column + " &gt; ", req);
+	}
+
+
+	/**
+	 * 参数(列名)1 >= 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * @param column
+	 * @param req
+	 * @return
+	 */
+	public static whereRequire and_gte(String column, String req) {
+		return new Assist().new whereRequire("and " + column + " &gt;= ", req);
+	}
+
+
+	/**
+	 * 参数(列名)1 >= 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * @param column
+	 * @param req
+	 * @return
+	 */
+	public static whereRequire or_gte(String column, String req) {
+		return new Assist().new whereRequire("or " + column + " &gt;= ", req);
 	}
 
 	/**
-	 * 参数(列名)1 <>(不等于) 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
+	 * 参数(列名)1 like '参数(条件)2' ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static String and_neq(String column, long req) {
-		valiSQL(column);
-		valiSQL(req + "");
-		return "and " + column + " &lt;&gt; " + req;
+	public static whereRequire and_like(String column, String req) {
+		return new Assist().new whereRequire("and " + column + " like ", req);
 	}
 
 	/**
-	 * 参数(列名)1 <>(不等于) 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
+	 * 参数(列名)1 like '参数(条件)2' ;如果表中存在相同列名,使用表名.列名,如果不存在相同列名可以直接列名
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static String or_neq(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "or " + column + " &lt;&gt; '" + req + "'";
-	}
-
-	/**
-	 * 参数(列名)1 <>(不等于) 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String or_neq(String column, long req) {
-		valiSQL(column);
-		valiSQL(req + "'");
-		return "or " + column + " &lt;&gt; " + req;
-	}
-
-	/**
-	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String and_lt(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "and " + column + "&lt; '" + req + "'";
-	}
-
-	/**
-	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String and_lt(String column, long req) {
-		valiSQL(column);
-		valiSQL(req + "");
-		return "and " + column + "&lt; " + req;
-	}
-
-	/**
-	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String or_lt(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "or " + column + " &lt; '" + req + "'";
-	}
-
-	/**
-	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String or_lt(String column, long req) {
-		valiSQL(column);
-		valiSQL(req + "");
-		return "or " + column + " &lt; " + req;
-	}
-
-	/**
-	 * 参数(列名)1 <= 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String and_lte(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "and " + column + " &lt;= '" + req + "'";
-	}
-
-	/**
-	 * 参数(列名)1 <= 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String and_lte(String column, long req) {
-		valiSQL(column);
-		valiSQL(req + "");
-		return "and " + column + " &lt;= " + req;
-	}
-
-	/**
-	 * 参数(列名)1 <= 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String or_lte(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "or " + column + " &lt;= '" + req + "'";
-	}
-
-	/**
-	 * 参数(列名)1 <= 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String or_lte(String column, long req) {
-		valiSQL(column);
-		valiSQL(req + "");
-		return "or " + column + " &lt;= " + req;
-	}
-
-	/**
-	 * 参数(列名)1 > 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String and_gt(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "and " + column + " &gt; '" + req + "'";
-	}
-
-	/**
-	 * 参数(列名)1 > 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String and_gt(String column, long req) {
-		valiSQL(column);
-		valiSQL(req + "");
-		return "and " + column + " &gt; " + req;
-	}
-
-	/**
-	 * 参数(列名)1 > 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String or_gt(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "or " + column + " &gt; '" + req + "'";
-	}
-
-	/**
-	 * 参数(列名)1 > 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String or_gt(String column, long req) {
-		valiSQL(column);
-		valiSQL(req + "");
-		return "or " + column + " &gt; " + req;
-	}
-
-	/**
-	 * 参数(列名)1 >= 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String and_gte(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "and " + column + " &gt;= '" + req + "'";
-	}
-
-	/**
-	 * 参数(列名)1 >= 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String and_gte(String column, long req) {
-		valiSQL(column);
-		valiSQL(req + "");
-		return "and " + column + " &gt;= " + req;
-	}
-
-	/**
-	 * 参数(列名)1 >= 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String or_gte(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "or " + column + " &gt;= '" + req + "'";
-	}
-
-	/**
-	 * 参数(列名)1 >= 参数(条件)2 ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String or_gte(String column, long req) {
-		valiSQL(column);
-		valiSQL(req + "");
-		return "or " + column + " &gt;= " + req;
-	}
-
-	/**
-	 * 参数(列名)1 like '参数(条件)2' ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String and_like(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "and " + column + " like '" + req + "'";
-	}
-
-	/**
-	 * 参数(列名)1 like '参数(条件)2' ;如果表中存在相同列名,列名为XML配置文件中的列名:一般是实体类名+属性名/实体类名.属性名
-	 * 
-	 * @param column
-	 * @param req
-	 * @return
-	 */
-	public static String or_like(String column, String req) {
-		valiSQL(column);
-		valiSQL(req);
-		return "or " + column + " like '" + req + "'";
+	public static whereRequire or_like(String column, String req) {
+		return new Assist().new whereRequire("or " + column + " like ", req);
 	}
 
 	/**
@@ -381,28 +187,42 @@ public class Assist {
 	 * @param mode
 	 */
 	public void setOrder(String column, boolean mode) {
-		valiSQL(column);
 		if (mode) {
 			this.order = "order By " + column + " asc";
 		} else {
 			this.order = "order By " + column + " desc";
 		}
 	}
-
+	
+	/**
+	 * 获得是否去重
+	 * @return
+	 */
 	public String getDistinct() {
 		return distinct;
 	}
-
+	
+	/**
+	 * 设置是否去重
+	 * @param distinct
+	 */
 	public void setDistinct(boolean distinct) {
 		if (distinct) {
 			this.distinct = "distinct";
 		}
 	}
-
+	/**
+	 * 获得排序
+	 * @return
+	 */
 	public String getOrder() {
 		return order;
 	}
-
+	
+	/**
+	 * 获得开始分页行
+	 * @return
+	 */
 	public Integer getStartRow() {
 		return startRow;
 	}
@@ -415,7 +235,11 @@ public class Assist {
 	public void setStartRow(Integer startRow) {
 		this.startRow = startRow;
 	}
-
+	
+	/**
+	 * 获得分页结束行
+	 * @return
+	 */
 	public Integer getEndRow() {
 		return endRow;
 	}
@@ -428,7 +252,11 @@ public class Assist {
 	public void setEndRow(Integer endRow) {
 		this.endRow = endRow;
 	}
-
+	
+	/**
+	 * 获得每次取多少行数据
+	 * @return
+	 */
 	public Integer getRowSize() {
 		return rowSize;
 	}
@@ -441,8 +269,11 @@ public class Assist {
 	public void setRowSize(Integer rowSize) {
 		this.rowSize = rowSize;
 	}
-
-	public List<String> getRequire() {
+	/**
+	 * 获得条件集
+	 * @return
+	 */
+	public List<whereRequire> getRequire() {
 		return require;
 	}
 
@@ -451,85 +282,52 @@ public class Assist {
 	}
 
 	/**
-	 * 该构造方法分别为:分页开始行,分页结束行,每次取多少行;根据数据库设置两个参数
-	 * 
-	 * @param order
-	 *            分页开始行
-	 * @param startRow
-	 *            分页结束行
-	 * @param endRow
-	 *            每次取多少行
-	 * @param rowSize
-	 *            使用Assist的静态条件方法,动态添加条件
-	 */
-	public Assist(Integer startRow, Integer endRow, Integer rowSize) {
-		super();
-		this.startRow = startRow;
-		this.endRow = endRow;
-		this.rowSize = rowSize;
-	}
-
-	/**
-	 * 该构造方法分别为:分页开始行,分页结束行,每次取多少行;根据数据库设置两个参数;第四个用于使用Assist的静态条件方法,动态添加条件
-	 * 
-	 * @param startRow
-	 *            分页开始行
-	 * @param endRow
-	 *            分页结束行
-	 * @param rowSize
-	 *            每次取多少行
-	 * @param require
-	 *            使用Assist的静态条件方法,动态添加条件
-	 */
-	public Assist(Integer startRow, Integer endRow, Integer rowSize, String... require) {
-		super();
-		this.startRow = startRow;
-		this.endRow = endRow;
-		this.rowSize = rowSize;
-
-		if (this.require == null) {
-			this.require = new ArrayList<String>();
-		}
-		for (int i = 0; i < require.length; i++) {
-			valiSQL(require[i]);
-			this.require.add(require[i]);
-		}
-	}
-
-	/**
 	 * 该构造方法用于使用Assist的静态条件方法,动态添加条件
 	 * 
 	 * @param require
-	 *            示例:Assist.lt(a,10)...
+	 *            示例:Assist.lt("A.ID",10)...
 	 */
-	public Assist(String... require) {
+	public Assist(whereRequire... require) {
 		super();
 		if (this.require == null) {
-			this.require = new ArrayList<String>();
+			this.require = new ArrayList<Assist.whereRequire>();
 		}
 		for (int i = 0; i < require.length; i++) {
-			valiSQL(require[i]);
 			this.require.add(require[i]);
 		}
 	}
 
 	/**
-	 * 测试sql语句是否包含敏感词
+	 * 条件类,require属性为列的条件,value为条件值
 	 * 
-	 * @param str
+	 * @author Mirren
 	 */
-	public static void valiSQL(String str) {
-		if (str == null) {
-			throw new RuntimeException("不能为null");
+	public class whereRequire {
+		private String require;
+		private String value;
+
+		public whereRequire(String require, String value) {
+			super();
+			this.require = require;
+			this.value = value;
 		}
-		str = str.trim().toLowerCase();
-		String[] fbsArr = { " ", "&nbsp;", "\u0000", "\0", "'", "&apos", "\u0027", ";", "\u003B", "=", "\u003d", "#",
-				"\u0023", "\\", "$", "(", ")", "*", "+", "[", "]", "?", "^", "{", "}", "|" };
-		for (String reg : fbsArr) {
-			if (str.contains(reg)) {
-				throw new RuntimeException("字符检查--> 无效字符" + reg);
-			}
+
+		public String getRequire() {
+			return require;
 		}
+
+		public void setRequire(String require) {
+			this.require = require;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
 	}
 
 }

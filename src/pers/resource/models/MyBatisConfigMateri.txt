@@ -14,7 +14,7 @@
 		</environment>
 	</environments>
 
-  <mappers>
-    <mapper resource="{*mapper*}" />
-  </mappers>
+    <mappers>
+{*mapper*}
+    </mappers>
 </configuration>

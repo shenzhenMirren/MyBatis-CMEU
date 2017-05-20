@@ -1,6 +1,7 @@
 package pers.cmeu.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,9 @@ import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
@@ -23,13 +27,17 @@ import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.TextFieldTreeCell;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import pers.cmeu.common.ConfigUtil;
+import pers.cmeu.common.CreateFileUtil;
 import pers.cmeu.common.DBUtil;
-import pers.cmeu.common.FileFactory;
 import pers.cmeu.common.StrUtil;
 import pers.cmeu.models.AttributeCVF;
 import pers.cmeu.models.DatabaseConfig;
@@ -47,6 +55,8 @@ public class IndexController extends BaseController {
 	private boolean changeInfo = false;
 	// 需要创建所有类的集合;
 	private List<SuperAttribute> superAttributes = new ArrayList<SuperAttribute>();
+	// 首页默认的属性集
+	private SuperAttribute thisSuperAttribute;
 	// 确定信息是否需要从新加载信息
 	private boolean falg = false;
 
@@ -68,6 +78,14 @@ public class IndexController extends BaseController {
 	@FXML
 	private TextField txtDaoName;
 	@FXML
+	private TextField txtServicePackage;
+	@FXML
+	private TextField txtServiceName;
+	@FXML
+	private TextField txtServiceImplPackage;
+	@FXML
+	private TextField txtServiceImplName;
+	@FXML
 	private TextField txtEntityPackage;
 	@FXML
 	private TextField txtEntityName;
@@ -87,6 +105,8 @@ public class IndexController extends BaseController {
 	private TextField txtMyUtilPackage;
 	@FXML
 	private TextField txtMyUtilName;
+	@FXML
+	private TextField txtUpdateMapper;
 
 	@FXML
 	private CheckBox chkAssist;
@@ -94,7 +114,19 @@ public class IndexController extends BaseController {
 	private CheckBox chkConfig;
 	@FXML
 	private CheckBox chkMyUtil;
+	@FXML
+	private CheckBox chkService;
+	@FXML
+	private CheckBox chkFristCreateMybatis;
 
+	@FXML
+	private Label lblServicePackage;
+	@FXML
+	private Label lblServiceName;
+	@FXML
+	private Label lblServiceImplPackage;
+	@FXML
+	private Label lblServiceImplName;
 	@FXML
 	private Label lblAssistPackage;
 	@FXML
@@ -107,6 +139,8 @@ public class IndexController extends BaseController {
 	private Label lblMyUtilPackage;
 	@FXML
 	private Label lblMyUtilName;
+	@FXML
+	private Label lblUpdateMapper;
 
 	@FXML
 	private Button btnSelectFile;
@@ -116,6 +150,8 @@ public class IndexController extends BaseController {
 	private Button btnRunCreate;
 	@FXML
 	private Button btnSaveConfig;
+	@FXML
+	private Button btnSelectMapperFile;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -233,6 +269,9 @@ public class IndexController extends BaseController {
 						txtEntityName.setText(StrUtil.unlineToPascal(tableName));
 						txtDaoName.setText(StrUtil.unlineToPascal(tableName) + "Dao");
 						txtMapName.setText(StrUtil.unlineToPascal(tableName) + "Mapper");
+						txtServiceName.setText(StrUtil.unlineToPascal(tableName) + "Service");
+						txtServiceImplName.setText(StrUtil.unlineToPascal(tableName) + "ServiceImpl");
+
 					}
 				}
 			});
@@ -252,7 +291,7 @@ public class IndexController extends BaseController {
 	public String text() {
 		return selectedTableName;
 	}
-	
+
 	/**
 	 * 加载数据库到树集
 	 */
@@ -278,7 +317,7 @@ public class IndexController extends BaseController {
 	}
 
 	/**
-	 * 选择文件
+	 * 选择项目文件
 	 * 
 	 * @param event
 	 */
@@ -293,6 +332,21 @@ public class IndexController extends BaseController {
 	}
 
 	/**
+	 * 选择项目MybatisConfig配置文件所在文件
+	 * 
+	 * @param event
+	 */
+	public void selectMybatisFile(ActionEvent event) {
+
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
+		File file = fileChooser.showOpenDialog(super.getPrimaryStage());
+		if (file != null) {
+			txtUpdateMapper.setText(file.getPath());
+		}
+	}
+
+	/**
 	 * 修改实体属性
 	 * 
 	 * @param event
@@ -302,20 +356,23 @@ public class IndexController extends BaseController {
 			AlertUtil.showWarnAlert("请先选择数据库表!打开左侧数据库双击表名便可加载...");
 			return;
 		}
-
-		// 打开属性窗并讲数据库与表名给属性窗
-		AttributeSetController controller = (AttributeSetController) loadFXMLPage("属性设置", FXMLPage.ATTRIBUTE_SET,
-				false);
-		controller.setIndexController(this);
-		controller.showDialogStage();
-		controller.setSelectedDatabaseConfig(selectedDatabaseConfig);
-		controller.setSelectedTableName(selectedTableName);
-		if (falg == false) {
-			controller.initTable(false);
-		} else {
-			controller.initTable(true);
+		// 将本窗口保存添加到管理器
+		StageManager.CONTROLLER.put("index", this);
+		Stage stage = new Stage();
+		try {
+			Parent root = FXMLLoader
+					.load(Thread.currentThread().getContextClassLoader().getResource(FXMLPage.SET_ATTRIBUTE.getFxml()));
+			stage.setTitle("修改属性");
+			stage.getIcons().add(new Image("pers/resource/image/CMEUicon.png"));
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initOwner(getPrimaryStage());
+			stage.setScene(new Scene(root));
+			stage.show();
+			// 将本窗口保存添加到管理器
+			StageManager.STAGE.put("attribute", stage);
+		} catch (IOException e) {
+			AlertUtil.showErrorAlert("初始化修改属性失败:\r\n原因:" + e.getMessage());
 		}
-
 	}
 
 	/**
@@ -349,31 +406,21 @@ public class IndexController extends BaseController {
 	public void runCreate(ActionEvent event) {
 		if (txtProjectPath.getText().trim().equals("") || txtRootDir.getText().trim().equals("")
 				|| txtTableName.getText().trim().equals("") || txtEntityName.getText().trim().equals("")) {
-			AlertUtil.showWarnAlert("除了包名其他的选项都为必填选项;\r\n实体类可以通过双击左边数据库表加载...");
+			AlertUtil.showWarnAlert("项目所在目录以及类名为必填项;\r\n实体类可以通过双击左边树形数据库表加载...");
 			return;
 		}
 
-		// 初始化文件工厂
-		FileFactory factory = new FileFactory(txtProjectPath.getText(), txtRootDir.getText(), chkAssist.isSelected(),
-				chkConfig.isSelected(), chkMyUtil.isSelected());
-		factory.init(selectedDatabaseConfig, txtEntityPackage.getText(), txtDaoPackage.getText(), txtDaoName.getText(),
-				txtMapPackage.getText(), txtMapName.getText(), txtAssistPackage.getText(), txtAssistName.getText(),
-				txtConfigPackage.getText(), txtConfigName.getText(), txtMyUtilPackage.getText(),
-				txtMyUtilName.getText());
-
+		btnRunCreate.setText("创建中...");
+				
 		if (changeInfo == false) {
 			SuperAttribute attr = new SuperAttribute();
 			attr.setClassName(txtEntityName.getText());
 			attr.setTableName(txtTableName.getText());
+			attr.setDaoName(txtDaoName.getText());
+			attr.setMapperName(txtMapName.getText());
+			attr.setServiceName(txtServiceName.getText());
+			attr.setServiceImplName(txtServiceImplName.getText());
 			List<AttributeCVF> attributes = null;
-			try {
-				attributes = DBUtil.getTableColumns(selectedDatabaseConfig, selectedTableName);
-				for (AttributeCVF temp : attributes) {
-					temp.setPropertyName(StrUtil.unlineToCamel(temp.getPropertyName()));
-				}
-			} catch (Exception e1) {
-				AlertUtil.showErrorAlert("获得属性失败!原因:\r\n" + e1.getMessage());
-			}
 
 			String key = null;
 			try {
@@ -381,24 +428,117 @@ public class IndexController extends BaseController {
 			} catch (Exception e) {
 				AlertUtil.showErrorAlert("获得主键失败!原因:\r\n" + e.getMessage());
 			}
-			attr.setAttributes(attributes);
+
+			try {
+				attributes = DBUtil.getTableColumns(selectedDatabaseConfig, selectedTableName);
+				for (AttributeCVF temp : attributes) {
+					temp.setPropertyName(StrUtil.unlineToCamel(temp.getPropertyName()));
+				}
+
+			} catch (Exception e1) {
+				AlertUtil.showErrorAlert("获得属性失败!原因:\r\n" + e1.getMessage());
+			}
+
 			attr.setPrimaryKey(key);
+			attr.setAttributes(attributes);
 			superAttributes.add(attr);
 		} else {
-			if (this.superAttributes.get(0)!=null) {
-				this.superAttributes.get(0).setClassName(txtEntityName.getText());
+			thisSuperAttribute.setTableName(txtTableName.getText());
+			thisSuperAttribute.setClassName(txtEntityName.getText());
+			thisSuperAttribute.setDaoName(txtDaoName.getText());
+			thisSuperAttribute.setMapperName(txtMapName.getText());
+			if (chkService.isSelected()) {
+				thisSuperAttribute.setServiceName(txtServiceName.getText());
+				thisSuperAttribute.setServiceImplName(txtServiceImplName.getText());
 			}
+			superAttributes.add(thisSuperAttribute);
 		}
-
-		//执行创建
+		//初始化文件工具
+		CreateFileUtil fileUtil=CreateFileUtil.getInstance();
+		fileUtil.init(selectedDatabaseConfig, 
+				superAttributes,
+				txtProjectPath.getText(), 
+				txtRootDir.getText(), 
+				txtEntityPackage.getText(), 
+				txtDaoPackage.getText(), 
+				txtMapPackage.getText(), 
+				chkService.isSelected(),
+				txtServicePackage.getText(), 
+				txtServiceImplPackage.getText(), 
+				txtUpdateMapper.getText(),
+				chkAssist.isSelected(), 
+				txtAssistPackage.getText(), 
+				txtAssistName.getText(), 
+				chkConfig.isSelected(), 
+				txtConfigPackage.getText(), 
+				txtConfigName.getText(), 
+				chkMyUtil.isSelected(), 
+				txtMyUtilPackage.getText(), 
+				txtMyUtilName.getText());
+		// 执行创建
 		try {
-			factory.create(superAttributes);
+			fileUtil.createAll();
 			AlertUtil.showInfoAlert("创建完成!");
-			changeInfo=false;
+			changeInfo = false;
 		} catch (Exception e) {
 			AlertUtil.showErrorAlert("创建失败!原因:\r\n" + e.getMessage());
+			e.printStackTrace();
+		}finally {
+			btnRunCreate.setText("执行创建");
 		}
 
+	}
+
+	/**
+	 * 是否第一次创建
+	 * 
+	 * @param event
+	 */
+	public void onChkFristCreateMybatis(ActionEvent event) {
+		shoueOrHideFrist(chkFristCreateMybatis.isSelected());
+	}
+
+	public void shoueOrHideFrist(boolean param) {
+		if (param) {
+			btnSelectMapperFile.disableProperty().set(true);
+			txtUpdateMapper.disableProperty().set(true);
+			lblUpdateMapper.disableProperty().set(true);
+		} else {
+			btnSelectMapperFile.disableProperty().set(false);
+			txtUpdateMapper.disableProperty().set(false);
+			lblUpdateMapper.disableProperty().set(false);
+		}
+	}
+
+	/**
+	 * 是否创建service层
+	 * 
+	 * @param event
+	 */
+	public void onchkService(ActionEvent event) {
+		showOrHideService(chkService.isSelected());
+	}
+
+	public void showOrHideService(boolean param) {
+		if (param) {
+			txtServiceName.disableProperty().set(false);
+			txtServicePackage.disableProperty().set(false);
+			lblServicePackage.disableProperty().set(false);
+			lblServiceName.disableProperty().set(false);
+			txtServiceImplName.disableProperty().set(false);
+			txtServiceImplPackage.disableProperty().set(false);
+			lblServiceImplPackage.disableProperty().set(false);
+			lblServiceImplName.disableProperty().set(false);
+		} else {
+			txtServiceName.disableProperty().set(true);
+			txtServicePackage.disableProperty().set(true);
+			lblServicePackage.disableProperty().set(true);
+			lblServiceName.disableProperty().set(true);
+			txtServiceImplName.disableProperty().set(true);
+			txtServiceImplPackage.disableProperty().set(true);
+			lblServiceImplPackage.disableProperty().set(true);
+			lblServiceImplName.disableProperty().set(true);
+		}
 	}
 
 	/**
@@ -413,12 +553,10 @@ public class IndexController extends BaseController {
 	public void showOrHideAssist(boolean param) {
 		if (param) {
 			txtAssistPackage.disableProperty().set(false);
-			txtAssistName.disableProperty().set(false);
 			lblAssistPackage.disableProperty().set(false);
 			lblAssistName.disableProperty().set(false);
 		} else {
 			txtAssistPackage.disableProperty().set(true);
-			txtAssistName.disableProperty().set(true);
 			lblAssistPackage.disableProperty().set(true);
 			lblAssistName.disableProperty().set(true);
 		}
@@ -444,11 +582,17 @@ public class IndexController extends BaseController {
 			txtConfigName.disableProperty().set(false);
 			lblConfigPackage.disableProperty().set(false);
 			lblConfigName.disableProperty().set(false);
+			chkFristCreateMybatis.disableProperty().set(false);
+			chkFristCreateMybatis.setSelected(true);
+			shoueOrHideFrist(true);
 		} else {
 			txtConfigPackage.disableProperty().set(true);
 			txtConfigName.disableProperty().set(true);
 			lblConfigPackage.disableProperty().set(true);
 			lblConfigName.disableProperty().set(true);
+			chkFristCreateMybatis.disableProperty().set(true);
+			chkFristCreateMybatis.setSelected(false);
+			shoueOrHideFrist(false);
 		}
 	}
 
@@ -487,29 +631,33 @@ public class IndexController extends BaseController {
 	 * @return
 	 */
 	public HistoryConfig getHistoryConfig() {
-
 		String projectPath = txtProjectPath.getText();
 		String rootDir = txtRootDir.getText();
 		String daoPackage = txtDaoPackage.getText();
 		String daoName = txtDaoName.getText();
+		String servicePackage = txtServicePackage.getText();
+		String serviceName = txtServiceName.getText();
+		String serviceImplPackage = txtServiceImplPackage.getText();
+		String serviceImplName = txtServiceImplName.getText();
 		String entityPackage = txtEntityPackage.getText();
 		String entityName = txtEntityName.getText();
 		String mapPackage = txtMapPackage.getText();
 		String mapName = txtMapName.getText();
+		String updateMapper=txtUpdateMapper.getText();
 		String assistPackage = txtAssistPackage.getText();
 		String assistName = txtAssistName.getText();
 		String configPackage = txtConfigPackage.getText();
 		String configName = txtConfigName.getText();
 		String myUtilPackage = txtMyUtilPackage.getText();
 		String myUtilName = txtMyUtilName.getText();
+		boolean isService = chkService.isSelected();
 		boolean isAssist = chkAssist.isSelected();
 		boolean isConfig = chkConfig.isSelected();
 		boolean isMyUtil = chkMyUtil.isSelected();
-
-		HistoryConfig result = new HistoryConfig(projectPath, rootDir, daoPackage, daoName, entityPackage, entityName,
-				mapPackage, mapName, assistPackage, assistName, configPackage, configName, myUtilPackage, myUtilName,
-				isAssist, isConfig, isMyUtil);
-
+		HistoryConfig result = new HistoryConfig(projectPath, rootDir, daoPackage, daoName, servicePackage, serviceName,
+				serviceImplPackage, serviceImplName, entityPackage, entityName, mapPackage, mapName,updateMapper, assistPackage,
+				assistName, configPackage, configName, myUtilPackage, myUtilName, isService, isAssist, isConfig,
+				isMyUtil);
 		return result;
 	}
 
@@ -528,16 +676,23 @@ public class IndexController extends BaseController {
 		txtRootDir.setText(config.getRootDir());
 		txtDaoPackage.setText(config.getDaoPackage());
 		txtDaoName.setText(config.getDaoName());
+		txtServicePackage.setText(config.getServicePackage());
+		txtServiceName.setText(config.getServiceName());
+		txtServiceImplPackage.setText(config.getServicePackage());
+		txtServiceImplName.setText(config.getServiceName());
 		txtEntityPackage.setText(config.getEntityPackage());
 		txtEntityName.setText(config.getEntityName());
 		txtMapPackage.setText(config.getMapPackage());
 		txtMapName.setText(config.getMapName());
+		txtUpdateMapper.setText(config.getUpdateMapper());
 		txtAssistPackage.setText(config.getAssistPackage());
 		txtAssistName.setText(config.getAssistName());
 		txtConfigPackage.setText(config.getConfigPackage());
 		txtConfigName.setText(config.getConfigName());
 		txtMyUtilPackage.setText(config.getMyUtilPackage());
 		txtMyUtilName.setText(config.getMyUtilName());
+		chkService.setSelected(config.isService());
+		showOrHideService(config.isService());
 		chkAssist.setSelected(config.isAssist());
 		showOrHideAssist(config.isAssist());
 		chkConfig.setSelected(config.isConfig());
@@ -547,6 +702,18 @@ public class IndexController extends BaseController {
 
 	}
 	// -----------------------get/set-------------------------------
+
+	public String getTableName() {
+		return txtTableName.getText();
+	}
+	
+	public SuperAttribute getThisSuperAttribute() {
+		return thisSuperAttribute;
+	}
+
+	public void setThisSuperAttribute(SuperAttribute thisSuperAttribute) {
+		this.thisSuperAttribute = thisSuperAttribute;
+	}
 
 	public boolean isFalg() {
 		return falg;

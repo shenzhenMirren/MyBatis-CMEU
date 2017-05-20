@@ -16,7 +16,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
     	ConfigUtil.existsConfigDB();
         URL url = Thread.currentThread().getContextClassLoader().getResource("pers/resource/FXML/Index.fxml");
-       
+
         FXMLLoader fxmlLoader = new FXMLLoader(url);
         Parent root = fxmlLoader.load();
         primaryStage.setResizable(true);

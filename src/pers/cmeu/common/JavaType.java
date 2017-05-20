@@ -14,7 +14,7 @@ public class JavaType {
 		}
 		
 		if (isDate(str)) {
-			return "java.sql.Date";
+			return "java.util.Date";
 		}else if (isInteger(str)) {
 			return "Integer";
 		}else if (isLong(str)) {

@@ -9,13 +9,22 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.control.ComboBox;
 
 public class AttributeCVF {
+	private ColumnItem columnItem;//用于存储子表子集
 	private BooleanProperty check = new SimpleBooleanProperty(true);;
 	private StringProperty conlumn= new SimpleStringProperty();
 	private StringProperty jdbcType =new SimpleStringProperty();
 	private ComboBox<String> javaType =new ComboBox<String>();
 	private StringProperty propertyName= new SimpleStringProperty();
 	
-	
+
+	public ColumnItem getColumnItem() {
+		return columnItem;
+	}
+
+	public void setColumnItem(ColumnItem columnItem) {
+		this.columnItem = columnItem;
+	}
+
 	public BooleanProperty checkProperty() {
 		return check;
 	}

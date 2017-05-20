@@ -27,7 +27,7 @@ public class HistoryConfigController extends BaseController {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		tblConfigInfo.setPlaceholder(new Label("尚未添加任何配置信息"));
+		tblConfigInfo.setPlaceholder(new Label("尚未添加任何配置信息;可以通过首页保存配置新增"));
 		initTable();
 	}
 	

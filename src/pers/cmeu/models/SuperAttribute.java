@@ -14,8 +14,16 @@ public class SuperAttribute {
 	private String className;
 	private String tableName;
 	private String primaryKey;
+	private String daoName;
+	private String mapperName;
+	private String serviceName;
+	private String serviceImplName;
+	private String joinType;
+	private String joinColumn;
+	private String selectKey;
 	private List<AttributeCVF> attributes;
-	
+	private List<ColumnItem> columnItems;
+	private boolean anyHasColl;//true代表即将创建的类中存在集合,false代表不存在,用于表示是否需要创建dao层分页嵌套查询接口
 	
 	public SuperAttribute() {
 		super();
@@ -33,6 +41,56 @@ public class SuperAttribute {
 		this.tableName = tableName;
 		this.primaryKey = primaryKey;
 		this.attributes = attributes;
+	}
+	
+	
+	public List<ColumnItem> getColumnItems() {
+		return columnItems;
+	}
+	public void setColumnItems(List<ColumnItem> columnItems) {
+		this.columnItems = columnItems;
+	}
+	public String getSelectKey() {
+		return selectKey;
+	}
+	public void setSelectKey(String selectKey) {
+		this.selectKey = selectKey;
+	}
+	public String getDaoName() {
+		return daoName;
+	}
+	public void setDaoName(String daoName) {
+		this.daoName = daoName;
+	}
+	public String getMapperName() {
+		return mapperName;
+	}
+	public void setMapperName(String mapperName) {
+		this.mapperName = mapperName;
+	}
+	public String getServiceName() {
+		return serviceName;
+	}
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+	public String getServiceImplName() {
+		return serviceImplName;
+	}
+	public void setServiceImplName(String serviceImplName) {
+		this.serviceImplName = serviceImplName;
+	}
+	public String getJoinType() {
+		return joinType;
+	}
+	public void setJoinType(String joinType) {
+		this.joinType = joinType;
+	}
+	public String getJoinColumn() {
+		return joinColumn;
+	}
+	public void setJoinColumn(String joinColumn) {
+		this.joinColumn = joinColumn;
 	}
 	public boolean isCamel() {
 		return isCamel;
@@ -95,6 +153,13 @@ public class SuperAttribute {
 	public void setAttributes(List<AttributeCVF> attributes) {
 		this.attributes = attributes;
 	}
+	public boolean isAnyHasColl() {
+		return anyHasColl;
+	}
+	public void setAnyHasColl(boolean anyHasColl) {
+		this.anyHasColl = anyHasColl;
+	}
+
 	
 	
 	

@@ -15,7 +15,7 @@
 	<bottom>
 		<AnchorPane prefHeight="93.0" prefWidth="600.0" BorderPane.alignment="CENTER">
 			<children>
-				<Button fx:id="btnCancel" layoutX="378.0" layoutY="27.0" mnemonicParsing="false" onAction="#onCancel" text="取消">
+				<Button fx:id="btnCancel" layoutX="496.0" layoutY="26.0" mnemonicParsing="false" onAction="#onCancel" text="取消">
 					<font>
 						<Font size="20.0" />
 					</font>
@@ -27,7 +27,7 @@
 						<String fx:value="btn" />
 					</styleClass>
 				</Button>
-				<Button fx:id="btnSave" layoutX="464.0" layoutY="27.0" mnemonicParsing="false" onAction="#saveConnection" text="保存连接" textFill="WHITE">
+				<Button fx:id="btnSave" layoutX="375.0" layoutY="26.0" mnemonicParsing="false" onAction="#saveConnection" text="保存连接" textFill="WHITE">
 					<font>
 						<Font name="System Bold" size="20.0" />
 					</font>
@@ -104,7 +104,7 @@
 						</Label>
 						<TextField fx:id="txtConnName" prefHeight="30.0" prefWidth="250.0" promptText="自定义想要显示的名字" GridPane.columnIndex="1" />
 						<TextField fx:id="txtConnURL" prefHeight="30.0" prefWidth="250.0" promptText="URL例如:127.0.0.1 / localhost" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-						<TextField fx:id="txtListenPort" prefHeight="30.0" prefWidth="250.0" promptText="监听的端口号" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+						<TextField fx:id="txtListenPort" prefHeight="30.0" prefWidth="250.0" promptText="监听的端口号,示例:1521" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 						<TextField fx:id="txtDBName" prefHeight="30.0" prefWidth="250.0" promptText="数据库名称" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 						<TextField fx:id="txtUserName" prefHeight="30.0" prefWidth="250.0" promptText="用户名" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 						<PasswordField fx:id="txtUserPwd" prefHeight="30.0" prefWidth="250.0" promptText="请输入密码" GridPane.columnIndex="1" GridPane.rowIndex="6" />

@@ -6,16 +6,22 @@ public class HistoryConfig {
 	private String rootDir;
 	private String daoPackage;
 	private String daoName;
+	private String servicePackage;
+	private String serviceName;
+	private String serviceImplPackage;
+	private String serviceImplName;
 	private String entityPackage;
 	private String entityName;
 	private String mapPackage;
 	private String mapName;
+	private String updateMapper;
 	private String assistPackage;
 	private String assistName;
 	private String configPackage;
 	private String configName;
 	private String myUtilPackage;
 	private String myUtilName;
+	private boolean isService;
 	private boolean isAssist;
 	private boolean isConfig;
 	private boolean isMyUtil;
@@ -56,6 +62,38 @@ public class HistoryConfig {
 	}
 	public void setDaoName(String daoName) {
 		this.daoName = daoName;
+	}
+	
+	public String getUpdateMapper() {
+		return updateMapper;
+	}
+	public void setUpdateMapper(String updateMapper) {
+		this.updateMapper = updateMapper;
+	}
+	public String getServicePackage() {
+		return servicePackage;
+	}
+	public void setServicePackage(String servicePackage) {
+		this.servicePackage = servicePackage;
+	}
+	public String getServiceName() {
+		return serviceName;
+	}
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+	
+	public String getServiceImplPackage() {
+		return serviceImplPackage;
+	}
+	public void setServiceImplPackage(String serviceImplPackage) {
+		this.serviceImplPackage = serviceImplPackage;
+	}
+	public String getServiceImplName() {
+		return serviceImplName;
+	}
+	public void setServiceImplName(String serviceImplName) {
+		this.serviceImplName = serviceImplName;
 	}
 	public String getEntityPackage() {
 		return entityPackage;
@@ -132,54 +170,46 @@ public class HistoryConfig {
 	}
 	
 	
+	public boolean isService() {
+		return isService;
+	}
+	public void setService(boolean isService) {
+		this.isService = isService;
+	}
 	public HistoryConfig() {
 		super();
 	}
-	/**
-	 * 没有配置文件名称的构造方法
-	 * @param projectPath
-	 * @param rootDir
-	 * @param daoPackage
-	 * @param daoName
-	 * @param entityPackage
-	 * @param entityName
-	 * @param mapPackage
-	 * @param mapName
-	 * @param assistPackage
-	 * @param assistName
-	 * @param configPackage
-	 * @param configName
-	 * @param myUtilPackage
-	 * @param myUtilName
-	 * @param isAssist
-	 * @param isConfig
-	 * @param isMyUtil
-	 */
-	public HistoryConfig(String projectPath, String rootDir, String daoPackage, String daoName, String entityPackage,
-			String entityName, String mapPackage, String mapName, String assistPackage, String assistName,
-			String configPackage, String configName, String myUtilPackage, String myUtilName, boolean isAssist,
-			boolean isConfig, boolean isMyUtil) {
+	public HistoryConfig(String projectPath, String rootDir, String daoPackage, String daoName, String servicePackage,
+			String serviceName, String serviceImplPackage, String serviceImplName, String entityPackage,
+			String entityName, String mapPackage, String mapName,String updateMapper, String assistPackage, String assistName,
+			String configPackage, String configName, String myUtilPackage, String myUtilName, boolean isService,
+			boolean isAssist, boolean isConfig, boolean isMyUtil) {
 		super();
 		this.projectPath = projectPath;
 		this.rootDir = rootDir;
 		this.daoPackage = daoPackage;
 		this.daoName = daoName;
+		this.servicePackage = servicePackage;
+		this.serviceName = serviceName;
+		this.serviceImplPackage = serviceImplPackage;
+		this.serviceImplName = serviceImplName;
 		this.entityPackage = entityPackage;
 		this.entityName = entityName;
 		this.mapPackage = mapPackage;
 		this.mapName = mapName;
+		this.updateMapper=updateMapper;
 		this.assistPackage = assistPackage;
 		this.assistName = assistName;
 		this.configPackage = configPackage;
 		this.configName = configName;
 		this.myUtilPackage = myUtilPackage;
 		this.myUtilName = myUtilName;
+		this.isService = isService;
 		this.isAssist = isAssist;
 		this.isConfig = isConfig;
 		this.isMyUtil = isMyUtil;
 	}
-	
-	
+
 	
 
 }

@@ -1,8 +1,0 @@
-
-public class {*cname*} {
-{*serializable*}
-{*propertys*}	
-{*constr*}
-{*constrAll*}
-{*getSet*}
-}
