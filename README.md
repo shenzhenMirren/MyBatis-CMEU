@@ -15,7 +15,6 @@ Mybatis-CMEU全称为：Mybatis Config Mapper Util ;<br/>
 <li>生成mybatisUtil(用于获得SqlSession等操作,当与mybatis配置文件一同创建时系统会自动识别配置文件路径并设置)可选项;</li>
 <li>更新现有配置文件的mapper映射文件的资源路径(当生成新的信息时自动更新mybatis配置文件的Mapper映射资源路径)可选项;</li>
 </ol>
-[MyBatis-CMEU使用帮助文档](https://github.com/shenzhenMirren/MyBatis-CMEU-DOC)<br/>
 本工具基于JKD1.8_U66开发运行环境需要JKD1.8以上,在MyEclipse中如果已经安装了javafx的运行环境可以直接在MyEclipse中运行,否则需要到QQ交流群里下载可执行文件;<br/>
 ## 软件主页:<br/>
 ![index](https://raw.githubusercontent.com/shenzhenMirren/MyBatis-CMEU-DOC/master/resource/images/1.png)
