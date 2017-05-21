@@ -1,4 +1,4 @@
-官方交流群号:519714660;提供软件包<br/>
+官方QQ交流群号:519714660;<br/>
 Mybatis-CMEU全称为：Mybatis Config Mapper Util ;<br/>
 是基于javafx8开发的一款图形界面的Mybatis逆向工程;<br/>
 该工具支持Oracle , SqlServer , MySQL , PostgreSql数据库的逆向生成;<br/>
@@ -12,6 +12,7 @@ Mybatis-CMEU全称为：Mybatis Config Mapper Util ;<br/>
 7：生成mybatis配置文件(mybatis的主配置文件,系统会自动识别使用的数据库，并创建其连接,同时更新mapper映射文件的资源路径)可选项;<br/>
 8：生成mybatisUtil(用于获得SqlSession等操作,当与mybatis配置文件一同创建时系统会自动识别配置文件路径并设置)可选项;<br/>
 9：更新现有配置文件的mapper映射文件的资源路径(当生成新的信息时自动更新mybatis配置文件的Mapper映射资源路径)可选项;<br/>
+本工具基于JKD1.8_U66开发,在MyEclipse中如果已经按照了javafx的运行环境可以直接在MyEclipse中运行,否则需要到QQ交流群里下载可执行文件;<br/>
 软件主页:<br/>
 ![index](https://raw.githubusercontent.com/shenzhenMirren/MyBatis-CMEU-DOC/master/resource/images/1.png)
 [MyBatis-CMEU使用帮助文档](https://github.com/shenzhenMirren/MyBatis-CMEU-DOC)
