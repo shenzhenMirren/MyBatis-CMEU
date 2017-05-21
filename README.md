@@ -4,6 +4,8 @@ Mybatis-CMEU全称为：Mybatis Config Mapper Util ;<br/>
 是基于javafx8开发的一款图形界面的Mybatis逆向工程;<br/>
 该工具支持Oracle , SqlServer , MySQL , PostgreSql数据库的逆向生成;<br/>
 ## 基本常用功能：<br/>
+
+### MyBatis-CMEU的使用帮助文档
 <ol>
 <li>生成实体类(可以自定义：gett,有参无参构造方法,自定义类型与属性,序列化等);</li>
 <li>生成dao层接口(查询全部信息，通过ID查询信息,插入全部属性,插入不为空的属性,通过ID更新全部属性,通过ID更新不为空的属性,通过Assist更新全部属性,通过Assist更新不为空的属性,通过ID删除信息,通过Assist删除信息);</li>
