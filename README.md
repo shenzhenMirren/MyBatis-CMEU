@@ -14,5 +14,5 @@ Mybatis-CMEU全称为：Mybatis Config Mapper Util ;<br/>
 9：更新现有配置文件的mapper映射文件的资源路径(当生成新的信息时自动更新mybatis配置文件的Mapper映射资源路径)可选项;<br/>
 软件主页:<br/>
 ![index](https://raw.githubusercontent.com/shenzhenMirren/MyBatis-CMEU-DOC/master/resource/images/1.png)
-
+[MyBatis-CMEU使用帮助文档](https://github.com/shenzhenMirren/MyBatis-CMEU-DOC)
 
