@@ -672,6 +672,11 @@ public class MapperUtil {
 		if (anyAssist) {
 			result.append(" <if test=\"distinct !=null\">${distinct}</if>");
 		}
+		if (anyAssist) {
+			result.append("\r\n        <choose>\r\n");
+			result.append("            <when test=\"resultColumn!=null\">${resultColumn}</when>\r\n");
+			result.append("            <otherwise>");
+		}
 		result.append("\r\n        <include refid=\"" + attr.getTableName() + "_Column\" /> \r\n");
 		if (attr.getColumnItems() != null) {
 			for (ColumnItem item : attr.getColumnItems()) {
@@ -685,6 +690,10 @@ public class MapperUtil {
 					}
 				}
 			}
+		}
+		if (anyAssist) {
+			result.append("            </otherwise>\r\n");
+			result.append("        </choose>\r\n");
 		}
 		result.append("        from " + attr.getTableName() + "\r\n");
 		if (attr.getColumnItems() != null) {
@@ -730,6 +739,11 @@ public class MapperUtil {
 			result.append(" ROW_NUMBER() over(<choose><when test=\"order!=null\">${order}</when><otherwise>order by "
 					+ attr.getTableName() + "." + attr.getPrimaryKey() + "</otherwise></choose>) as page,\r\n");
 		}
+		if (anyAssist) {
+			result.append("            <choose>\r\n");
+			result.append("                <when test=\"resultColumn!=null\">${resultColumn}</when>\r\n");
+			result.append("                <otherwise>");
+		}
 		result.append("\r\n            <include refid=\"" + attr.getTableName() + "_Column\" /> \r\n");
 		if (attr.getColumnItems() != null) {
 			for (ColumnItem item : attr.getColumnItems()) {
@@ -743,6 +757,10 @@ public class MapperUtil {
 					}
 				}
 			}
+		}
+		if (anyAssist) {
+			result.append("                </otherwise>\r\n");
+			result.append("            </choose>\r\n");
 		}
 		result.append("            from " + attr.getTableName() + "\r\n");
 		if (attr.getColumnItems() != null) {
@@ -759,12 +777,12 @@ public class MapperUtil {
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
-			result.append("} <if test=\"endRow!=null\">and page &lt;= #{endRow");
+			result.append("} <if test=\"rowSize!=null\">and page &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
 			result.append("} </if></when>\r\n");
-			result.append("            <otherwise><if test=\"endRow!=null\">where page &lt;= #{endRow");
+			result.append("            <otherwise><if test=\"rowSize!=null\">where page &lt;= #{rowSize");
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
@@ -800,7 +818,12 @@ public class MapperUtil {
 		result.append("result.* from\r\n            (\r\n");
 		result.append("                select ");
 		if (anyAssist) {
-			result.append(" <if test=\"distinct !=null\">${distinct}</if>");
+			result.append(" <if test=\"distinct !=null\">${distinct}</if>\r\n");
+		}
+		if (anyAssist) {
+			result.append("                <choose>\r\n");
+			result.append("            	       <when test=\"resultColumn!=null\">${resultColumn}</when>\r\n");
+			result.append("            	       <otherwise>");
 		}
 		result.append("\r\n                <include refid=\"" + attr.getTableName() + "_Column\" /> \r\n");
 		if (attr.getColumnItems() != null) {
@@ -817,6 +840,10 @@ public class MapperUtil {
 				}
 			}
 		}
+		if (anyAssist) {
+			result.append("            	       </otherwise>\r\n");
+			result.append("                </choose>\r\n");
+		}
 		result.append("                from " + attr.getTableName() + " \r\n");
 		if (attr.getColumnItems() != null) {
 			result.append(getJoinStr(attr.getColumnItems(), attr.getTableName(), 16));
@@ -827,7 +854,7 @@ public class MapperUtil {
 		}
 		result.append("\r\n            ) result \r\n");
 		if (anyAssist) {
-			result.append("            <if test=\"endRow!=null\">where rownum &lt;= #{endRow");
+			result.append("            <if test=\"rowSize!=null\">where rownum &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
@@ -948,12 +975,12 @@ public class MapperUtil {
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
-			result.append("} <if test=\"endRow!=null\">and page &lt;= #{endRow");
+			result.append("} <if test=\"rowSize!=null\">and page &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
 			result.append("} </if></when>\r\n");
-			result.append("            <otherwise><if test=\"endRow!=null\">where page &lt;= #{endRow");
+			result.append("            <otherwise><if test=\"rowSize!=null\">where page &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
@@ -1000,7 +1027,7 @@ public class MapperUtil {
 		}
 		result.append("\r\n            ) result \r\n");
 		if (anyAssist) {
-			result.append("            <if test=\"endRow!=null\">where rownum &lt;= #{endRow");
+			result.append("            <if test=\"rowSize!=null\">where rownum &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}

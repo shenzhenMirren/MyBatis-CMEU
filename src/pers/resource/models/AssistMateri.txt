@@ -10,14 +10,46 @@ public class Assist {
 	private String distinct;
 	// 自定义排序
 	private String order;
-	// 分页开始行
+	// 数据分页开始行
 	private Integer startRow;
-	// 分页结束行 Oracle/SqlServer
-	private Integer endRow;
-	// 分页取多少行数据 Mysql/PostgreSql
+	// 每次取多少行数据
 	private Integer rowSize;
+	// 设置自定义返回列
+	private String resultColumn;
 	// 条件集
 	private List<whereRequire> require = null;
+	/**
+	 * 条件类,require属性为列的条件,value为条件值
+	 * @author Mirren
+	 */
+	public class whereRequire {
+		private String require;
+		private String value;
+
+		public whereRequire(String require, String value) {
+			super();
+			this.require = require;
+			this.value = value;
+		}
+
+		public String getRequire() {
+			return require;
+		}
+
+		public void setRequire(String require) {
+			this.require = require;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+	}
+	
 
 	/**
 	 * 添加查询条件,参数为Assist的内部类whereRequire,推荐使用Assist的静态条件方法添加条件;
@@ -237,23 +269,6 @@ public class Assist {
 	}
 	
 	/**
-	 * 获得分页结束行
-	 * @return
-	 */
-	public Integer getEndRow() {
-		return endRow;
-	}
-
-	/**
-	 * 设置取数据到第几行
-	 * 
-	 * @param endRow
-	 */
-	public void setEndRow(Integer endRow) {
-		this.endRow = endRow;
-	}
-	
-	/**
 	 * 获得每次取多少行数据
 	 * @return
 	 */
@@ -268,6 +283,22 @@ public class Assist {
 	 */
 	public void setRowSize(Integer rowSize) {
 		this.rowSize = rowSize;
+	}
+	
+	/**
+	 * 获得返回指定列
+	 * @return
+	 */
+	public String getResultColumn() {
+		return resultColumn;
+	}
+	
+	/**
+	 * 设置返回指定列多个列以,逗号隔开;需要特别注意的是返回列需要起别名,别名以mapper里面的resultMap的column为准;一般是类名加上属性的顺序号,
+	 * @return
+	 */
+	public void setResultColumn(String resultColumn) {
+		this.resultColumn = resultColumn;
 	}
 	/**
 	 * 获得条件集
@@ -297,37 +328,6 @@ public class Assist {
 		}
 	}
 
-	/**
-	 * 条件类,require属性为列的条件,value为条件值
-	 * 
-	 * @author Mirren
-	 */
-	public class whereRequire {
-		private String require;
-		private String value;
-
-		public whereRequire(String require, String value) {
-			super();
-			this.require = require;
-			this.value = value;
-		}
-
-		public String getRequire() {
-			return require;
-		}
-
-		public void setRequire(String require) {
-			this.require = require;
-		}
-
-		public String getValue() {
-			return value;
-		}
-
-		public void setValue(String value) {
-			this.value = value;
-		}
-
-	}
 
 }
+

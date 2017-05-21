@@ -1,8 +1,18 @@
-官方交流群号:519714660;
-该工具使用大部分是1.8jdk的特性,所以运行环境需要jdk1.8
-交流群里提供跨平台通用的jar包以及window  mac  Linux 免JDK环境的的安装包(已经集成运行环境所以对jdk无要求)
-MyBatis-CMEU全称为:MyBatis Config Mapper Entity Util 
-简单来说CMEU是一款使用Javafx开发的MyBatis帮助工具,使用该工具你只需要连接数据库,选择你需要的表(单表/多表),点击执行创建,该工具就会帮你生成实体类以及接口与Mapper的增删改查,Assist帮助类让分页变得像hibernate一样简单,同时也简化并提供了动态的条件查询;
-温馨提示:不要太依赖CMEU因为它有可能使你忘记mapper怎么写!
-可以查看MyBatis-CMEU使用说明.pdf便可以查看界面以及操作
+官方交流群号:519714660;提供软件包<br/>
+Mybatis-CMEU全称为：Mybatis Config Mapper Util ;<br/>
+是基于javafx8开发的一款图形界面的Mybatis逆向工程;<br/>
+该工具支持Oracle , SqlServer , MySQL , PostgreSql数据库的逆向生成;<br/>
+基本常用功能：<br/>
+1：生成实体类(可以自定义：gett,有参无参构造方法,自定义类型与属性,序列化等);<br/>
+2：生成dao层接口(查询全部信息，通过ID查询信息,插入全部属性,插入不为空的属性,通过ID更新全部属性,通过ID更新不为空的属性,通过Assist更新全部属性,通过Assist更新不为空的属性,通过ID删除信息,通过Assist删除信息);<br/>
+3：生成Mapper映射文件(dao层接口SQL语句,支持生成3表关联(比如：A表关联B表,B表关联C表,一次便可获得3张表的数据),支持主键策略;<如果选择创建Assist支持分页,去重,排序,无注入动态查询等>);<br/>
+4：生成service层接口(与dao接口一致)可选项;<br/>
+5：生成service层实现类(实现service层接口)可选项;<br/>
+6：生成查询工具Assist(Assist为CMEU特别定制的查询工具,使用该工具一切操作都变得超简单,比如：分页通过Assist只需要设置2个参数就可以实现比如参数1=10,参数2=5,查询出来就是第10行到15行的数据,同时也可以防注入动态添加查询添加,去重,排序,自定义返回列等)可选项;<br/>
+7：生成mybatis配置文件(mybatis的主配置文件,系统会自动识别使用的数据库，并创建其连接,同时更新mapper映射文件的资源路径)可选项;<br/>
+8：生成mybatisUtil(用于获得SqlSession等操作,当与mybatis配置文件一同创建时系统会自动识别配置文件路径并设置)可选项;<br/>
+9：更新现有配置文件的mapper映射文件的资源路径(当生成新的信息时自动更新mybatis配置文件的Mapper映射资源路径)可选项;<br/>
+软件主页:<br/>
+![index](https://raw.githubusercontent.com/shenzhenMirren/MyBatis-CMEU-DOC/master/resource/images/1.png)
+
 

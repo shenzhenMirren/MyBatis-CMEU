@@ -247,7 +247,7 @@ public class ServiceImplUtil {
 			buffer.append("    }\r\n");
 		} else {
 			buffer.append(
-					"    @Override\r\n    public int updateNonEmpty" + entityName + "ById(" + entityName + " enti{;\r\n");
+					"    @Override\r\n    public int updateNonEmpty" + entityName + "ById(" + entityName + " enti){\r\n");
 			buffer.append("        return " + daoName + ".updateNonEmpty" + entityName + "ById(enti);\r\n");
 			buffer.append("    }\r\n");
 		}
