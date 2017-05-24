@@ -13,6 +13,7 @@ public class SuperAttribute {
 	
 	private String className;
 	private String tableName;
+	private String tableAlias;
 	private String primaryKey;
 	private String daoName;
 	private String mapperName;
@@ -44,6 +45,12 @@ public class SuperAttribute {
 	}
 	
 	
+	public String getTableAlias() {
+		return tableAlias;
+	}
+	public void setTableAlias(String tableAlias) {
+		this.tableAlias = tableAlias;
+	}
 	public List<ColumnItem> getColumnItems() {
 		return columnItems;
 	}

@@ -6,383 +6,480 @@
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<ScrollPane prefHeight="702.0" prefWidth="1171.0"
+	stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="pers.cmeu.controller.IndexController">
+	<BorderPane prefHeight="700.0" prefWidth="1168.0">
+		<top>
+			<AnchorPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="80.0"
+				prefWidth="1168.0"
+				style="-fx-border-color: #CDCDCD; -fx-background-color: #E8E8E8;"
+				BorderPane.alignment="CENTER">
+				<children>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1168.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pers.cmeu.controller.IndexController">
-   <top>
-      <AnchorPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="80.0" prefWidth="1168.0" style="-fx-border-color: #CDCDCD; -fx-background-color: #E8E8E8;" BorderPane.alignment="CENTER">
-         <children>
-            
-            <Label fx:id="lblConnection" contentDisplay="TOP" layoutX="49.0" layoutY="14.0" text="数据库连接">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            
-            <Label fx:id="lblConfig" contentDisplay="TOP" layoutX="153.0" layoutY="14.0" text="配置信息">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-         </children></AnchorPane>
-   </top>
-   <center>
-      <SplitPane dividerPositions="0.24266144814090018" BorderPane.alignment="CENTER">
-        <items>
-          <AnchorPane prefHeight="608.0" prefWidth="120.0">
-               <children>
-                  <TreeView fx:id="tvDataBase" layoutX="14.0" layoutY="80.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="608.0" prefWidth="699.0">
-               <children>
-                  <GridPane layoutX="257.0" layoutY="179.0" prefHeight="486.0" prefWidth="829.0" AnchorPane.bottomAnchor="122.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="41.0" AnchorPane.topAnchor="0.0">
-                    <columnConstraints>
-                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="173.0" minWidth="10.0" prefWidth="173.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="252.0" minWidth="10.0" prefWidth="246.0" />
-                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="204.0" minWidth="10.0" prefWidth="172.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="274.0" minWidth="10.0" prefWidth="238.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <Label contentDisplay="RIGHT" text="项目所在目录:" GridPane.rowIndex="1">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label text="根目录:" GridPane.rowIndex="2">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label text="实体类包名:" GridPane.rowIndex="3">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label text="接口包名:" GridPane.rowIndex="4">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label text="映射文件包名:" GridPane.rowIndex="5">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="txtProjectPath" prefHeight="32.0" prefWidth="443.0" promptText="请输入或选择项目所在目录,例如:E:/JavaFX" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <Button fx:id="btnSelectFile" mnemonicParsing="false" onAction="#selectFile" text="选择" GridPane.columnIndex="3" GridPane.rowIndex="1">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <styleClass>
-                              <String fx:value="btn" />
-                              <String fx:value="btn-default" />
-                           </styleClass>
-                           <GridPane.margin>
-                              <Insets left="5.0" />
-                           </GridPane.margin>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                        <TextField fx:id="txtRootDir" text="src/" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <TextField fx:id="txtEntityPackage" text="com.entity" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <TextField fx:id="txtEntityName" GridPane.columnIndex="3" GridPane.rowIndex="3">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <TextField fx:id="txtDaoPackage" text="com.dao" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <TextField fx:id="txtDaoName" GridPane.columnIndex="3" GridPane.rowIndex="4">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <TextField fx:id="txtMapPackage" text="com.dao" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <TextField fx:id="txtMapName" GridPane.columnIndex="3" GridPane.rowIndex="5">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <Label text="类名:" GridPane.columnIndex="2" GridPane.rowIndex="3">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label text="接口名:" GridPane.columnIndex="2" GridPane.rowIndex="4">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label text="映射文件名:" GridPane.columnIndex="2" GridPane.rowIndex="5">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="txtAssistPackage" text="com.common" GridPane.columnIndex="1" GridPane.rowIndex="8">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <TextField fx:id="txtAssistName" disable="true" text="Assist" GridPane.columnIndex="3" GridPane.rowIndex="8">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <TextField fx:id="txtConfigPackage" disable="true" text="resource" GridPane.columnIndex="1" GridPane.rowIndex="9">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <TextField fx:id="txtConfigName" disable="true" text="mybatis-config.xml" GridPane.columnIndex="3" GridPane.rowIndex="9">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <TextField fx:id="txtMyUtilPackage" disable="true" prefColumnCount="0" text="com.util" GridPane.columnIndex="1" GridPane.rowIndex="10">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <TextField fx:id="txtMyUtilName" disable="true" text="MyBatisUtil" GridPane.columnIndex="3" GridPane.rowIndex="10">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <Label fx:id="lblAssistName" text="工具名:" GridPane.columnIndex="2" GridPane.rowIndex="8">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lblConfigName" disable="true" text="文件名:" GridPane.columnIndex="2" GridPane.rowIndex="9">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lblMyUtilName" disable="true" text="工具名:" GridPane.columnIndex="2" GridPane.rowIndex="10">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="txtTableName" disable="true" promptText="双击左侧表名加载" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                        <Label disable="true" text="表名:" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lblAssistPackage" text="查询工具包名:" GridPane.rowIndex="8">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lblConfigPackage" disable="true" text="配置文件包名:" GridPane.rowIndex="9">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lblMyUtilPackage" disable="true" text="帮助工具包名:" GridPane.rowIndex="10">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lblServicePackage" text="service包名:" GridPane.rowIndex="6">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="txtServicePackage" text="com.service" GridPane.columnIndex="1" GridPane.rowIndex="6">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <Label fx:id="lblServiceName" text="service名:" GridPane.columnIndex="2" GridPane.rowIndex="6">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="txtServiceName" GridPane.columnIndex="3" GridPane.rowIndex="6">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <Label fx:id="lblServiceImplPackage" text="serviceImpl包名:" GridPane.rowIndex="7">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="txtServiceImplPackage" text="com.service.Impl" GridPane.columnIndex="1" GridPane.rowIndex="7">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <Label fx:id="lblServiceImplName" text="serviceImpl包名:" GridPane.columnIndex="2" GridPane.rowIndex="7">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="txtServiceImplName" GridPane.columnIndex="3" GridPane.rowIndex="7">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <Label fx:id="lblUpdateMapper" text="更新map资源路径:" GridPane.rowIndex="11">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="txtUpdateMapper" prefHeight="32.0" prefWidth="443.0" promptText="请输入或选择Mybatis配置文件所在目录.例如:E:/c.xml" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="11">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                        <Button fx:id="btnSelectMapperFile" mnemonicParsing="false" onAction="#selectMybatisFile" text="选择" GridPane.columnIndex="3" GridPane.rowIndex="11">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <styleClass>
-                              <String fx:value="btn" />
-                              <String fx:value="btn-default" />
-                           </styleClass>
-                           <GridPane.margin>
-                              <Insets left="4.0" />
-                           </GridPane.margin>
-                        </Button>
-                        <CheckBox fx:id="chkFristCreateMybatis" disable="true" mnemonicParsing="false" onAction="#onChkFristCreateMybatis" text="第一次创建" GridPane.columnIndex="3" GridPane.rowIndex="11">
-                           <GridPane.margin>
-                              <Insets left="70.0" />
-                           </GridPane.margin>
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </CheckBox>
-                     </children>
-                  </GridPane>
-                  <Button fx:id="btnRunCreate" layoutX="178.0" layoutY="548.0" mnemonicParsing="false" onAction="#runCreate" text="执行创建" AnchorPane.bottomAnchor="26.0">
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                     <styleClass>
-                        <String fx:value="btn-success" />
-                        <String fx:value="btn" />
-                     </styleClass>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                  <Label layoutX="729.0" layoutY="587.0" text="QQ交流群:519714660" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                  <CheckBox fx:id="chkService" layoutX="22.0" layoutY="495.0" mnemonicParsing="false" onAction="#onchkService" selected="true" text="创建service层" AnchorPane.bottomAnchor="91.0">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <tooltip>
-                        <Tooltip text="选择该层将会生成service已经service的实现实现" />
-                     </tooltip>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </CheckBox>
-                  <CheckBox fx:id="chkConfig" layoutX="321.0" layoutY="495.0" mnemonicParsing="false" onAction="#onchkMyConfig" text="创建配置文件" AnchorPane.bottomAnchor="91.0">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <tooltip>
-                        <Tooltip text="创建MyBatis的基本配置文件,如果已经存在,或者不需要则无需打勾;" />
-                     </tooltip>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </CheckBox>
-                  <CheckBox fx:id="chkMyUtil" layoutX="468.0" layoutY="495.0" mnemonicParsing="false" onAction="#onchkMyUtil" text="创建帮助工具" AnchorPane.bottomAnchor="91.0">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <tooltip>
-                        <Tooltip text="创建MyBatisUtil工具用于管理SqlSession如果已经存在或者不需要则无需打勾" />
-                     </tooltip>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </CheckBox>
-                  <CheckBox fx:id="chkAssist" layoutX="175.0" layoutY="505.0" mnemonicParsing="false" onAction="#onchkAssist" selected="true" text="创建查询工具">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <tooltip>
-                        <Tooltip text="查询工具Assist,该工具可以简化你的分页,排序,自定义sql语句等查询,当选中时系统会判断路径是否存在该工具如果存在则不创建,否则创建;" />
-                     </tooltip>
-                  </CheckBox>
-                  <Button fx:id="btnUpdateEntity" layoutX="326.0" layoutY="548.0" mnemonicParsing="false" onAction="#updateEntity" prefHeight="32.0" prefWidth="120.0" text="修改属性">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                     <styleClass>
-                        <String fx:value="btn" />
-                        <String fx:value="btn-executable" />
-                     </styleClass>
-                  </Button>
-                  <Button fx:id="btnSaveConfig" alignment="CENTER_RIGHT" layoutX="471.0" layoutY="548.0" mnemonicParsing="false" onAction="#saveConfig" text="保存配置">
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                     <styleClass>
-                        <String fx:value="btn" />
-                        <String fx:value="btn-default" />
-                     </styleClass>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-               </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
-   </center>
-</BorderPane>
+					<Label fx:id="lblConnection" contentDisplay="TOP" layoutX="49.0"
+						layoutY="14.0" text="数据库连接">
+						<cursor>
+							<Cursor fx:constant="HAND" />
+						</cursor>
+						<font>
+							<Font size="14.0" />
+						</font>
+					</Label>
+
+					<Label fx:id="lblConfig" contentDisplay="TOP" layoutX="153.0"
+						layoutY="14.0" text="配置信息">
+						<cursor>
+							<Cursor fx:constant="HAND" />
+						</cursor>
+						<font>
+							<Font size="14.0" />
+						</font>
+					</Label>
+				</children>
+			</AnchorPane>
+		</top>
+		<center>
+			<SplitPane dividerPositions="0.24266144814090018"
+				BorderPane.alignment="CENTER">
+				<items>
+					<AnchorPane prefHeight="608.0" prefWidth="120.0">
+						<children>
+							<TreeView fx:id="tvDataBase" layoutX="14.0" layoutY="80.0"
+								AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+								AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+						</children>
+					</AnchorPane>
+					<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="608.0"
+						prefWidth="699.0">
+						<children>
+							<GridPane layoutX="257.0" layoutY="179.0" prefHeight="486.0"
+								prefWidth="829.0" AnchorPane.bottomAnchor="122.0"
+								AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="41.0"
+								AnchorPane.topAnchor="0.0">
+								<columnConstraints>
+									<ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES"
+										maxWidth="173.0" minWidth="10.0" prefWidth="173.0" />
+									<ColumnConstraints hgrow="SOMETIMES"
+										maxWidth="252.0" minWidth="10.0" prefWidth="246.0" />
+									<ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES"
+										maxWidth="204.0" minWidth="10.0" prefWidth="172.0" />
+									<ColumnConstraints hgrow="SOMETIMES"
+										maxWidth="274.0" minWidth="10.0" prefWidth="238.0" />
+								</columnConstraints>
+								<rowConstraints>
+									<RowConstraints />
+									<RowConstraints minHeight="10.0" prefHeight="30.0"
+										vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0"
+										vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0"
+										vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0"
+										vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0"
+										vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0"
+										vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0"
+										vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0"
+										vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0"
+										vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0"
+										vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0"
+										vgrow="SOMETIMES" />
+								</rowConstraints>
+								<children>
+									<Label contentDisplay="RIGHT" text="项目所在目录:"
+										GridPane.rowIndex="1">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<Label text="根目录:" GridPane.rowIndex="2">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<Label text="实体类包名:" GridPane.rowIndex="3">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<Label text="接口包名:" GridPane.rowIndex="4">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<Label text="映射文件包名:" GridPane.rowIndex="5">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<TextField fx:id="txtProjectPath" prefHeight="32.0"
+										prefWidth="443.0" promptText="请输入或选择项目所在目录,例如:E:/JavaFX"
+										GridPane.columnIndex="1" GridPane.columnSpan="2"
+										GridPane.rowIndex="1">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<Button fx:id="btnSelectFile" mnemonicParsing="false"
+										onAction="#selectFile" text="选择" GridPane.columnIndex="3"
+										GridPane.rowIndex="1">
+										<font>
+											<Font size="16.0" />
+										</font>
+										<styleClass>
+											<String fx:value="btn" />
+											<String fx:value="btn-default" />
+										</styleClass>
+										<GridPane.margin>
+											<Insets left="5.0" />
+										</GridPane.margin>
+										<cursor>
+											<Cursor fx:constant="HAND" />
+										</cursor>
+									</Button>
+									<TextField fx:id="txtRootDir" text="src/"
+										GridPane.columnIndex="1" GridPane.rowIndex="2">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<TextField fx:id="txtEntityPackage" text="com.entity"
+										GridPane.columnIndex="1" GridPane.rowIndex="3">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<TextField fx:id="txtEntityName"
+										GridPane.columnIndex="3" GridPane.rowIndex="3">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<TextField fx:id="txtDaoPackage" text="com.dao"
+										GridPane.columnIndex="1" GridPane.rowIndex="4">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<TextField fx:id="txtDaoName" GridPane.columnIndex="3"
+										GridPane.rowIndex="4">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<TextField fx:id="txtMapPackage" text="com.dao"
+										GridPane.columnIndex="1" GridPane.rowIndex="5">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<TextField fx:id="txtMapName" GridPane.columnIndex="3"
+										GridPane.rowIndex="5">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<Label text="类名:" GridPane.columnIndex="2"
+										GridPane.rowIndex="3">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<Label text="接口名:" GridPane.columnIndex="2"
+										GridPane.rowIndex="4">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<Label text="映射文件名:" GridPane.columnIndex="2"
+										GridPane.rowIndex="5">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<TextField fx:id="txtAssistPackage" text="com.common"
+										GridPane.columnIndex="1" GridPane.rowIndex="8">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<TextField fx:id="txtAssistName" disable="true" text="Assist"
+										GridPane.columnIndex="3" GridPane.rowIndex="8">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<TextField fx:id="txtConfigPackage" disable="true"
+										text="resource" GridPane.columnIndex="1" GridPane.rowIndex="9">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<TextField fx:id="txtConfigName" disable="true"
+										text="mybatis-config.xml" GridPane.columnIndex="3"
+										GridPane.rowIndex="9">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<TextField fx:id="txtMyUtilPackage" disable="true"
+										prefColumnCount="0" text="com.util" GridPane.columnIndex="1"
+										GridPane.rowIndex="10">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<TextField fx:id="txtMyUtilName" disable="true"
+										text="MyBatisUtil" GridPane.columnIndex="3" GridPane.rowIndex="10">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<Label fx:id="lblAssistName" text="工具名:"
+										GridPane.columnIndex="2" GridPane.rowIndex="8">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<Label fx:id="lblConfigName" disable="true" text="文件名:"
+										GridPane.columnIndex="2" GridPane.rowIndex="9">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<Label fx:id="lblMyUtilName" disable="true" text="工具名:"
+										GridPane.columnIndex="2" GridPane.rowIndex="10">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<TextField fx:id="txtTableName" disable="true"
+										promptText="双击左侧表名加载" GridPane.columnIndex="3"
+										GridPane.rowIndex="2" />
+									<Label disable="true" text="表名:" GridPane.columnIndex="2"
+										GridPane.rowIndex="2">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<Label fx:id="lblAssistPackage" text="查询工具包名:"
+										GridPane.rowIndex="8">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<Label fx:id="lblConfigPackage" disable="true" text="配置文件包名:"
+										GridPane.rowIndex="9">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<Label fx:id="lblMyUtilPackage" disable="true" text="帮助工具包名:"
+										GridPane.rowIndex="10">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<Label fx:id="lblServicePackage" text="service包名:"
+										GridPane.rowIndex="6">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<TextField fx:id="txtServicePackage" text="com.service"
+										GridPane.columnIndex="1" GridPane.rowIndex="6">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<Label fx:id="lblServiceName" text="service名:"
+										GridPane.columnIndex="2" GridPane.rowIndex="6">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<TextField fx:id="txtServiceName"
+										GridPane.columnIndex="3" GridPane.rowIndex="6">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<Label fx:id="lblServiceImplPackage" text="serviceImpl包名:"
+										GridPane.rowIndex="7">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<TextField fx:id="txtServiceImplPackage" text="com.service.Impl"
+										GridPane.columnIndex="1" GridPane.rowIndex="7">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<Label fx:id="lblServiceImplName" text="serviceImpl包名:"
+										GridPane.columnIndex="2" GridPane.rowIndex="7">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<TextField fx:id="txtServiceImplName"
+										GridPane.columnIndex="3" GridPane.rowIndex="7">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<Label fx:id="lblUpdateMapper" text="更新map资源路径:"
+										GridPane.rowIndex="11">
+										<font>
+											<Font size="20.0" />
+										</font>
+									</Label>
+									<TextField fx:id="txtUpdateMapper" prefHeight="32.0"
+										prefWidth="443.0" promptText="请输入或选择Mybatis配置文件所在目录.例如:E:/c.xml"
+										GridPane.columnIndex="1" GridPane.columnSpan="2"
+										GridPane.rowIndex="11">
+										<font>
+											<Font size="16.0" />
+										</font>
+									</TextField>
+									<Button fx:id="btnSelectMapperFile" mnemonicParsing="false"
+										onAction="#selectMybatisFile" text="选择" GridPane.columnIndex="3"
+										GridPane.rowIndex="11">
+										<cursor>
+											<Cursor fx:constant="HAND" />
+										</cursor>
+										<font>
+											<Font size="16.0" />
+										</font>
+										<styleClass>
+											<String fx:value="btn" />
+											<String fx:value="btn-default" />
+										</styleClass>
+										<GridPane.margin>
+											<Insets left="4.0" />
+										</GridPane.margin>
+									</Button>
+									<CheckBox fx:id="chkFristCreateMybatis" disable="true"
+										mnemonicParsing="false" onAction="#onChkFristCreateMybatis"
+										text="第一次创建" GridPane.columnIndex="3" GridPane.rowIndex="11">
+										<GridPane.margin>
+											<Insets left="70.0" />
+										</GridPane.margin>
+										<font>
+											<Font size="16.0" />
+										</font>
+									</CheckBox>
+								</children>
+							</GridPane>
+							<Button fx:id="btnRunCreate" layoutX="178.0" layoutY="548.0"
+								mnemonicParsing="false" onAction="#runCreate" text="执行创建"
+								AnchorPane.bottomAnchor="26.0">
+								<font>
+									<Font size="22.0" />
+								</font>
+								<styleClass>
+									<String fx:value="btn-success" />
+									<String fx:value="btn" />
+								</styleClass>
+								<cursor>
+									<Cursor fx:constant="HAND" />
+								</cursor>
+							</Button>
+							<Label layoutX="729.0" layoutY="587.0" text="QQ交流群:519714660"
+								AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+							<CheckBox fx:id="chkService" layoutX="22.0" layoutY="495.0"
+								mnemonicParsing="false" onAction="#onchkService" selected="true"
+								text="创建service层" AnchorPane.bottomAnchor="91.0">
+								<font>
+									<Font size="16.0" />
+								</font>
+								<tooltip>
+									<Tooltip text="选择该层将会生成service已经service的实现实现" />
+								</tooltip>
+								<cursor>
+									<Cursor fx:constant="HAND" />
+								</cursor>
+							</CheckBox>
+							<CheckBox fx:id="chkConfig" layoutX="321.0" layoutY="495.0"
+								mnemonicParsing="false" onAction="#onchkMyConfig" text="创建配置文件"
+								AnchorPane.bottomAnchor="91.0">
+								<font>
+									<Font size="16.0" />
+								</font>
+								<tooltip>
+									<Tooltip text="创建MyBatis的基本配置文件,如果已经存在,或者不需要则无需打勾;" />
+								</tooltip>
+								<cursor>
+									<Cursor fx:constant="HAND" />
+								</cursor>
+							</CheckBox>
+							<CheckBox fx:id="chkMyUtil" layoutX="468.0" layoutY="495.0"
+								mnemonicParsing="false" onAction="#onchkMyUtil" text="创建帮助工具"
+								AnchorPane.bottomAnchor="91.0">
+								<font>
+									<Font size="16.0" />
+								</font>
+								<tooltip>
+									<Tooltip text="创建MyBatisUtil工具用于管理SqlSession如果已经存在或者不需要则无需打勾" />
+								</tooltip>
+								<cursor>
+									<Cursor fx:constant="HAND" />
+								</cursor>
+							</CheckBox>
+							<CheckBox fx:id="chkAssist" layoutX="175.0" layoutY="505.0"
+								mnemonicParsing="false" onAction="#onchkAssist" selected="true"
+								text="创建查询工具">
+								<cursor>
+									<Cursor fx:constant="HAND" />
+								</cursor>
+								<font>
+									<Font size="16.0" />
+								</font>
+								<tooltip>
+									<Tooltip
+										text="查询工具Assist,该工具可以简化你的分页,排序,自定义sql语句等查询,当选中时系统会判断路径是否存在该工具如果存在则不创建,否则创建;" />
+								</tooltip>
+							</CheckBox>
+							<Button fx:id="btnUpdateEntity" layoutX="326.0" layoutY="548.0"
+								mnemonicParsing="false" onAction="#updateEntity" prefHeight="32.0"
+								prefWidth="120.0" text="修改属性">
+								<cursor>
+									<Cursor fx:constant="HAND" />
+								</cursor>
+								<font>
+									<Font size="22.0" />
+								</font>
+								<styleClass>
+									<String fx:value="btn" />
+									<String fx:value="btn-executable" />
+								</styleClass>
+							</Button>
+							<Button fx:id="btnSaveConfig" alignment="CENTER_RIGHT"
+								layoutX="471.0" layoutY="548.0" mnemonicParsing="false"
+								onAction="#saveConfig" text="保存配置">
+								<font>
+									<Font size="22.0" />
+								</font>
+								<styleClass>
+									<String fx:value="btn" />
+									<String fx:value="btn-default" />
+								</styleClass>
+								<cursor>
+									<Cursor fx:constant="HAND" />
+								</cursor>
+							</Button>
+						</children>
+					</AnchorPane>
+				</items>
+			</SplitPane>
+		</center>
+	</BorderPane>
+</ScrollPane>

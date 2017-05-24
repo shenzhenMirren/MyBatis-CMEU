@@ -9,6 +9,7 @@ public class ColumnItem {
 	private String className;
 	private String inPropertyName;
 	private String tableName;
+	private String tableAlias;
 	
 	private String joinType;
 	private String joinTableName;
@@ -62,6 +63,14 @@ public class ColumnItem {
 		this.className = className;
 	}
 	
+	
+	
+	public String getTableAlias() {
+		return tableAlias;
+	}
+	public void setTableAlias(String tableAlias) {
+		this.tableAlias = tableAlias;
+	}
 	public String getPrimaryKey() {
 		return primaryKey;
 	}

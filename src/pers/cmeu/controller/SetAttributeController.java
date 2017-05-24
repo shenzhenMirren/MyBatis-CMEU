@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -36,6 +38,7 @@ import pers.cmeu.models.SuperAttribute;
 import pers.cmeu.view.AlertUtil;
 
 public class SetAttributeController implements Initializable {
+	private Logger log=Logger.getLogger(SetAttributeController.class.getName());
 	// 存储信息table里面的所有属性
 	ObservableList<AttributeCVF> attributeCVF;
 	@FXML
@@ -57,7 +60,9 @@ public class SetAttributeController implements Initializable {
 	private TextField txtCustomType;
 	@FXML
 	private TextField txtCustomName;
-
+	@FXML
+	private TextField txtTableAlias;
+	
 	@FXML
 	private Button btnSuccess;
 	@FXML
@@ -104,6 +109,7 @@ public class SetAttributeController implements Initializable {
 	 *初始化
 	 */
 	public void init() {
+		log.debug("初始化修改属性页...");
 		IndexController indexContro=(IndexController) StageManager.CONTROLLER.get("index");
 		
 		// 存储数据库指定数据库,修改属性时用
@@ -112,17 +118,25 @@ public class SetAttributeController implements Initializable {
 		String selectedTableName=indexContro.getSelectedTableName();
 		boolean falg=indexContro.isFalg();
 		initTablePrimaryKey(selectedDatabaseConfig,selectedTableName);
-		if (falg == false) {
-			// 获得工厂数据
-			attributeCVF = getAttributeCVFs(selectedDatabaseConfig, selectedTableName);
-		} else {
-			// 需要创建所有类的集合;
-			List<SuperAttribute> superAttributes = indexContro.getSuperAttributes();
-			if (superAttributes.size()>0) {
-				attributeCVF =FXCollections.observableList(superAttributes.get(0).getAttributes());
-			}else {
+		
+		try {
+			log.debug("获得表的所有列并初始化成类的属性...");
+			if (falg == false) {
+				// 获得工厂数据
 				attributeCVF = getAttributeCVFs(selectedDatabaseConfig, selectedTableName);
+			} else {
+				// 需要创建所有类的集合;
+				List<SuperAttribute> superAttributes = indexContro.getSuperAttributes();
+				if (superAttributes.size()>0) {
+					attributeCVF =FXCollections.observableList(superAttributes.get(0).getAttributes());
+				}else {
+					attributeCVF = getAttributeCVFs(selectedDatabaseConfig, selectedTableName);
+				}
 			}
+			log.debug("获得表的所有列并初始化成类的属性成功!");
+		} catch (Exception e) {
+			AlertUtil.showErrorAlert("加载属性列失败!失败原因:\r\n" + e.getMessage());
+			log.error("获得表的所有列并初始化成类的属性失败!!!"+e);
 		}
 
 		tdCheck.setCellFactory(CheckBoxTableCell.forTableColumn(tdCheck));
@@ -152,39 +166,36 @@ public class SetAttributeController implements Initializable {
 			notCamel();
 		}
 		indexContro.setFalg(true);
-		
+		log.debug("初始化属性页成功!");
 	}
 	
 	/**
 	 * 获得数据库列并初始化
 	 * 
 	 * @return
+	 * @throws Exception 
 	 */
-	public ObservableList<AttributeCVF> getAttributeCVFs(DatabaseConfig config, String tableName) {
-		ObservableList<AttributeCVF> result = null;
-
-		try {
-			List<AttributeCVF> attributeCVFs = DBUtil.getTableColumns(config, tableName);
-			result = FXCollections.observableList(attributeCVFs);
-		} catch (Exception e) {
-			AlertUtil.showErrorAlert("加载属性列失败!失败原因:\r\n" + e.getMessage());
-		}
-
-		return result;
+	public ObservableList<AttributeCVF> getAttributeCVFs(DatabaseConfig config, String tableName) throws Exception {
+		List<AttributeCVF> attributeCVFs = DBUtil.getTableColumns(config, tableName);
+		return FXCollections.observableList(attributeCVFs);
 	}
 	/**
 	 * 初始化主键
 	 */
 	public void initTablePrimaryKey(DatabaseConfig selectedDatabaseConfig,String selectedTableName) {
 		try {
+			log.debug("执行获取表的主键列...");
 			String key = DBUtil.getTablePrimaryKey(selectedDatabaseConfig, selectedTableName);
 			if (key != null) {
 				txtPrimaryKey.setText(key);
+				log.debug("获取表的主键列成功!");
 			} else {
 				txtPrimaryKey.setPromptText("注意:你选择的表没有主键!");
+				log.debug("获取表的主键列失败,当前表不存在主键!");
 			}
 		} catch (Exception e) {
 			AlertUtil.showErrorAlert("获得主键失败!失败原因:\r\n" + e.getMessage());
+			log.error("获取表的主键列失败!!!"+e);
 		}
 
 	}
@@ -246,7 +257,11 @@ public class SetAttributeController implements Initializable {
 			chkSelectKey.selectedProperty().set(false);
 			return;
 		}
-		
+		if (chkSelectKey.isSelected()) {			
+			log.debug("执行添加主键策略...");
+		}else {
+			log.debug("取消添加主键策略...");
+		}
 		String keyType="";
 		for (AttributeCVF attr : tblEntityProperty.getItems()) {
 			if (attr.getConlumn().equals(txtPrimaryKey.getText())) {
@@ -270,6 +285,11 @@ public class SetAttributeController implements Initializable {
 		txtaSelectKey.setText(res.toString());
 		lblSelectKey.setVisible(chkSelectKey.isSelected());
 		txtaSelectKey.setVisible(chkSelectKey.isSelected());
+		if (chkSelectKey.isSelected()) {
+			log.debug("添加主键策略成功!");
+		}else {
+			log.debug("取消添加主键策略成功!");
+		}
 	}
 	
 	/**
@@ -277,11 +297,13 @@ public class SetAttributeController implements Initializable {
 	 * @param event
 	 */
 	public void addToTable(ActionEvent event) {
+		log.debug("执行添加自定义属性...");
 		AttributeCVF attribute = new AttributeCVF();
 		attribute.setJavaType(txtCustomType.getText());
 		attribute.setPropertyName(txtCustomName.getText());
 		this.attributeCVF.add(attribute);
 		tblEntityProperty.getItems().add(attribute);
+		log.debug("添加自定义属性成功!");
 	}
 	
 	private boolean anyOpenPro=true;//用于作为判断打开添加属性(true)还是添加集合(false)
@@ -294,6 +316,7 @@ public class SetAttributeController implements Initializable {
 		StageManager.CONTROLLER.put("attribute", this);
 		Stage stage=new Stage();
 		try {
+			log.debug("打开添加第二级添加新表作为属性窗口...");
 			Parent root= FXMLLoader.load(Thread.currentThread().getContextClassLoader().getResource(FXMLPage.ADD_SON_ATTRIBUTE.getFxml()));
 			stage.setTitle("添加新表");
 			stage.getIcons().add(new Image("pers/resource/image/CMEUicon.png"));
@@ -303,6 +326,7 @@ public class SetAttributeController implements Initializable {
 			StageManager.STAGE.put("addPropertyBySon", stage);
 		} catch (IOException e) {
 			AlertUtil.showErrorAlert("初始化添加属性失败:\r\n原因:"+e.getMessage());
+			log.error("打开添加第二级添加新表作为属性窗口失败!!!"+e);
 		}
 		
 	}
@@ -314,6 +338,7 @@ public class SetAttributeController implements Initializable {
 		StageManager.CONTROLLER.put("attribute", this);
 		Stage stage=new Stage();
 		try {
+			log.debug("打开添加第二级添加新表作为集合窗口...");
 			Parent root= FXMLLoader.load(Thread.currentThread().getContextClassLoader().getResource(FXMLPage.ADD_SON_ATTRIBUTE.getFxml()));
 			stage.setTitle("添加新表");
 			stage.getIcons().add(new Image("pers/resource/image/CMEUicon.png"));
@@ -323,6 +348,7 @@ public class SetAttributeController implements Initializable {
 			StageManager.STAGE.put("addPropertyBySon", stage);
 		} catch (IOException e) {
 			AlertUtil.showErrorAlert("初始化添加属性失败:\r\n原因:"+e.getMessage());
+			log.error("打开添加第二级添加新表作为集合窗口失败!!!"+e);
 		}
 	}
 	
@@ -334,6 +360,7 @@ public class SetAttributeController implements Initializable {
 	public void cancel(ActionEvent event) {
 		boolean result = AlertUtil.showConfirmAlert("取消的话你全部的设置都不生效,确定取消吗?");
 		if (result) {
+			log.debug("取消所有属性的修改...");
 			// 表示不修改任何属性
 			((IndexController)StageManager.CONTROLLER.get("index")).setChangeInfo(false);
 			StageManager.STAGE.get("attribute").close();
@@ -353,6 +380,9 @@ public class SetAttributeController implements Initializable {
 		index.getThisSuperAttribute().setConstructAll(chkConstructAll.isSelected());
 		index.getThisSuperAttribute().setCreateGetSet(chkGetAndSet.isSelected());
 		index.getThisSuperAttribute().setPrimaryKey(txtPrimaryKey.getText());
+		if (txtTableAlias!=null&&!(txtTableAlias.getText().isEmpty())) {
+			index.getThisSuperAttribute().setTableAlias(txtTableAlias.getText());
+		}
 		if (needOrNotCreatePages!=0) {
 			index.getThisSuperAttribute().setAnyHasColl(true);
 		}
@@ -374,6 +404,7 @@ public class SetAttributeController implements Initializable {
 		index.setChangeInfo(true);
 		StageManager.STAGE.get("attribute").close();
 		StageManager.STAGE.remove("attribute");
+		log.debug("保存修改属性的所有信息...");
 	}
 	//-----------------------get/set--------------------------------
 	public String getPrimaryKey(){

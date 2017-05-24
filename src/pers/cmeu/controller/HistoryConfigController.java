@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,6 +21,7 @@ import pers.cmeu.models.HistoryConfigCVF;
 import pers.cmeu.view.AlertUtil;
 
 public class HistoryConfigController extends BaseController {
+	private Logger log=Logger.getLogger(HistoryConfigController.class.getName());
 	private IndexController indexController;
 
 	@FXML
@@ -27,7 +30,9 @@ public class HistoryConfigController extends BaseController {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		log.debug("初始化配置信息窗口....");
 		tblConfigInfo.setPlaceholder(new Label("尚未添加任何配置信息;可以通过首页保存配置新增"));
+		log.debug("初始化配置信息窗口完成!");
 		initTable();
 	}
 	
@@ -35,11 +40,13 @@ public class HistoryConfigController extends BaseController {
 	 * 初始化配置table
 	 */
 	public void initTable(){
+		log.debug("初始化配置信息表格...");
 		ObservableList<HistoryConfigCVF> data = null;
 		try {
 			data = getHistoryConfig();
 		} catch (Exception e) {
 			tblConfigInfo.setPlaceholder(new Label("加载配置文件失败!失败原因:\r\n" + e.getMessage()));
+			log.error("初始化配置信息表格出现异常!!!"+e);
 		}
 		
 		TableColumn<HistoryConfigCVF,String> tdInfo =new TableColumn<HistoryConfigCVF, String>("配置信息文件名");	
@@ -55,6 +62,8 @@ public class HistoryConfigController extends BaseController {
 		tblConfigInfo.getColumns().add(tdOperation);
 		
 		tblConfigInfo.setItems(data);
+		log.debug("初始化配置信息完成!");
+
 	}
 
 	/**
@@ -76,10 +85,13 @@ public class HistoryConfigController extends BaseController {
 			button.setUserData(tmp.getHistoryConfigName());
 			button.setOnAction(Event -> {
 				try {
+					log.debug("执行将配置信息加载到首页...");
 					indexController.loadIndexConfigInfo(button.getUserData().toString());
 					closeDialogStage();
+					log.debug("将配置信息加载到首页成功!");
 				} catch (Exception e) {
 					AlertUtil.showErrorAlert("加载配置失败!失败原因:\r\n"+e.getMessage());
+					log.error("将配置信息加载到首页失败!!!"+e);
 				}
 			});
 			Button button1 = new Button("删除配置");
@@ -87,6 +99,7 @@ public class HistoryConfigController extends BaseController {
 			button1.setOnAction(Event -> {
 				if (AlertUtil.showConfirmAlert("确定删除吗?")) {
 					try {
+						log.debug("执行删除配置信息...");
 						ConfigUtil.deleteHistoryConfigByName(button1.getUserData().toString());
 						for (int i = 0; i < tblConfigInfo.getItems().size(); i++) {
 							if (tblConfigInfo.getItems().get(i).getName().equals(button1.getUserData().toString())) {
@@ -94,8 +107,10 @@ public class HistoryConfigController extends BaseController {
 								break;
 							}
 						}
+						log.debug("执行删除配置完成!");
 					} catch (Exception e) {
 						AlertUtil.showErrorAlert("删除失败!失败原因:\r\n"+e.getMessage());
+						log.error("执行删除配置失败!!!"+e);
 					}
 				}
 			});

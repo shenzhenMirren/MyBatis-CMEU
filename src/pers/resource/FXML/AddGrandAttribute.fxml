@@ -1,345 +1,389 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="1168.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pers.cmeu.controller.AddGrandAttributeController">
-   <center>
-      <AnchorPane prefHeight="700.0" prefWidth="775.0" BorderPane.alignment="CENTER">
-         <children>
-            <ListView fx:id="lvTableList" layoutX="7.0" layoutY="200.0" prefHeight="490.0" prefWidth="179.0" />
-            <TableView fx:id="tblEntityProperty" layoutX="186.0" layoutY="200.0" prefHeight="490.0" prefWidth="617.0" AnchorPane.leftAnchor="186.0" AnchorPane.rightAnchor="2.0">
-              <columns>
-                <TableColumn fx:id="tdCheck" prefWidth="67.0" text="是否创建" />
-                <TableColumn fx:id="tdColumn" prefWidth="139.0" text="数据库列名" />
-                  <TableColumn fx:id="tdJDBCType" prefWidth="130.0" text="JDBC数据类型" />
-                  <TableColumn fx:id="tdJAVAType" prefWidth="130.0" text="JAVA数据类型" />
-                  <TableColumn fx:id="tdPropertyName" prefWidth="162.0" text="属性名" />
-              </columns>
-            </TableView>
-            <CheckBox fx:id="chkCreateJDBCtype" layoutX="55.0" layoutY="64.0" mnemonicParsing="false" text="指定生成Mapper.XML配置文件的JDBC数据类型">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <tooltip>
-                  <Tooltip text="属性不为空值或者不为map集合等时可以不指定" />
-               </tooltip>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </CheckBox>
-            <CheckBox fx:id="chkUnlineCamel" layoutX="55.0" layoutY="7.0" mnemonicParsing="false" onAction="#unlineCamel" selected="true" text="去除下划线并以驼峰命名">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <tooltip>
-                  <Tooltip text=" 示例 : _USER_NAME  -&gt; userName" />
-               </tooltip>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </CheckBox>
-            <CheckBox fx:id="chkSerializable" layoutX="55.0" layoutY="35.0" mnemonicParsing="false" text="对象序列化: implements Serializable">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <tooltip>
-                  <Tooltip text="实现序列化 private static final long serialVersionUID = 1L;" />
-               </tooltip>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </CheckBox>
-            <Line endX="804.0" layoutX="0.5" layoutY="158.0" AnchorPane.rightAnchor="0.0" />
-            <Label layoutX="285.0" layoutY="169.0" text="主键名称:">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <CheckBox fx:id="chkConstructAll" layoutX="233.0" layoutY="129.0" mnemonicParsing="false" selected="true" text="创建带参构造方法">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </CheckBox>
-            <CheckBox fx:id="chkConstruct" layoutX="55.0" layoutY="129.0" mnemonicParsing="false" selected="true" text="创建无参构造方法">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </CheckBox>
-            <CheckBox fx:id="chkGetAndSet" layoutX="55.0" layoutY="93.0" mnemonicParsing="false" selected="true" text="创建get与set方法">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </CheckBox>
-            <TextField fx:id="txtPrimaryKey" layoutX="364.0" layoutY="166.0" prefHeight="26.0" prefWidth="180.0">
-               <font>
-                  <Font size="13.0" />
-               </font>
-            </TextField>
-            <TextField fx:id="txtTableName" disable="true" layoutX="99.0" layoutY="166.0" prefHeight="26.0" prefWidth="181.0">
-               <font>
-                  <Font size="13.0" />
-               </font>
-            </TextField>
-            <Label layoutX="55.0" layoutY="169.0" text="表名:">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <Line endY="158.0" layoutX="440.0" />
-            <Label layoutX="452.0" layoutY="19.0" text="自定义属性:">
-               <font>
-                  <Font size="16.0" />
-               </font></Label>
-            <Button fx:id="btnAddToTableView" layoutX="721.0" layoutY="74.0" mnemonicParsing="false" onAction="#addToTable" prefHeight="35.0" prefWidth="70.0" text="添加">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <styleClass>
-                  <String fx:value="btn" />
-                  <String fx:value="btn-executable" />
-               </styleClass>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <TextField fx:id="txtCustomType" layoutX="525.0" layoutY="55.0" prefHeight="28.0" prefWidth="190.0" promptText="示例 : Animal">
-               <font>
-                  <Font size="14.0" />
-               </font></TextField>
-            <TextField fx:id="txtCustomName" layoutX="526.0" layoutY="100.0" prefHeight="28.0" prefWidth="190.0" promptText="示例 : dog">
-               <font>
-                  <Font size="14.0" />
-               </font></TextField>
-            <Label layoutX="448.0" layoutY="103.0" text="属性名称:">
-               <font>
-                  <Font size="16.0" />
-               </font></Label>
-            <Label layoutX="448.0" layoutY="58.0" text="属性类型:">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-         </children></AnchorPane>
-   </center>
-   <right>
-      <AnchorPane prefHeight="662.0" prefWidth="406.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button fx:id="btnCancel" layoutX="229.0" layoutY="619.0" mnemonicParsing="false" onAction="#cancel" text="取消">
-               <font>
-                  <Font size="20.0" />
-               </font>
-               <styleClass>
-                  <String fx:value="btn" />
-                  <String fx:value="btn-default" />
-               </styleClass>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button fx:id="btnSuccess" layoutX="107.0" layoutY="619.0" mnemonicParsing="false" onAction="#success" prefHeight="39.0" prefWidth="89.0" text="确定">
-               <font>
-                  <Font size="20.0" />
-               </font>
-               <styleClass>
-                  <String fx:value="btn" />
-                  <String fx:value="btn-success" />
-               </styleClass>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Line endY="700.0" />
-            <Line endX="405.0" layoutY="298.0" />
-            <Line endX="403.0" layoutY="450.0" />
-            <CheckBox fx:id="chkCreateEntity" layoutX="12.0" layoutY="7.0" mnemonicParsing="false" selected="true" text="生成实体类">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </CheckBox>
-            <Label layoutX="83.0" layoutY="35.0" text="实体类名:">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <CheckBox fx:id="chkCreateDao" layoutX="12.0" layoutY="62.0" mnemonicParsing="false" text="生成dao">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </CheckBox>
-            <Label layoutX="87.0" layoutY="92.0" text="dao名称:">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <Label layoutX="56.0" layoutY="152.0" text="mapper名称:">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <CheckBox fx:id="chkCreateMap" layoutX="12.0" layoutY="121.0" mnemonicParsing="false" text="生成Mapper">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </CheckBox>
-            <CheckBox fx:id="chkCreateService" layoutX="12.0" layoutY="181.0" mnemonicParsing="false" text="生成service">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </CheckBox>
-            <Label layoutX="62.0" layoutY="209.0" text="service名称:">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <CheckBox fx:id="chkCreateServiceImpl" layoutX="12.0" layoutY="235.0" mnemonicParsing="false" text="生成serviceImpl">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </CheckBox>
-            <Label layoutX="28.0" layoutY="263.0" text="serviceImpl名称:">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <TextField fx:id="txtClassName" layoutX="162.0" layoutY="33.0" prefWidth="200.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </TextField>
-            <TextField fx:id="txtDaoName" layoutX="162.0" layoutY="90.0" prefWidth="200.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </TextField>
-            <TextField fx:id="txtMapperName" layoutX="162.0" layoutY="150.0" prefWidth="200.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </TextField>
-            <TextField fx:id="txtServiceName" layoutX="162.0" layoutY="207.0" prefHeight="28.0" prefWidth="200.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </TextField>
-            <TextField fx:id="txtServiceImplName" layoutX="162.0" layoutY="261.0" prefHeight="28.0" prefWidth="200.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </TextField>
-            <Label layoutX="12.0" layoutY="459.0" text="与上一级表连接的方式:">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <RadioButton fx:id="radioInner" layoutX="13.0" layoutY="485.0" mnemonicParsing="false" selected="true" text="inner join">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <toggleGroup>
-                  <ToggleGroup fx:id="joinType" />
-               </toggleGroup>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </RadioButton>
-            <RadioButton fx:id="radioLeft" layoutX="140.0" layoutY="485.0" mnemonicParsing="false" text="left join" toggleGroup="$joinType">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </RadioButton>
-            <RadioButton fx:id="radioRight" layoutX="250.0" layoutY="485.0" mnemonicParsing="false" text="right join" toggleGroup="$joinType">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </RadioButton>
-            <RadioButton fx:id="radioWhere" layoutX="308.0" layoutY="485.0" mnemonicParsing="false" text="where in" toggleGroup="$joinType" visible="false">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </RadioButton>
-            <Label layoutX="73.0" layoutY="560.0" text="连接列:">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <TextField fx:id="txtJoinColumnName" layoutX="136.0" layoutY="558.0" prefHeight="28.0" prefWidth="200.0" promptText="两表间的连接字段">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </TextField>
-            <CheckBox fx:id="chkSelectKey" layoutX="12.0" layoutY="306.0" mnemonicParsing="false" onAction="#selectKey" text="生成主键策略">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </CheckBox>
-            <Label fx:id="lblSelectKey" layoutX="12.0" layoutY="331.0" text="请编写策略缺少的信息:" visible="false">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <TextArea fx:id="txtaSelectKey" layoutX="12.0" layoutY="350.0" prefHeight="84.0" prefWidth="383.0" visible="false">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </TextArea>
-            <Label layoutX="73.0" layoutY="525.0" text="连接表:">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <TextField fx:id="txtJoinTableName" layoutX="136.0" layoutY="521.0" prefHeight="28.0" prefWidth="200.0" promptText="本窗口的表与本框的表连接">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </TextField>
-            <CheckBox fx:id="chkCreateAll" layoutX="312.0" layoutY="10.0" mnemonicParsing="false" onAction="#anyCreateAll" text="全部生成" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </CheckBox>
-         </children>
-      </AnchorPane>
-   </right>
-</BorderPane>
+<ScrollPane prefHeight="703.0" prefWidth="1212.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pers.cmeu.controller.AddGrandAttributeController">
+   <content>
+   
+   	<BorderPane prefHeight="700.0" prefWidth="1168.0">
+   		<center>
+   			<AnchorPane prefHeight="700.0" prefWidth="775.0" BorderPane.alignment="CENTER">
+   				<children>
+   					<ListView fx:id="lvTableList" layoutX="7.0" layoutY="200.0" prefHeight="490.0" prefWidth="179.0" />
+   					<TableView fx:id="tblEntityProperty" layoutX="186.0" layoutY="200.0" prefHeight="490.0" prefWidth="617.0" AnchorPane.leftAnchor="186.0" AnchorPane.rightAnchor="2.0">
+   						<columns>
+   							<TableColumn fx:id="tdCheck" prefWidth="67.0" text="是否创建" />
+   							<TableColumn fx:id="tdColumn" prefWidth="139.0" text="数据库列名" />
+   							<TableColumn fx:id="tdJDBCType" prefWidth="130.0" text="JDBC数据类型" />
+   							<TableColumn fx:id="tdJAVAType" prefWidth="130.0" text="JAVA数据类型" />
+   							<TableColumn fx:id="tdPropertyName" prefWidth="162.0" text="属性名" />
+   						</columns>
+   					</TableView>
+   					<CheckBox fx:id="chkCreateJDBCtype" layoutX="55.0" layoutY="64.0" mnemonicParsing="false" text="指定生成Mapper.XML配置文件的JDBC数据类型">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<tooltip>
+   							<Tooltip text="属性不为空值或者不为map集合等时可以不指定" />
+   						</tooltip>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</CheckBox>
+   					<CheckBox fx:id="chkUnlineCamel" layoutX="55.0" layoutY="7.0" mnemonicParsing="false" onAction="#unlineCamel" selected="true" text="去除下划线并以驼峰命名">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<tooltip>
+   							<Tooltip text=" 示例 : _USER_NAME  -&gt; userName" />
+   						</tooltip>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</CheckBox>
+   					<CheckBox fx:id="chkSerializable" layoutX="55.0" layoutY="35.0" mnemonicParsing="false" text="对象序列化: implements Serializable">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<tooltip>
+   							<Tooltip text="实现序列化 private static final long serialVersionUID = 1L;" />
+   						</tooltip>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</CheckBox>
+   					<Line endX="804.0" layoutX="0.5" layoutY="158.0" AnchorPane.rightAnchor="0.0" />
+   					<Label layoutX="527.0" layoutY="169.0" text="主键名称:">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   					</Label>
+   					<CheckBox fx:id="chkConstructAll" layoutX="233.0" layoutY="129.0" mnemonicParsing="false" selected="true" text="创建带参构造方法">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</CheckBox>
+   					<CheckBox fx:id="chkConstruct" layoutX="55.0" layoutY="129.0" mnemonicParsing="false" selected="true" text="创建无参构造方法">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</CheckBox>
+   					<CheckBox fx:id="chkGetAndSet" layoutX="55.0" layoutY="93.0" mnemonicParsing="false" selected="true" text="创建get与set方法">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</CheckBox>
+   					<TextField fx:id="txtPrimaryKey" layoutX="606.0" layoutY="166.0" prefHeight="26.0" prefWidth="180.0">
+   						<font>
+   							<Font size="13.0" />
+   						</font>
+   					</TextField>
+   					<TextField fx:id="txtTableName" disable="true" layoutX="99.0" layoutY="166.0" prefHeight="26.0" prefWidth="181.0">
+   						<font>
+   							<Font size="13.0" />
+   						</font>
+   					</TextField>
+   					<Label layoutX="55.0" layoutY="169.0" text="表名:">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   					</Label>
+   					<Line endY="158.0" layoutX="440.0" />
+   					<Label layoutX="452.0" layoutY="19.0" text="自定义属性:">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   					</Label>
+   					<Button fx:id="btnAddToTableView" layoutX="721.0" layoutY="74.0" mnemonicParsing="false" onAction="#addToTable" prefHeight="35.0" prefWidth="70.0" text="添加">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<styleClass>
+   							<String fx:value="btn" />
+   							<String fx:value="btn-executable" />
+   						</styleClass>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</Button>
+   					<TextField fx:id="txtCustomType" layoutX="525.0" layoutY="55.0" prefHeight="28.0" prefWidth="190.0" promptText="示例 : Animal">
+   						<font>
+   							<Font size="14.0" />
+   						</font>
+   					</TextField>
+   					<TextField fx:id="txtCustomName" layoutX="526.0" layoutY="100.0" prefHeight="28.0" prefWidth="190.0" promptText="示例 : dog">
+   						<font>
+   							<Font size="14.0" />
+   						</font>
+   					</TextField>
+   					<Label layoutX="448.0" layoutY="103.0" text="属性名称:">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   					</Label>
+   					<Label layoutX="448.0" layoutY="58.0" text="属性类型:">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   					</Label>
+                  <Label layoutX="290.0" layoutY="169.0" text="表别名:">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="txtTableAlias" layoutX="350.0" layoutY="166.0" prefHeight="26.0" prefWidth="167.0" promptText="表的别名:悬浮有提示">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                     <tooltip>
+                        <Tooltip text="表的别名用于当多表关联的时候,防止列明重复导致无法映射到类的属性,如果没填则采用类名+属性序号,如果填写则用别名_列名;别名建议简短">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Tooltip>
+                     </tooltip>
+                  </TextField>
+   				</children>
+   			</AnchorPane>
+   		</center>
+   		<right>
+   			<AnchorPane prefHeight="701.0" prefWidth="390.0" BorderPane.alignment="CENTER">
+   				<children>
+   					<Button fx:id="btnCancel" layoutX="229.0" layoutY="619.0" mnemonicParsing="false" onAction="#cancel" text="取消">
+   						<font>
+   							<Font size="20.0" />
+   						</font>
+   						<styleClass>
+   							<String fx:value="btn" />
+   							<String fx:value="btn-default" />
+   						</styleClass>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</Button>
+   					<Button fx:id="btnSuccess" layoutX="107.0" layoutY="619.0" mnemonicParsing="false" onAction="#success" prefHeight="39.0" prefWidth="89.0" text="确定">
+   						<font>
+   							<Font size="20.0" />
+   						</font>
+   						<styleClass>
+   							<String fx:value="btn" />
+   							<String fx:value="btn-success" />
+   						</styleClass>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</Button>
+   					<Line endY="700.0" />
+   					<Line endX="400.0" layoutY="298.0" />
+   					<Line endX="400.0" layoutY="450.0" />
+   					<CheckBox fx:id="chkCreateEntity" layoutX="12.0" layoutY="7.0" mnemonicParsing="false" selected="true" text="生成实体类">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</CheckBox>
+   					<Label layoutX="83.0" layoutY="35.0" text="实体类名:">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   					</Label>
+   					<CheckBox fx:id="chkCreateDao" layoutX="12.0" layoutY="62.0" mnemonicParsing="false" text="生成dao">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</CheckBox>
+   					<Label layoutX="87.0" layoutY="92.0" text="dao名称:">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   					</Label>
+   					<Label layoutX="56.0" layoutY="152.0" text="mapper名称:">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   					</Label>
+   					<CheckBox fx:id="chkCreateMap" layoutX="12.0" layoutY="121.0" mnemonicParsing="false" text="生成Mapper">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</CheckBox>
+   					<CheckBox fx:id="chkCreateService" layoutX="12.0" layoutY="181.0" mnemonicParsing="false" text="生成service">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</CheckBox>
+   					<Label layoutX="62.0" layoutY="209.0" text="service名称:">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   					</Label>
+   					<CheckBox fx:id="chkCreateServiceImpl" layoutX="12.0" layoutY="235.0" mnemonicParsing="false" text="生成serviceImpl">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</CheckBox>
+   					<Label layoutX="28.0" layoutY="263.0" text="serviceImpl名称:">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   					</Label>
+   					<TextField fx:id="txtClassName" layoutX="162.0" layoutY="33.0" prefWidth="200.0">
+   						<font>
+   							<Font size="14.0" />
+   						</font>
+   					</TextField>
+   					<TextField fx:id="txtDaoName" layoutX="162.0" layoutY="90.0" prefWidth="200.0">
+   						<font>
+   							<Font size="14.0" />
+   						</font>
+   					</TextField>
+   					<TextField fx:id="txtMapperName" layoutX="162.0" layoutY="150.0" prefWidth="200.0">
+   						<font>
+   							<Font size="14.0" />
+   						</font>
+   					</TextField>
+   					<TextField fx:id="txtServiceName" layoutX="162.0" layoutY="207.0" prefHeight="28.0" prefWidth="200.0">
+   						<font>
+   							<Font size="14.0" />
+   						</font>
+   					</TextField>
+   					<TextField fx:id="txtServiceImplName" layoutX="162.0" layoutY="261.0" prefHeight="28.0" prefWidth="200.0">
+   						<font>
+   							<Font size="14.0" />
+   						</font>
+   					</TextField>
+   					<Label layoutX="12.0" layoutY="459.0" text="与上一级表连接的方式:">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   					</Label>
+   					<RadioButton fx:id="radioInner" layoutX="13.0" layoutY="485.0" mnemonicParsing="false" selected="true" text="inner join">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<toggleGroup>
+   							<ToggleGroup fx:id="joinType" />
+   						</toggleGroup>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</RadioButton>
+   					<RadioButton fx:id="radioLeft" layoutX="140.0" layoutY="485.0" mnemonicParsing="false" text="left join" toggleGroup="$joinType">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</RadioButton>
+   					<RadioButton fx:id="radioRight" layoutX="250.0" layoutY="485.0" mnemonicParsing="false" text="right join" toggleGroup="$joinType">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</RadioButton>
+   					<RadioButton fx:id="radioWhere" layoutX="308.0" layoutY="485.0" mnemonicParsing="false" text="where in" toggleGroup="$joinType" visible="false">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</RadioButton>
+   					<Label layoutX="73.0" layoutY="560.0" text="连接列:">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   					</Label>
+   					<TextField fx:id="txtJoinColumnName" layoutX="136.0" layoutY="558.0" prefHeight="28.0" prefWidth="200.0" promptText="两表间的连接字段">
+   						<font>
+   							<Font size="14.0" />
+   						</font>
+   					</TextField>
+   					<CheckBox fx:id="chkSelectKey" layoutX="12.0" layoutY="306.0" mnemonicParsing="false" onAction="#selectKey" text="生成主键策略">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   						<cursor>
+   							<Cursor fx:constant="HAND" />
+   						</cursor>
+   					</CheckBox>
+   					<Label fx:id="lblSelectKey" layoutX="12.0" layoutY="331.0" text="请编写策略缺少的信息:" visible="false">
+   						<font>
+   							<Font size="14.0" />
+   						</font>
+   					</Label>
+   					<TextArea fx:id="txtaSelectKey" layoutX="12.0" layoutY="350.0" prefHeight="84.0" prefWidth="383.0" visible="false">
+   						<font>
+   							<Font size="14.0" />
+   						</font>
+   					</TextArea>
+   					<Label layoutX="73.0" layoutY="525.0" text="连接表:">
+   						<font>
+   							<Font size="16.0" />
+   						</font>
+   					</Label>
+   					<TextField fx:id="txtJoinTableName" layoutX="136.0" layoutY="521.0" prefHeight="28.0" prefWidth="200.0" promptText="本窗口的表与本框的表连接">
+   						<font>
+   							<Font size="14.0" />
+   						</font>
+   					</TextField>
+   					<CheckBox fx:id="chkCreateAll" layoutX="312.0" layoutY="10.0" mnemonicParsing="false" onAction="#anyCreateAll" text="全部生成" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+   						<font>
+   							<Font size="14.0" />
+   						</font>
+   					</CheckBox>
+   				</children>
+   			</AnchorPane>
+   		</right>
+   	</BorderPane>
+   </content>
+</ScrollPane>

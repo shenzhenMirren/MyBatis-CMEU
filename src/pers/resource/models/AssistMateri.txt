@@ -93,7 +93,7 @@ public class Assist {
 	 * @return
 	 */
 	public static whereRequire and_neq(String column, String req) {
-		return new Assist().new whereRequire("and " + column + " &lt;&gt; ", req);
+		return new Assist().new whereRequire("and " + column + " <> ", req);
 	}
 
 
@@ -104,7 +104,7 @@ public class Assist {
 	 * @return
 	 */
 	public static whereRequire or_neq(String column, String req) {
-		return new Assist().new whereRequire("or " + column + " &lt;&gt; ", req);
+		return new Assist().new whereRequire("or " + column + " <> ", req);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class Assist {
 	 * @return
 	 */
 	public static whereRequire and_lt(String column, String req) {
-		return new Assist().new whereRequire("and " + column + "&lt; ", req);
+		return new Assist().new whereRequire("and " + column + "< ", req);
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class Assist {
 	 * @return
 	 */
 	public static whereRequire or_lt(String column, String req) {
-		return new Assist().new whereRequire("or " + column + " &lt; ", req);
+		return new Assist().new whereRequire("or " + column + " < ", req);
 	}
 
 	/**
@@ -134,7 +134,7 @@ public class Assist {
 	 * @return
 	 */
 	public static whereRequire and_lte(String column, String req) {
-		return new Assist().new whereRequire("and " + column + " &lt;= ", req);
+		return new Assist().new whereRequire("and " + column + " <= ", req);
 	}
 
 	
@@ -145,7 +145,7 @@ public class Assist {
 	 * @return
 	 */
 	public static whereRequire or_lte(String column, String req) {
-		return new Assist().new whereRequire("or " + column + " &lt;= ", req);
+		return new Assist().new whereRequire("or " + column + " <= ", req);
 	}
 
 
@@ -156,7 +156,7 @@ public class Assist {
 	 * @return
 	 */
 	public static whereRequire and_gt(String column, String req) {
-		return new Assist().new whereRequire("and " + column + " &gt; ", req);
+		return new Assist().new whereRequire("and " + column + " > ", req);
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class Assist {
 	 * @return
 	 */
 	public static whereRequire or_gt(String column, String req) {
-		return new Assist().new whereRequire("or " + column + " &gt; ", req);
+		return new Assist().new whereRequire("or " + column + " > ", req);
 	}
 
 
@@ -177,7 +177,7 @@ public class Assist {
 	 * @return
 	 */
 	public static whereRequire and_gte(String column, String req) {
-		return new Assist().new whereRequire("and " + column + " &gt;= ", req);
+		return new Assist().new whereRequire("and " + column + " >= ", req);
 	}
 
 
@@ -188,7 +188,7 @@ public class Assist {
 	 * @return
 	 */
 	public static whereRequire or_gte(String column, String req) {
-		return new Assist().new whereRequire("or " + column + " &gt;= ", req);
+		return new Assist().new whereRequire("or " + column + " >= ", req);
 	}
 
 	/**

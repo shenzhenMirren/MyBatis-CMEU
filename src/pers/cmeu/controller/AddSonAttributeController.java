@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -39,7 +41,7 @@ import pers.cmeu.models.SuperAttribute;
 import pers.cmeu.view.AlertUtil;
 
 public class AddSonAttributeController extends BaseController {
-
+	private Logger log=Logger.getLogger(AddSonAttributeController.class.getName());
 	// 存储信息table里面的所有属性
 	ObservableList<AttributeCVF> attributeCVF;
 
@@ -76,6 +78,8 @@ public class AddSonAttributeController extends BaseController {
 	private TextField txtCustomName;
 	@FXML
 	private TextField txtTableName;
+	@FXML
+	private TextField txtTableAlias;
 	@FXML
 	private TextField txtClassName;
 	@FXML
@@ -138,6 +142,7 @@ public class AddSonAttributeController extends BaseController {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		log.debug("初始化第二级新表属性窗口...");
 		tblEntityProperty.setEditable(true);
 		tblEntityProperty.setStyle("-fx-font-size:14px");
 		tblEntityProperty.setPlaceholder(new Label("双击左边表名数据加载..."));
@@ -146,6 +151,7 @@ public class AddSonAttributeController extends BaseController {
 		radioLeft.setUserData("left");
 		radioRight.setUserData("right");
 		radioWhere.setUserData("where");
+		log.debug("初始化第二级新表属性窗口成功!");
 	}
 
 	/**
@@ -153,6 +159,7 @@ public class AddSonAttributeController extends BaseController {
 	 */
 	public void initListItem() {
 		try {
+			log.debug("执行加载左侧所有表...");
 			List<String> tableNames = DBUtil.getTableNames(
 					((IndexController) StageManager.CONTROLLER.get("index")).getSelectedDatabaseConfig());
 
@@ -167,6 +174,7 @@ public class AddSonAttributeController extends BaseController {
 				label.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 					if (event.getClickCount() == 2) {
 						// 双击显示表名与主键,同时加载到tableview
+						log.debug("执行将选择中的表加载到属性表格中...");
 						try {
 							String tableName = label.getUserData().toString();
 							txtTableName.setText(tableName);
@@ -196,11 +204,14 @@ public class AddSonAttributeController extends BaseController {
 							}
 							if (tableName != null) {
 								// 初始化表属性
+								log.debug("初始化属性表格...");
 								initTable();
+								log.debug("初始化属性表格成功!");
 							}
-
+							log.debug("将选择中的表加载到属性表格中成功!");
 						} catch (Exception e) {
 							AlertUtil.showErrorAlert("加载失败!失败原因:\r\n" + e.getMessage());
+							log.error("将选择中的表加载到属性表格中失败!!!"+e);
 						}
 
 					}
@@ -208,17 +219,22 @@ public class AddSonAttributeController extends BaseController {
 				lvTableList.getItems().add(label);
 			}
 
+			log.debug("加载左侧所有表成功!");
 		} catch (Exception e) {
 			AlertUtil.showErrorAlert("获得子表失败!原因:" + e.getMessage());
+			log.debug("加载左侧所有表失败!!!"+e);
 		}
 	}
 
 	/**
 	 * 初始化右边的表
+	 * @throws Exception 
 	 */
-	public void initTable() {
+	public void initTable() throws Exception {
 		// 获得工厂数据
+
 		attributeCVF = getAttributeCVFs();
+	
 		tdCheck.setCellFactory(CheckBoxTableCell.forTableColumn(tdCheck));
 		tdCheck.setCellValueFactory(new PropertyValueFactory<>("check"));
 
@@ -245,19 +261,13 @@ public class AddSonAttributeController extends BaseController {
 	 * 获得数据库列并初始化
 	 * 
 	 * @return
+	 * @throws Exception 
 	 */
-	public ObservableList<AttributeCVF> getAttributeCVFs() {
-		ObservableList<AttributeCVF> result = null;
-		try {
+	public ObservableList<AttributeCVF> getAttributeCVFs() throws Exception {
 			List<AttributeCVF> attributeCVFs = DBUtil.getTableColumns(
 					((IndexController) StageManager.CONTROLLER.get("index")).getSelectedDatabaseConfig(),
 					txtTableName.getText());
-			result = FXCollections.observableList(attributeCVFs);
-		} catch (Exception e) {
-			AlertUtil.showErrorAlert("加载属性列失败!失败原因:\r\n" + e.getMessage());
-		}
-
-		return result;
+		return  FXCollections.observableList(attributeCVFs);
 	}
 
 	/**
@@ -319,11 +329,13 @@ public class AddSonAttributeController extends BaseController {
 	 * 将属性添加到属性表
 	 */
 	public void addToTable(ActionEvent event) {
+		log.debug("执行添加自定义属性...");
 		AttributeCVF attribute = new AttributeCVF();
 		attribute.setJavaType(txtCustomType.getText());
 		attribute.setPropertyName(txtCustomName.getText());
 		this.attributeCVF.add(attribute);
 		tblEntityProperty.getItems().add(attribute);
+		log.debug("添加自定义属性成功!");
 	}
 
 	/**
@@ -336,6 +348,11 @@ public class AddSonAttributeController extends BaseController {
 			AlertUtil.showWarnAlert("你尚未选择表或者你所选择的表没有主键");
 			chkSelectKey.selectedProperty().set(false);
 			return;
+		}
+		if (chkSelectKey.isSelected()) {			
+			log.debug("执行添加主键策略...");
+		}else {
+			log.debug("取消添加主键策略...");
 		}
 		String keyType = "";
 		for (AttributeCVF attr : tblEntityProperty.getItems()) {
@@ -361,6 +378,11 @@ public class AddSonAttributeController extends BaseController {
 		txtaSelectKey.setText(res.toString());
 		lblSelectKey.setVisible(chkSelectKey.isSelected());
 		txtaSelectKey.setVisible(chkSelectKey.isSelected());
+		if (chkSelectKey.isSelected()) {
+			log.debug("添加主键策略成功!");
+		}else {
+			log.debug("取消添加主键策略成功!");
+		}
 	}
 
 	private boolean anyOpenPro = true;// 用于作为判断打开添加属性(true)还是添加集合(false)
@@ -377,6 +399,7 @@ public class AddSonAttributeController extends BaseController {
 		StageManager.CONTROLLER.put("addPropertyBySon", this);
 		Stage stage = new Stage();
 		try {
+			log.debug("打开添加第三级添加新表作为属性窗口...");
 			Parent root = FXMLLoader.load(
 					Thread.currentThread().getContextClassLoader().getResource(FXMLPage.ADD_GRAND_ATTRIBUTE.getFxml()));
 			stage.setTitle("添加新表");
@@ -387,6 +410,7 @@ public class AddSonAttributeController extends BaseController {
 			StageManager.STAGE.put("addPropertyByGrand", stage);
 		} catch (IOException e) {
 			AlertUtil.showErrorAlert("初始化添加属性失败:\r\n原因:" + e.getMessage());
+			log.error("打开添加第三级添加新表作为属性窗口失败!!!"+e);
 		}
 
 	}
@@ -403,6 +427,7 @@ public class AddSonAttributeController extends BaseController {
 		StageManager.CONTROLLER.put("addPropertyBySon", this);
 		Stage stage = new Stage();
 		try {
+			log.debug("打开添加第三级添加新表作为集合窗口...");
 			Parent root = FXMLLoader.load(
 					Thread.currentThread().getContextClassLoader().getResource(FXMLPage.ADD_GRAND_ATTRIBUTE.getFxml()));
 			stage.setTitle("添加新表");
@@ -413,6 +438,7 @@ public class AddSonAttributeController extends BaseController {
 			StageManager.STAGE.put("addPropertyByGrand", stage);
 		} catch (IOException e) {
 			AlertUtil.showErrorAlert("初始化添加属性失败:\r\n原因:" + e.getMessage());
+			log.error("打开添加第二级添加新表作为集合窗口失败!!!"+e);
 		}
 	}
 
@@ -424,6 +450,7 @@ public class AddSonAttributeController extends BaseController {
 	public void cancel(ActionEvent event) {
 		StageManager.STAGE.get("addPropertyBySon").close();
 		StageManager.STAGE.remove("addPropertyBySon");
+		log.debug("取消添加第二级关系...");
 	}
 
 	/**
@@ -453,6 +480,9 @@ public class AddSonAttributeController extends BaseController {
 				}
 				if (chkSelectKey.isSelected()) {
 					attr.setSelectKey(txtaSelectKey.getText());
+				}
+				if (txtTableAlias!=null&&!(txtTableAlias.getText().isEmpty())) {
+					attr.setTableAlias(txtTableAlias.getText());
 				}
 				attr.setJoinType(joinType.getSelectedToggle().getUserData().toString());
 				attr.setJoinColumn(txtJoinColumnName.getText());
@@ -495,6 +525,7 @@ public class AddSonAttributeController extends BaseController {
 			item.setInPropertyName(StrUtil.fristToLoCase(txtClassName.getText()));
 			item.setAnyAssociation(addAttr.isAnyOpenPro());
 			item.setTableName(txtTableName.getText());
+			item.setTableAlias(txtTableAlias.getText());
 			item.setPrimaryKey(txtPrimaryKey.getText());
 			item.setJoinTableName(txtJoinTableName.getText());
 			item.setJoinColumn(txtJoinColumnName.getText());
@@ -516,6 +547,7 @@ public class AddSonAttributeController extends BaseController {
 		}
 		StageManager.STAGE.get("addPropertyBySon").close();
 		StageManager.STAGE.remove("addPropertyBySon");
+		log.debug("确定添加第二级关系...");
 	}
 
 	// -----------------------get/set--------------------------------

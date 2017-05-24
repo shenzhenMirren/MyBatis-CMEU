@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="src/pers/resource/lib/sqliteJDBC.jar"/>
 	<classpathentry kind="lib" path="src/pers/resource/lib/sqlserverJDBC.jar"/>
 	<classpathentry kind="lib" path="src/pers/resource/lib/JSONUtil-1.2.7.jar"/>
+	<classpathentry kind="lib" path="src/pers/resource/lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

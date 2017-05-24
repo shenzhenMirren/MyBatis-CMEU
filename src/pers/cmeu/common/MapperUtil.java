@@ -92,14 +92,23 @@ public class MapperUtil {
 				continue;
 			}
 			if (i == 0 && item.get(i).getConlumn().equals(attr.getPrimaryKey())) {
-				result.append("        <id column=\"" + attr.getClassName() + i + "\"");
+				if (attr.getTableAlias()!=null&&!(attr.getTableAlias().isEmpty())) {
+					result.append("        <id column=\"" + attr.getTableAlias() + "_"+item.get(i).getConlumn()+ "\"");
+				}else {
+					result.append("        <id column=\"" + attr.getClassName() + i + "\"");
+				}
+				
 				if (anyJDBC) {
 					result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
 				}
 				result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
 				continue;
 			}
-			result.append("        <result column=\"" + attr.getClassName() + i + "\"");
+			if (attr.getTableAlias()!=null&&!(attr.getTableAlias().isEmpty())) {
+				result.append("        <result column=\"" + attr.getTableAlias() + "_"+item.get(i).getConlumn()+ "\"");
+			}else {
+				result.append("        <result column=\"" + attr.getClassName() + i + "\"");
+			}
 			if (anyJDBC) {
 				result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
 			}
@@ -139,14 +148,22 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0 && list.get(i).getConlumn().equals(col.getPrimaryKey())) {
-						result.append("            <id column=\"" + col.getClassName() + i + "\"");
+						if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+							result.append("            <id column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
+						}else {
+							result.append("            <id column=\"" + col.getClassName() + i + "\"");
+						}
 						if (anyJDBC) {
 							result.append(" jdbcType=\"" + list.get(i).getJdbcType() + "\"");
 						}
 						result.append(" property=\"" + list.get(i).getPropertyName() + "\" />\r\n");
 						continue;
 					}
-					result.append("            <result column=\"" + col.getClassName() + i + "\"");
+					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+						result.append("            <result column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
+					}else {
+						result.append("            <result column=\"" + col.getClassName() + i + "\"");
+					}
 					if (anyJDBC) {
 						result.append(" jdbcType=\"" + list.get(i).getJdbcType() + "\"");
 					}
@@ -172,14 +189,22 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0 && list.get(i).getConlumn().equals(col.getPrimaryKey())) {
-						result.append("            <id column=\"" + col.getClassName() + i + "\"");
+						if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+							result.append("            <id column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
+						}else {
+							result.append("            <id column=\"" + col.getClassName() + i + "\"");
+						}
 						if (anyJDBC) {
 							result.append(" jdbcType=\"" + list.get(i).getJdbcType() + "\"");
 						}
 						result.append(" property=\"" + list.get(i).getPropertyName() + "\" />\r\n");
 						continue;
 					}
-					result.append("            <result column=\"" + col.getClassName() + i + "\"");
+					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+						result.append("            <result column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
+					}else {
+						result.append("            <result column=\"" + col.getClassName() + i + "\"");
+					}
 					if (anyJDBC) {
 						result.append(" jdbcType=\"" + list.get(i).getJdbcType() + "\"");
 					}
@@ -221,14 +246,22 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0 && list.get(i).getConlumn().equals(col.getPrimaryKey())) {
-						result.append("                <id column=\"" + col.getClassName() + i + "\"");
+						if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+							result.append("                <id column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
+						}else {
+							result.append("                <id column=\"" + col.getClassName() + i + "\"");
+						}
 						if (anyJDBC) {
 							result.append(" jdbcType=\"" + list.get(i).getJdbcType() + "\"");
 						}
 						result.append(" property=\"" + list.get(i).getPropertyName() + "\" />\r\n");
 						continue;
 					}
-					result.append("                <result column=\"" + col.getClassName() + i + "\"");
+					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+						result.append("                <result column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
+					}else {
+						result.append("                <result column=\"" + col.getClassName() + i + "\"");
+					}
 					if (anyJDBC) {
 						result.append(" jdbcType=\"" + list.get(i).getJdbcType() + "\"");
 					}
@@ -251,14 +284,22 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0 && list.get(i).getConlumn().equals(col.getPrimaryKey())) {
-						result.append("                <id column=\"" + col.getClassName() + i + "\"");
+						if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+							result.append("                <id column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
+						}else {
+							result.append("                <id column=\"" + col.getClassName() + i + "\"");
+						}
 						if (anyJDBC) {
 							result.append(" jdbcType=\"" + list.get(i).getJdbcType() + "\"");
 						}
 						result.append(" property=\"" + list.get(i).getPropertyName() + "\" />\r\n");
 						continue;
 					}
-					result.append("                <result column=\"" + col.getClassName() + i + "\"");
+					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+						result.append("                <result column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
+					}else {
+						result.append("                <result column=\"" + col.getClassName() + i + "\"");
+					}
 					if (anyJDBC) {
 						result.append(" jdbcType=\"" + list.get(i).getJdbcType() + "\"");
 					}
@@ -269,52 +310,6 @@ public class MapperUtil {
 		}
 
 		return result;
-	}
-	
-	/**
-	 * 获得分页查询子表需要返回的resultMap
-	 * @param entitySpace
-	 * @param item
-	 * @param anyJDBC
-	 * @return
-	 */
-	private String createNeedOfPagingResultMap(String entitySpace, List<ColumnItem> columnItem, boolean anyJDBC) {
-		StringBuffer result = new StringBuffer();
-		if (columnItem==null) {
-			return "";
-		}
-		for (ColumnItem col : columnItem) {
-			// 创建resultMap
-			result.append("    <resultMap id=\"result_" + col.getClassName() + "OfPaging_Map\" type=\"" + entitySpace + "."
-					+ col.getClassName() + "\">\r\n");
-			List<AttributeCVF> item =col.getAttributeCVFs();
-			// 创建resultMap的普通属性
-			for (int i = 0; i < item.size(); i++) {
-				if (item.get(i).getConlumn() == null || item.get(i).getConlumn() == "" || item.get(i).getCheck() == false) {
-					continue;
-				}
-				if (i == 0 && item.get(i).getConlumn().equals(col.getPrimaryKey())) {
-					result.append("        <id column=\"" + col.getClassName() + i + "\"");
-					if (anyJDBC) {
-						result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
-					}
-					result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
-					continue;
-				}
-				result.append("        <result column=\"" + col.getClassName() + i + "\"");
-				if (anyJDBC) {
-					result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
-				}
-				result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
-			}
-			if (col.getGrandItem() != null) {
-				// 创建resultMap里面的association/collection
-				result.append(addGrandMap(entitySpace, col.getGrandItem(), anyJDBC));
-			}
-			result.append("    </resultMap>\r\n\r\n");
-		}
-		return result.toString();
-		
 	}
 	
 	/**
@@ -341,7 +336,12 @@ public class MapperUtil {
 				continue;
 			}
 			if (i == 0 && item.get(i).getConlumn().equals(attr.getPrimaryKey())) {
-				result.append("        <id column=\"" + attr.getClassName() + i + "\"");
+				if (attr.getTableAlias()!=null&&!(attr.getTableAlias().isEmpty())) {
+					result.append("        <id column=\"" + attr.getTableAlias() + "_"+item.get(i).getConlumn()+ "\"");
+				}else {
+					result.append("        <id column=\"" + attr.getClassName() + i + "\"");
+				}
+				
 				tempSelectChildrenColumnId=attr.getClassName() + i ;
 				if (anyJDBC) {
 					result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
@@ -349,7 +349,11 @@ public class MapperUtil {
 				result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
 				continue;
 			}
-			result.append("        <result column=\"" + attr.getClassName() + i + "\"");
+			if (attr.getTableAlias()!=null&&!(attr.getTableAlias().isEmpty())) {
+				result.append("        <result column=\"" + attr.getTableAlias() + "_"+item.get(i).getConlumn()+ "\"");
+			}else {
+				result.append("        <result column=\"" + attr.getClassName() + i + "\"");
+			}
 			if (anyJDBC) {
 				result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
 			}
@@ -362,6 +366,61 @@ public class MapperUtil {
 		result.append("    </resultMap>\r\n\r\n");
 		result.append(createNeedOfPagingResultMap(entitySpace,attr.getColumnItems(),anyJDBC));
 		return result.toString();
+	}
+	
+	/**
+	 * 获得分页查询子表需要返回的resultMap
+	 * @param entitySpace
+	 * @param item
+	 * @param anyJDBC
+	 * @return
+	 */
+	private String createNeedOfPagingResultMap(String entitySpace, List<ColumnItem> columnItem, boolean anyJDBC) {
+		StringBuffer result = new StringBuffer();
+		if (columnItem==null) {
+			return "";
+		}
+		for (ColumnItem col : columnItem) {
+			// 创建resultMap
+			result.append("    <resultMap id=\"result_" + col.getClassName() + "OfPaging_Map\" type=\"" + entitySpace + "."
+					+ col.getClassName() + "\">\r\n");
+			List<AttributeCVF> item =col.getAttributeCVFs();
+			// 创建resultMap的普通属性
+			for (int i = 0; i < item.size(); i++) {
+				if (item.get(i).getConlumn() == null || item.get(i).getConlumn() == "" || item.get(i).getCheck() == false) {
+					continue;
+				}
+				if (i == 0 && item.get(i).getConlumn().equals(col.getPrimaryKey())) {
+					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+						result.append("        <id column=\"" + col.getTableAlias() + "_"+item.get(i).getConlumn()+ "\"");
+					}else {
+						result.append("        <id column=\"" + col.getClassName() + i + "\"");
+					}
+					if (anyJDBC) {
+						result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
+					}
+					result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
+					continue;
+				}
+				if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+					result.append("        <result column=\"" + col.getTableAlias() + "_"+item.get(i).getConlumn()+ "\"");
+				}else {
+					result.append("        <result column=\"" + col.getClassName() + i + "\"");
+				}
+				
+				if (anyJDBC) {
+					result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
+				}
+				result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
+			}
+			if (col.getGrandItem() != null) {
+				// 创建resultMap里面的association/collection
+				result.append(addGrandMap(entitySpace, col.getGrandItem(), anyJDBC));
+			}
+			result.append("    </resultMap>\r\n\r\n");
+		}
+		return result.toString();
+		
 	}
 	/**
 	 * 添加子类ResultMap
@@ -389,14 +448,22 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0 && list.get(i).getConlumn().equals(col.getPrimaryKey())) {
-						result.append("            <id column=\"" + col.getClassName() + i + "\"");
+						if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+							result.append("            <id column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
+						}else {
+							result.append("            <id column=\"" + col.getClassName() + i + "\"");
+						}
 						if (anyJDBC) {
 							result.append(" jdbcType=\"" + list.get(i).getJdbcType() + "\"");
 						}
 						result.append(" property=\"" + list.get(i).getPropertyName() + "\" />\r\n");
 						continue;
 					}
-					result.append("            <result column=\"" + col.getClassName() + i + "\"");
+					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+						result.append("            <result column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
+					}else {
+						result.append("            <result column=\"" + col.getClassName() + i + "\"");
+					}
 					if (anyJDBC) {
 						result.append(" jdbcType=\"" + list.get(i).getJdbcType() + "\"");
 					}
@@ -447,14 +514,22 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0 && list.get(i).getConlumn().equals(col.getPrimaryKey())) {
-						result.append("                <id column=\"" + col.getClassName() + i + "\"");
+						if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+							result.append("                <id column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
+						}else {
+							result.append("                <id column=\"" + col.getClassName() + i + "\"");
+						}
 						if (anyJDBC) {
 							result.append(" jdbcType=\"" + list.get(i).getJdbcType() + "\"");
 						}
 						result.append(" property=\"" + list.get(i).getPropertyName() + "\" />\r\n");
 						continue;
 					}
-					result.append("                <result column=\"" + col.getClassName() + i + "\"");
+					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
+						result.append("                <result column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
+					}else {
+						result.append("                <result column=\"" + col.getClassName() + i + "\"");
+					}
 					if (anyJDBC) {
 						result.append(" jdbcType=\"" + list.get(i).getJdbcType() + "\"");
 					}
@@ -512,12 +587,20 @@ public class MapperUtil {
 				continue;
 			}
 			if (i == 0) {
-				result.append("        " + attr.getTableName() + "." + item.get(i).getConlumn() + " as "
-						+ attr.getClassName() + i);
+				result.append("        " + attr.getTableName() + "." + item.get(i).getConlumn() + " as ");
+				if (attr.getTableAlias()!=null&&!(attr.getTableAlias().isEmpty())) {
+					result.append(attr.getTableAlias()+"_"+item.get(i).getConlumn());
+				}else {
+					result.append(attr.getClassName() + i);
+				}
 				continue;
 			}
-			result.append("\r\n        ," + attr.getTableName() + "." + item.get(i).getConlumn() + " as "
-					+ attr.getClassName() + i);
+			result.append("\r\n        ," + attr.getTableName() + "." + item.get(i).getConlumn() + " as ");
+			if (attr.getTableAlias()!=null&&!(attr.getTableAlias().isEmpty())) {
+				result.append(attr.getTableAlias()+"_"+item.get(i).getConlumn());
+			}else {
+				result.append(attr.getClassName() + i);
+			}
 		}
 		result.append("\r\n");
 		result.append("    </sql>\r\n\r\n");
@@ -549,12 +632,20 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0) {
-						result.append("        " + item.getTableName() + "." + cvf.get(i).getConlumn() + " as "
-								+ item.getClassName() + i);
+						result.append("        " + item.getTableName() + "." + cvf.get(i).getConlumn() + " as ");
+						if (item.getTableAlias()!=null&&!(item.getTableAlias().isEmpty())) {
+							result.append(item.getTableAlias()+"_"+cvf.get(i).getConlumn());
+						}else {
+							result.append(item.getClassName() + i);
+						}
 						continue;
 					}
-					result.append("\r\n        ," + item.getTableName() + "." + cvf.get(i).getConlumn() + " as "
-							+ item.getClassName() + i);
+					result.append("\r\n        ," + item.getTableName() + "." + cvf.get(i).getConlumn() + " as ");
+					if (item.getTableAlias()!=null&&!(item.getTableAlias().isEmpty())) {
+						result.append(item.getTableAlias()+"_"+cvf.get(i).getConlumn());
+					}else {
+						result.append(item.getClassName() + i);
+					}
 				}
 				result.append("\r\n");
 				result.append("    </sql>\r\n\r\n");
@@ -589,12 +680,20 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0) {
-						result.append("        " + item.getTableName() + "." + cvf.get(i).getConlumn() + " as "
-								+ item.getClassName() + i);
+						result.append("        " + item.getTableName() + "." + cvf.get(i).getConlumn() + " as ");
+						if (item.getTableAlias()!=null&&!(item.getTableAlias().isEmpty())) {
+							result.append(item.getTableAlias()+"_"+cvf.get(i).getConlumn());
+						}else {
+							result.append(item.getClassName() + i);
+						}
 						continue;
 					}
-					result.append("\r\n        ," + item.getTableName() + "." + cvf.get(i).getConlumn() + " as "
-							+ item.getClassName() + i);
+					result.append("\r\n        ," + item.getTableName() + "." + cvf.get(i).getConlumn() + " as ");
+					if (item.getTableAlias()!=null&&!(item.getTableAlias().isEmpty())) {
+						result.append(item.getTableAlias()+"_"+cvf.get(i).getConlumn());
+					}else {
+						result.append(item.getClassName() + i);
+					}
 				}
 				result.append("\r\n");
 				result.append("    </sql>\r\n\r\n");

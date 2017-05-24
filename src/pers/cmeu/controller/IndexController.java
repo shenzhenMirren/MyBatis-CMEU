@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
 
 import javafx.collections.ObservableList;
@@ -46,7 +48,7 @@ import pers.cmeu.models.SuperAttribute;
 import pers.cmeu.view.AlertUtil;
 
 public class IndexController extends BaseController {
-
+	private Logger log=Logger.getLogger(this.getClass());
 	// 存储数据库指定数据库,修改属性时用
 	private DatabaseConfig selectedDatabaseConfig;
 	// 记录存储的表名,修改属性时用
@@ -156,7 +158,7 @@ public class IndexController extends BaseController {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
+		log.debug("初始化首页...");
 		// 初始化图标连接与配置信息
 		ImageView lblConnImage = new ImageView("pers/resource/image/computer.png");
 		lblConnImage.setFitHeight(40);
@@ -179,7 +181,8 @@ public class IndexController extends BaseController {
 			controller.setIndexController(this);
 			controller.showDialogStage();
 		});
-
+		log.debug("初始化首页成功!");
+		log.debug("加载左侧数据库树与事件....");
 		// 加载右边数据库树与事件
 		tvDataBase.setShowRoot(false);
 		tvDataBase.setRoot(new TreeItem<>());
@@ -194,6 +197,7 @@ public class IndexController extends BaseController {
 					final ContextMenu contextMenu = new ContextMenu();
 					MenuItem item0 = new MenuItem("打开连接");
 					item0.setOnAction(event1 -> {
+						log.debug("执行打开数据库连接....");
 						DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
 						try {
 							List<String> tables = DBUtil.getTableNames(selectedConfig);
@@ -212,8 +216,10 @@ public class IndexController extends BaseController {
 							}
 						} catch (CommunicationsException e) {
 							AlertUtil.showErrorAlert("连接超时");
+							log.error("打开连接失败!!!"+e);
 						} catch (Exception e) {
 							AlertUtil.showErrorAlert(e.getMessage());
+							log.error("打开连接失败!!!"+e);
 						}
 					});
 					MenuItem item1 = new MenuItem("关闭连接");
@@ -225,20 +231,24 @@ public class IndexController extends BaseController {
 						if (!AlertUtil.showConfirmAlert("确定删除该连接吗")) {
 							return;
 						}
+						log.debug("执行删除数据库链接...");
 						DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
 						try {
 							ConfigUtil.deleteDatabaseConfig(selectedConfig.getConnName());
 							this.loadTVDataBase();
 						} catch (Exception e) {
 							AlertUtil.showErrorAlert("删除数据库连接失败: " + e.getMessage());
+							log.error("删除数据库连接失败!!!"+e);
 						}
 					});
 					contextMenu.getItems().addAll(item0, item1, item2);
 					cell.setContextMenu(contextMenu);
 				}
+				//加载所有表
 				if (event.getClickCount() == 2) {
 					treeItem.setExpanded(true);
 					if (level == 1) {
+						log.debug("加载所有表....");
 						DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
 						try {
 							List<String> tables = DBUtil.getTableNames(selectedConfig);
@@ -256,12 +266,16 @@ public class IndexController extends BaseController {
 									children.add(newTreeItem);
 								}
 							}
+							log.debug("加载所有表成功!");
 						} catch (CommunicationsException e) {
 							AlertUtil.showErrorAlert("连接超时");
+							log.error("加载所有表失败!!!"+e);
 						} catch (Exception e) {
 							AlertUtil.showErrorAlert(e.getMessage());
+							log.error("加载所有表失败!!!"+e);
 						}
 					} else if (level == 2) {
+						log.debug("将表的数据加载到数据面板...");
 						String tableName = treeCell.getTreeItem().getValue();
 						selectedDatabaseConfig = (DatabaseConfig) treeItem.getParent().getGraphic().getUserData();
 						selectedTableName = tableName;
@@ -271,19 +285,29 @@ public class IndexController extends BaseController {
 						txtMapName.setText(StrUtil.unlineToPascal(tableName) + "Mapper");
 						txtServiceName.setText(StrUtil.unlineToPascal(tableName) + "Service");
 						txtServiceImplName.setText(StrUtil.unlineToPascal(tableName) + "ServiceImpl");
-
+						log.debug("将表的数据加载到数据面板成功!");
 					}
 				}
 			});
 			return cell;
 		});
 		// 加载左边数据库树
-		loadTVDataBase();
+		
+		try {
+			loadTVDataBase();
+			log.debug("加载所有数据库到左侧树集成功!");
+		} catch (Exception e1) {
+			AlertUtil.showErrorAlert(e1.getMessage());
+			log.error("加载所有数据库到左侧树集失败!!!"+e1);
+		}
 		try {
 			// 加载首页配置信息
+			log.debug("执行查询默认配置信息并加载到首页...");
 			loadIndexConfigInfo("default");
+			log.debug("加载配置信息到首页成功!");
 		} catch (Exception e) {
 			AlertUtil.showErrorAlert("加载配置失败!失败原因:\r\n" + e.getMessage());
+			log.error("加载配置信息失败!!!"+e);
 		}
 
 	}
@@ -294,12 +318,12 @@ public class IndexController extends BaseController {
 
 	/**
 	 * 加载数据库到树集
+	 * @throws Exception
 	 */
-	public void loadTVDataBase() {
+	public void loadTVDataBase() throws Exception {
 		TreeItem<String> rootTreeItem = tvDataBase.getRoot();
 		rootTreeItem.getChildren().clear();
 		List<DatabaseConfig> item = null;
-		try {
 			item = ConfigUtil.getDatabaseConfig();
 			for (DatabaseConfig dbConfig : item) {
 				TreeItem<String> treeItem = new TreeItem<String>();
@@ -311,9 +335,6 @@ public class IndexController extends BaseController {
 				treeItem.setGraphic(dbImage);
 				rootTreeItem.getChildren().add(treeItem);
 			}
-		} catch (Exception e) {
-			AlertUtil.showErrorAlert(e.getMessage());
-		}
 	}
 
 	/**
@@ -322,12 +343,11 @@ public class IndexController extends BaseController {
 	 * @param event
 	 */
 	public void selectFile(ActionEvent event) {
-
 		DirectoryChooser directoryChooser = new DirectoryChooser();
-
 		File file = directoryChooser.showDialog(super.getPrimaryStage());
 		if (file != null) {
 			txtProjectPath.setText(file.getPath());
+			log.debug("选择文件项目目录:"+file.getPath());
 		}
 	}
 
@@ -343,6 +363,7 @@ public class IndexController extends BaseController {
 		File file = fileChooser.showOpenDialog(super.getPrimaryStage());
 		if (file != null) {
 			txtUpdateMapper.setText(file.getPath());
+			log.debug("选择更新项目资源的配置文件:"+file.getPath());
 		}
 	}
 
@@ -360,6 +381,7 @@ public class IndexController extends BaseController {
 		StageManager.CONTROLLER.put("index", this);
 		Stage stage = new Stage();
 		try {
+			log.debug("打开修改属性窗口...");
 			Parent root = FXMLLoader
 					.load(Thread.currentThread().getContextClassLoader().getResource(FXMLPage.SET_ATTRIBUTE.getFxml()));
 			stage.setTitle("修改属性");
@@ -370,8 +392,10 @@ public class IndexController extends BaseController {
 			stage.show();
 			// 将本窗口保存添加到管理器
 			StageManager.STAGE.put("attribute", stage);
+			log.debug("打开修改属性窗口成功!");
 		} catch (IOException e) {
 			AlertUtil.showErrorAlert("初始化修改属性失败:\r\n原因:" + e.getMessage());
+			log.error("初始化修改属性失败!!!"+e);
 		}
 	}
 
@@ -381,6 +405,7 @@ public class IndexController extends BaseController {
 	 * @param event
 	 */
 	public void saveConfig(ActionEvent event) {
+		log.debug("执行保存配置文件...");
 		TextInputDialog dialog = new TextInputDialog("");
 		dialog.setTitle("保存当前配置");
 		dialog.setContentText("请输入配置名称:\r\n(表名不在保存范围内必须通过数据库加载!!!)");
@@ -392,8 +417,10 @@ public class IndexController extends BaseController {
 				config.setHistoryConfigName(name);
 				ConfigUtil.saveHistoryConfig(config);
 				AlertUtil.showInfoAlert("保存配置成功!");
+				log.debug("保存配置成功!");
 			} catch (Exception e) {
 				AlertUtil.showErrorAlert("保存配置失败!失败原因:\r\n" + e.getMessage());
+				log.error("保存配置失败!!!"+e);
 			}
 		}
 	}
@@ -409,7 +436,7 @@ public class IndexController extends BaseController {
 			AlertUtil.showWarnAlert("项目所在目录以及类名为必填项;\r\n实体类可以通过双击左边树形数据库表加载...");
 			return;
 		}
-
+		log.debug("准备开始执行创建所有文件...");
 		btnRunCreate.setText("创建中...");
 				
 		if (changeInfo == false) {
@@ -424,12 +451,15 @@ public class IndexController extends BaseController {
 
 			String key = null;
 			try {
+				log.debug("获取表的主键...");
 				key = DBUtil.getTablePrimaryKey(selectedDatabaseConfig, selectedTableName);
 			} catch (Exception e) {
 				AlertUtil.showErrorAlert("获得主键失败!原因:\r\n" + e.getMessage());
+				log.error("获取表主键失败!!!"+e);
 			}
 
 			try {
+				log.debug("获取表的所有列...");
 				attributes = DBUtil.getTableColumns(selectedDatabaseConfig, selectedTableName);
 				for (AttributeCVF temp : attributes) {
 					temp.setPropertyName(StrUtil.unlineToCamel(temp.getPropertyName()));
@@ -437,6 +467,7 @@ public class IndexController extends BaseController {
 
 			} catch (Exception e1) {
 				AlertUtil.showErrorAlert("获得属性失败!原因:\r\n" + e1.getMessage());
+				log.error("获得表的所有列失败!!!"+e1);
 			}
 
 			attr.setPrimaryKey(key);
@@ -453,6 +484,7 @@ public class IndexController extends BaseController {
 			}
 			superAttributes.add(thisSuperAttribute);
 		}
+		log.debug("初始化创建工具...");
 		//初始化文件工具
 		CreateFileUtil fileUtil=CreateFileUtil.getInstance();
 		fileUtil.init(selectedDatabaseConfig, 
@@ -475,14 +507,18 @@ public class IndexController extends BaseController {
 				chkMyUtil.isSelected(), 
 				txtMyUtilPackage.getText(), 
 				txtMyUtilName.getText());
+		
+		log.debug("开始执行创建所有文件...");
 		// 执行创建
 		try {
 			fileUtil.createAll();
 			AlertUtil.showInfoAlert("创建完成!");
 			changeInfo = false;
+			log.debug("创建所有文件成功!");
 		} catch (Exception e) {
 			AlertUtil.showErrorAlert("创建失败!原因:\r\n" + e.getMessage());
-			e.printStackTrace();
+			btnRunCreate.setText("创建失败");			
+			log.error("创建所有文件失败!!!"+e);
 		}finally {
 			btnRunCreate.setText("执行创建");
 		}

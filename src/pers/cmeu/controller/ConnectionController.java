@@ -2,6 +2,8 @@ package pers.cmeu.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,7 +15,7 @@ import pers.cmeu.models.DatabaseConfig;
 import pers.cmeu.view.AlertUtil;
 
 public class ConnectionController extends BaseController {
-	
+	private Logger log=Logger.getLogger(ConnectionController.class.getName());
 	private IndexController indexController;
 	@FXML
 	private TextField txtConnName;
@@ -42,10 +44,12 @@ public class ConnectionController extends BaseController {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {	
+		log.debug("初始化数据库连接窗口....");
 		//初始化下拉列表
 		cboDBType.getItems().addAll("Oracle","MySQL","SqlServer","PostgreSQL");
 		cboDBCoding.getItems().addAll("utf8","gb2312","gbk");
 		cboDBCoding.setValue("utf8");
+		log.debug("初始化数据库连接成功!");
 	}
 	
 	/**
@@ -53,16 +57,20 @@ public class ConnectionController extends BaseController {
 	 * @param event
 	 */
 	public void saveConnection(ActionEvent event){	
+		log.debug("执行保存数据库连接...");
 		DatabaseConfig config = getDatabaseConfig();
 		if (config == null) {
+			log.debug("连接数据库的数据为null,取消保存操作!!!");
 			return;
 		}
 		try {
 			ConfigUtil.saveDatabaseConfig(config.getConnName(),config);
 			getDialogStage().close();
 			indexController.loadTVDataBase();
+			log.debug("保存数据库连接成功!");
 		} catch (Exception e) {
 			AlertUtil.showErrorAlert(e.getMessage());
+			log.error("保存数据库连接失败!!!"+e);
 		}
 		
 			
@@ -80,16 +88,19 @@ public class ConnectionController extends BaseController {
 	 * @param event
 	 */
 	public void testConnection(ActionEvent event){	
-		
+		log.debug("执行测试数据库连接...");		
 		DatabaseConfig config = getDatabaseConfig();
 		if (config == null) {
+			log.debug("连接数据库的数据为null,取消测试操作!!!");
 			return;
 		}
 		try {
 			DBUtil.getConnection(config);
-			AlertUtil.showInfoAlert("连接成功");
+			AlertUtil.showInfoAlert("连接成功!");
+			log.debug("数据库测试连接成功!");
 		} catch (Exception e) {
 			AlertUtil.showWarnAlert("连接失败"+e.getMessage());
+			log.error("数据库连接测试失败!!!"+e);
 		}
 
 		

@@ -2,7 +2,7 @@ package pers.cmeu.common;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.List;
+import java.util.Set;
 
 public class MyBatisConfigUtil {
 	private static MyBatisConfigUtil myBatisConfigUtil=null;
@@ -26,7 +26,8 @@ public class MyBatisConfigUtil {
 	 * @return
 	 * @throws Exception 
 	 */
-	public String getNewConfig(String configPath,List<String> mapperURL) throws Exception {
+	public String getNewConfig(String configPath,Set<String> mapperURL) throws Exception {
+		
 		StringBuffer buffer=new StringBuffer();
 		buffer.append(getConfigFile(configPath)); 
 		//如果存在mappers指直接在mappers里面添加,如果没有mappers,存在跟节点则创建mappers并添加,反则放回null
