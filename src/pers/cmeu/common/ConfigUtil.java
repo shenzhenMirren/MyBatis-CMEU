@@ -98,7 +98,29 @@ public class ConfigUtil {
 				conn.close();
 		}
 	}
-
+	
+	/**
+	 * 更新数据库连接
+	 * @param dbConfig
+	 * @throws Exception
+	 */
+	public static void updateDatabaseConfig(DatabaseConfig dbConfig) throws Exception {
+		Connection conn = null;
+        Statement stat = null;
+        ResultSet rs = null;
+        try {
+            conn = getConnection();
+            stat = conn.createStatement();
+            String jsonStr = JSON.toJSONString(dbConfig);
+            String sql = String.format("update DBSet set value='%s' where name='%s'", jsonStr,dbConfig.getConnName());
+            stat.executeUpdate(sql);
+        } finally {
+            if (rs != null) rs.close();
+            if (stat != null) stat.close();
+            if (conn != null) conn.close();
+        }
+	}
+	
 	/**
 	 * 获得数据库连接
 	 * @return
@@ -131,6 +153,8 @@ public class ConfigUtil {
 				conn.close();
 		}
 	}
+	
+	
 	/**
 	 * 删除数据库连接
 	 * @param name

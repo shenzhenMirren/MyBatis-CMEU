@@ -15,6 +15,15 @@ public class AlertUtil {
 		alert.setContentText(message);
 		alert.show();
 	}
+	/**
+	 * 等待信息提示框
+	 * @param message
+	 */
+	public static void showAndWaitInfoAlert(String message) {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setContentText(message);
+		alert.showAndWait();
+	}
 
 	/**
 	 * 注意提示框

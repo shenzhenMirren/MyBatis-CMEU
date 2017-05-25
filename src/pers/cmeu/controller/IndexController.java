@@ -52,6 +52,7 @@ public class IndexController extends BaseController {
 	private Logger log=Logger.getLogger(this.getClass());
 	// 存储数据库指定数据库,修改属性时用
 	private DatabaseConfig selectedDatabaseConfig;
+	private DatabaseConfig updateOfDatabaseConfig;
 	// 记录存储的表名,修改属性时用
 	private String selectedTableName;
 	// 标记属性是否修改false为没有修改
@@ -232,6 +233,19 @@ public class IndexController extends BaseController {
 					item1.setOnAction(event1 -> {
 						treeItem.getChildren().clear();
 					});
+					MenuItem item3 = new MenuItem("修改连接");
+					item3.setOnAction(event1 -> {
+						updateOfDatabaseConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
+						if (updateOfDatabaseConfig!=null) {
+							log.debug("打开修改数据库连接窗口...");
+							UpdateConnection controller = (UpdateConnection) loadFXMLPage("修改数据库连接", FXMLPage.UPDATE_CONNECTION,
+									false);
+							controller.setIndexController(this);
+							controller.init();
+							controller.showDialogStage();
+							
+						}
+					});
 					MenuItem item2 = new MenuItem("删除连接");
 					item2.setOnAction(event1 -> {
 						if (!AlertUtil.showConfirmAlert("确定删除该连接吗")) {
@@ -247,7 +261,7 @@ public class IndexController extends BaseController {
 							log.error("删除数据库连接失败!!!"+e);
 						}
 					});
-					contextMenu.getItems().addAll(item0, item1, item2);
+					contextMenu.getItems().addAll(item0, item1, item3, item2);
 					cell.setContextMenu(contextMenu);
 				}
 				//加载所有表
@@ -1047,4 +1061,14 @@ public class IndexController extends BaseController {
 		this.selectedTableName = selectedTableName;
 	}
 
+
+	public DatabaseConfig getUpdateOfDatabaseConfig() {
+		return updateOfDatabaseConfig;
+	}
+
+
+	public void setUpdateOfDatabaseConfig(DatabaseConfig updateOfDatabaseConfig) {
+		this.updateOfDatabaseConfig = updateOfDatabaseConfig;
+	}
+	
 }

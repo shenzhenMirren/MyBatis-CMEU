@@ -1,4 +1,5 @@
 package pers.cmeu.controller;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -14,8 +15,8 @@ import pers.cmeu.common.DBUtil;
 import pers.cmeu.models.DatabaseConfig;
 import pers.cmeu.view.AlertUtil;
 
-public class ConnectionController extends BaseController {
-	private Logger log=Logger.getLogger(ConnectionController.class.getName());
+public class UpdateConnection extends BaseController  {
+	private Logger log = Logger.getLogger(UpdateConnection.class.getName());
 	private IndexController indexController;
 	@FXML
 	private TextField txtConnName;
@@ -39,48 +40,57 @@ public class ConnectionController extends BaseController {
 	private Button btnCancel;
 	@FXML
 	private Button btnSave;
-	
-	
-	
+
 	@Override
-	public void initialize(URL location, ResourceBundle resources) {	
-		log.debug("初始化数据库连接窗口....");
-		//初始化下拉列表
-		cboDBType.getItems().addAll("Oracle","MySQL","SqlServer","PostgreSQL");
-		cboDBCoding.getItems().addAll("utf8","gb2312","gbk");
-		cboDBCoding.setValue("utf8");
-		log.debug("初始化数据库连接成功!");
+	public void initialize(URL location, ResourceBundle resources) {
+		
+		
+	}
+	public void init() {
+		log.debug("初始化修改数据库连接窗口...");
+		DatabaseConfig config = indexController.getUpdateOfDatabaseConfig();
+		// 初始化下拉列表
+		cboDBType.getItems().addAll("Oracle", "MySQL", "SqlServer", "PostgreSQL");
+		cboDBType.setValue(config.getDbType());
+		cboDBCoding.getItems().addAll("utf8", "gb2312", "gbk");
+		cboDBCoding.setValue(config.getEncoding());
+		txtConnName.setText(config.getConnName());
+		txtConnURL.setText(config.getConnURL());
+		txtDBName.setText(config.getDbName());
+		txtListenPort.setText(config.getListenPort());
+		txtUserName.setText(config.getUserName());
+		txtUserPwd.setText(config.getUserPwd());
+		log.debug("初始化数据库连接窗口成功!");
 	}
 	
 	/**
-	 * 保存连接
+	 * 确定修改
 	 * @param event
 	 */
-	public void saveConnection(ActionEvent event){	
-		log.debug("执行保存数据库连接...");
-		DatabaseConfig config = getDatabaseConfig();
-		if (config == null) {
+	public void btnUpdate(ActionEvent event) {
+		log.debug("执行修改数据库连接...");
+		DatabaseConfig dbConfig = getDatabaseConfig();
+		if (dbConfig == null) {
 			log.debug("连接数据库的数据为null,取消保存操作!!!");
 			return;
 		}
 		try {
-			ConfigUtil.saveDatabaseConfig(config.getConnName(),config);
-			getDialogStage().close();
+			ConfigUtil.updateDatabaseConfig(dbConfig);
+			AlertUtil.showAndWaitInfoAlert("修改数据库连接成功!");
 			indexController.loadTVDataBase();
-			log.debug("保存数据库连接成功!");
+			log.debug("修改数据库连接成功!");
+			getDialogStage().close();
 		} catch (Exception e) {
 			AlertUtil.showErrorAlert(e.getMessage());
-			log.error("保存数据库连接失败!!!"+e);
+			log.error("修改数据库连接失败!!!"+e);
 		}
-		
-			
 	}
 	/**
-	 * 关闭当前窗口
+	 * 取消修改
 	 * @param event
 	 */
 	public void onCancel(ActionEvent event) {
-		closeDialogStage();
+		getDialogStage().close();
 	}
 	
 	/**
@@ -99,11 +109,10 @@ public class ConnectionController extends BaseController {
 			AlertUtil.showInfoAlert("连接成功!");
 			log.debug("数据库测试连接成功!");
 		} catch (Exception e) {
-			AlertUtil.showWarnAlert("连接失败"+e.getMessage());
+			AlertUtil.showWarnAlert("连接失败!原因:"+e.getMessage());
 			log.error("数据库连接测试失败!!!"+e);
 		}
 	}
-	
 	
 	/**
 	 * 获得连接的所有字段
@@ -142,105 +151,14 @@ public class ConnectionController extends BaseController {
 		}
 		return true;
 	}
-	
-	
-	//----------------------get/set----------------------------
+
 	public IndexController getIndexController() {
 		return indexController;
 	}
-	
+
 	public void setIndexController(IndexController indexController) {
 		this.indexController = indexController;
 	}
-
-	public TextField getTxtConnName() {
-		return txtConnName;
-	}
-
-	public void setTxtConnName(TextField txtConnName) {
-		this.txtConnName = txtConnName;
-	}
-
-	public TextField getTxtConnURL() {
-		return txtConnURL;
-	}
-
-	public void setTxtConnURL(TextField txtConnURL) {
-		this.txtConnURL = txtConnURL;
-	}
-
-	public TextField getTxtListenPort() {
-		return txtListenPort;
-	}
-
-	public void setTxtListenPort(TextField txtListenPort) {
-		this.txtListenPort = txtListenPort;
-	}
-
-	public TextField getTxtDBName() {
-		return txtDBName;
-	}
-
-	public void setTxtDBName(TextField txtDBName) {
-		this.txtDBName = txtDBName;
-	}
-
-	public TextField getTxtUserName() {
-		return txtUserName;
-	}
-
-	public void setTxtUserName(TextField txtUserName) {
-		this.txtUserName = txtUserName;
-	}
-
-	public TextField getTxtUserPwd() {
-		return txtUserPwd;
-	}
-
-	public void setTxtUserPwd(TextField txtUserPwd) {
-		this.txtUserPwd = txtUserPwd;
-	}
-
-	public ComboBox<String> getCboDBType() {
-		return cboDBType;
-	}
-
-	public void setCboDBType(ComboBox<String> cboDBType) {
-		this.cboDBType = cboDBType;
-	}
-
-	public ComboBox<String> getCboDBCoding() {
-		return cboDBCoding;
-	}
-
-	public void setCboDBCoding(ComboBox<String> cboDBCoding) {
-		this.cboDBCoding = cboDBCoding;
-	}
-
-	public Button getBtnTestConn() {
-		return btnTestConn;
-	}
-
-	public void setBtnTestConn(Button btnTestConn) {
-		this.btnTestConn = btnTestConn;
-	}
-
-	public Button getBtnCancel() {
-		return btnCancel;
-	}
-
-	public void setBtnCancel(Button btnCancel) {
-		this.btnCancel = btnCancel;
-	}
-
-	public Button getBtnSave() {
-		return btnSave;
-	}
-
-	public void setBtnSave(Button btnSave) {
-		this.btnSave = btnSave;
-	}
-
 	
 	
 }
