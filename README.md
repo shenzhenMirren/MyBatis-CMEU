@@ -3,11 +3,11 @@
 Mybatis-CMEU全称为：Mybatis Config Mapper Util ;<br/>
 是基于javafx8开发的一款图形界面的Mybatis逆向工程;<br/>
 该工具支持Oracle , SqlServer , MySQL , PostgreSql数据库的逆向生成;<br/>
-本工具基于JKD1.8_U66开发运行环境需要JKD1.8以上,在MyEclipse中如果已经安装了javafx的运行环境可以直接在MyEclipse中运行,否则需要到QQ交流群里下载可执行文件,群里也提供免jdk要求版(以将jdk一起打包到程序中);<br/>
+本工具基于JKD1.8.66环境开发;其中使用已知的特新最低的要求是1.8.40,所以运行环境最少需要JKD1.8.40及以上,在MyEclipse中如果已经安装了javafx的运行环境可以直接在MyEclipse中运行,否则需要到QQ交流群里下载可执行文件,群里也提供免jdk要求版(以将jdk一起打包到程序中);<br/>
 [MyBatis-CMEU的使用帮助文档](https://github.com/shenzhenMirren/MyBatis-CMEU-DOC)<br/>
 
 ## 工具主页<br/>
-![index](https://raw.githubusercontent.com/shenzhenMirren/MyBatis-CMEU-DOC/master/resource/images/1.png)
+![index](https://raw.githubusercontent.com/shenzhenMirren/MyBatis-CMEU-DOC/master/resource/images/index.png)
 
 ## 基本常用功能：<br/>
 <ol>
