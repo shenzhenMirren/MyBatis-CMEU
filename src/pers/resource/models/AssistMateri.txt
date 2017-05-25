@@ -3,7 +3,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Encoding format is UTF-8
+ * This is EUCM's helper class
+ * @author Mirren
  */
 public class Assist {
 	// 去重

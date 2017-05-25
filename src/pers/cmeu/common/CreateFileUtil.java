@@ -1,9 +1,12 @@
 package pers.cmeu.common;
 
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +43,7 @@ public class CreateFileUtil {
 		}
 		return createFileUtil;
 	}
-
+	private String codeFormat;
 	private String projectPath;
 	private String projectRoot;
 	private String entityPackage;
@@ -52,7 +55,7 @@ public class CreateFileUtil {
 	private String updateMapperURL;
 	private DatabaseConfig databaseConfig;
 	private List<SuperAttribute> attributes;
-
+		
 	private boolean createAssist;
 	private String assistPackage;
 	private String assistName;
@@ -62,6 +65,7 @@ public class CreateFileUtil {
 	private boolean createMyUtil;
 	private String myUtilPackage;
 	private String myUtilName;
+	
 
 	/**
 	 * 初始化数据
@@ -85,13 +89,14 @@ public class CreateFileUtil {
 	 * @param myUtilPackage
 	 * @param myUtilName
 	 */
-	public void init(DatabaseConfig databaseConfig, List<SuperAttribute> attributes, String projectPath,
+	public void init(DatabaseConfig databaseConfig, List<SuperAttribute> attributes,String codeFormat, String projectPath,
 			String projectRoot, String entityPackage, String daoPackage, String mapPackage, boolean createService,
 			String servicePackage, String serviceImplPackage, String updateMapperURL, boolean createAssist,
 			String assistPackage, String assistName, boolean createConfig, String configPackage, String configName,
 			boolean createMyUtil, String myUtilPackage, String myUtilName) {
 		setDatabaseConfig(databaseConfig);
 		setAttributes(attributes);
+		this.codeFormat=codeFormat;
 		setProjectPath(projectPath);
 		setProjectRoot(projectRoot);
 		setEntityPackage(entityPackage);
@@ -179,7 +184,7 @@ public class CreateFileUtil {
 				String entityStr = ClassUtil.getInstance().getEntityString(uriToPackage(entityPackage), entitySpaces,
 						attr.getClassName(), property, attr.isSerializable(), attr.isConstruct(), attr.isConstructAll(),
 						attr.isCreateGetSet());
-				Files.write(entityPath, entityStr.getBytes());
+				createFile(entityPath, entityStr);
 				log.debug("生成实体类成功!");
 			}
 			// 生成dao
@@ -195,7 +200,7 @@ public class CreateFileUtil {
 				String daoStr = DaoUtil.getInstance().getDaoString(uriToPackage(daoPackage), daoInport,
 						attr.getDaoName(), attr.getClassName(), ketType, createAssist,attr.isAnyHasColl());
 				Path daoPath = Paths.get(projectPath, projectRoot, daoPackage, attr.getDaoName() + ".java");
-				Files.write(daoPath, daoStr.getBytes());
+				createFile(daoPath, daoStr);
 				log.debug("生成dao成功!");
 			}
 			// 生成mapper
@@ -207,7 +212,7 @@ public class CreateFileUtil {
 						uriToPackage(assistPackage), databaseConfig.getDbType(), attr, createAssist,
 						attr.isCreateJDBCType());
 				Path mapPath = Paths.get(projectPath, projectRoot, mapPackage, attr.getMapperName() + ".xml");
-				Files.write(mapPath, mapStr.getBytes());
+				createFile(mapPath, mapStr);
 				log.debug("生成Mapper成功!");
 			}
 
@@ -228,7 +233,7 @@ public class CreateFileUtil {
 					String serStr = ServiceUtil.getInstance().getServiceString(uriToPackage(servicePackage), serImport,
 							attr.getServiceName(), attr.getClassName(), ketType, createAssist,attr.isAnyHasColl());
 					Path serPath = Paths.get(projectPath, projectRoot, servicePackage, attr.getServiceName() + ".java");
-					Files.write(serPath, serStr.getBytes());
+					createFile(serPath, serStr);
 					log.debug("生成service成功!");
 				}
 				// 生成实现
@@ -246,7 +251,7 @@ public class CreateFileUtil {
 					}
 					String serImplStr=ServiceImplUtil.getInstance().getServiceImplString(uriToPackage(serviceImplPackage), serImplImport, attr.getDaoName(), attr.getServiceName(), attr.getServiceImplName(), attr.getClassName(), ketType, createAssist,attr.isAnyHasColl());
 					Path serImplPath = Paths.get(projectPath, projectRoot, serviceImplPackage, attr.getServiceImplName() + ".java");
-					Files.write(serImplPath, serImplStr.getBytes());
+					createFile(serImplPath, serImplStr);
 					log.debug("生成serviceImpl成功!");
 				}
 			}
@@ -274,7 +279,8 @@ public class CreateFileUtil {
 		} else if (updateMapperURL != null && !("".equals(updateMapperURL))&&mapperURL!=null) {
 			log.debug("执行更新MyBatis配置文件资源路径...");
 			String updateStr=MyBatisConfigUtil.getInstance().getNewConfig(updateMapperURL, mapperURL);
-			Files.write(Paths.get(updateMapperURL), updateStr.getBytes());
+			createFile(Paths.get(updateMapperURL), updateStr);
+
 			log.debug("更新MyBatis配置文件资源路径成功!");
 		}
 		// 判断是否需要创建MyUtil帮助工具
@@ -324,7 +330,7 @@ public class CreateFileUtil {
 		codeInfo.append("package " + uriToPackage(assistPackage) + ";" + "\r\n");
 		codeInfo.append(Materi + "\r\n");
 		log.debug("执行创建...");
-		Files.write(path, codeInfo.toString().getBytes());
+		createFile(path, codeInfo.toString());
 		log.debug("Assist帮助类创建成功!");
 	}
 
@@ -357,7 +363,7 @@ public class CreateFileUtil {
 
 		codeInfo.append(Materi + "\r\n");
 		log.debug("执行创建...");
-		Files.write(path, codeInfo.toString().getBytes());
+		createFile(path, codeInfo.toString());
 		log.debug("配置文件创建成功!");
 	}
 
@@ -398,7 +404,8 @@ public class CreateFileUtil {
 		}
 		codeInfo.append(Materi + "\r\n");
 		log.debug("执行创建...");
-		Files.write(path, codeInfo.toString().getBytes());
+		createFile(path, codeInfo.toString());
+
 		log.debug("MyBatis帮助工具创建成功!");
 	}
 
@@ -477,10 +484,34 @@ public class CreateFileUtil {
 				dbConfig.getListenPort(), dbConfig.getDbName(), dbConfig.getEncoding());
 		return connectionRUL.replace("&", "&amp;");
 	}
-
+	/**
+	 * 执行创建自定格式的文件
+	 * @param path
+	 * @param type
+	 * @param str
+	 * @throws Exception
+	 */
+	private  void createFile(Path path,String str) throws Exception {
+		OutputStream out = Files.newOutputStream(path, StandardOpenOption.CREATE);
+		OutputStreamWriter writer=new OutputStreamWriter(out,codeFormat);
+		writer.write(str);
+		writer.flush();
+		out.close();
+		writer.close();
+	}
+	
 	// -------------------get/set---------------------------
+	
 	public String getProjectPath() {
 		return projectPath;
+	}
+
+	public String getCodeFormat() {
+		return codeFormat;
+	}
+
+	public void setCodeFormat(String codeFormat) {
+		this.codeFormat = codeFormat;
 	}
 
 	public void setProjectPath(String projectPath) {

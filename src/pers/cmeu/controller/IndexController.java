@@ -20,6 +20,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -155,6 +156,9 @@ public class IndexController extends BaseController {
 	@FXML
 	private Button btnSelectMapperFile;
 
+	@FXML
+	private ComboBox<String> cboCodeFormat;
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -181,6 +185,8 @@ public class IndexController extends BaseController {
 			controller.setIndexController(this);
 			controller.showDialogStage();
 		});
+		cboCodeFormat.getItems().addAll("UTF-8","GBK","UTF-16","UTF-32","GB2312","GB18030","ISO-8859-1");
+		cboCodeFormat.setValue("UTF-8");
 		log.debug("初始化首页成功!");
 		log.debug("加载左侧数据库树与事件....");
 		// 加载右边数据库树与事件
@@ -312,9 +318,6 @@ public class IndexController extends BaseController {
 
 	}
 
-	public String text() {
-		return selectedTableName;
-	}
 
 	/**
 	 * 加载数据库到树集
@@ -489,6 +492,7 @@ public class IndexController extends BaseController {
 		CreateFileUtil fileUtil=CreateFileUtil.getInstance();
 		fileUtil.init(selectedDatabaseConfig, 
 				superAttributes,
+				cboCodeFormat.getValue(),
 				txtProjectPath.getText(), 
 				txtRootDir.getText(), 
 				txtEntityPackage.getText(), 
