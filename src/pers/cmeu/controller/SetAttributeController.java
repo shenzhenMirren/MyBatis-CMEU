@@ -38,7 +38,7 @@ import pers.cmeu.models.SuperAttribute;
 import pers.cmeu.view.AlertUtil;
 
 public class SetAttributeController implements Initializable {
-	private Logger log=Logger.getLogger(SetAttributeController.class.getName());
+	private Logger log = Logger.getLogger(SetAttributeController.class.getName());
 	// 存储信息table里面的所有属性
 	ObservableList<AttributeCVF> attributeCVF;
 	@FXML
@@ -62,7 +62,7 @@ public class SetAttributeController implements Initializable {
 	private TextField txtCustomName;
 	@FXML
 	private TextField txtTableAlias;
-	
+
 	@FXML
 	private Button btnSuccess;
 	@FXML
@@ -73,8 +73,8 @@ public class SetAttributeController implements Initializable {
 	private Button btnAddProperty;
 	@FXML
 	private Button btnAddItem;
-	
-	//主键策略
+
+	// 主键策略
 	@FXML
 	private TextArea txtaSelectKey;
 	@FXML
@@ -96,7 +96,6 @@ public class SetAttributeController implements Initializable {
 	@FXML
 	private TableColumn<AttributeCVF, String> tdPropertyName;
 
-	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		tblEntityProperty.setEditable(true);
@@ -104,44 +103,43 @@ public class SetAttributeController implements Initializable {
 		tblEntityProperty.setPlaceholder(new Label("正在加载属性..."));
 		init();
 	}
-	
+
 	/**
-	 *初始化
+	 * 初始化
 	 */
 	public void init() {
 		log.debug("初始化修改属性页...");
-		IndexController indexContro=(IndexController) StageManager.CONTROLLER.get("index");
-		
+		IndexController indexContro = (IndexController) StageManager.CONTROLLER.get("index");
+
 		// 存储数据库指定数据库,修改属性时用
-		DatabaseConfig selectedDatabaseConfig=indexContro.getSelectedDatabaseConfig();
+		DatabaseConfig selectedDatabaseConfig = indexContro.getSelectedDatabaseConfig();
 		// 记录存储的表名,修改属性时用
-		String selectedTableName=indexContro.getSelectedTableName();
-		boolean falg=indexContro.isFalg();
-		initTablePrimaryKey(selectedDatabaseConfig,selectedTableName);
-		
+		String selectedTableName = indexContro.getSelectedTableName();
+		boolean falg = indexContro.isFalg();
+		initTablePrimaryKey(selectedDatabaseConfig, selectedTableName);
+
 		try {
 			log.debug("获得表的所有列并初始化成类的属性...");
-			if (falg == false) {
+			if (falg == true) {
 				// 获得工厂数据
 				attributeCVF = getAttributeCVFs(selectedDatabaseConfig, selectedTableName);
 			} else {
 				// 需要创建所有类的集合;
-				List<SuperAttribute> superAttributes = indexContro.getSuperAttributes();
-				if (superAttributes.size()>0) {
-					attributeCVF =FXCollections.observableList(superAttributes.get(0).getAttributes());
-				}else {
+				SuperAttribute attribute = indexContro.getThisSuperAttribute();
+				if (attribute != null) {
+					attributeCVF = FXCollections.observableList(attribute.getAttributes());
+				} else {
 					attributeCVF = getAttributeCVFs(selectedDatabaseConfig, selectedTableName);
 				}
 			}
 			log.debug("获得表的所有列并初始化成类的属性成功!");
 		} catch (Exception e) {
 			AlertUtil.showErrorAlert("加载属性列失败!失败原因:\r\n" + e.getMessage());
-			log.error("获得表的所有列并初始化成类的属性失败!!!"+e);
+			log.error("获得表的所有列并初始化成类的属性失败!!!" + e);
 		}
 
 		tdCheck.setCellFactory(CheckBoxTableCell.forTableColumn(tdCheck));
 		tdCheck.setCellValueFactory(new PropertyValueFactory<>("check"));
-
 		tdColumn.setCellValueFactory(new PropertyValueFactory<>("conlumn"));
 		tdJDBCType.setCellValueFactory(new PropertyValueFactory<>("jdbcType"));
 		tdJDBCType.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -158,31 +156,32 @@ public class SetAttributeController implements Initializable {
 		tdPropertyName.setOnEditCommit(event -> {
 			event.getTableView().getItems().get(event.getTablePosition().getRow()).setPropertyName(event.getNewValue());
 		});
-		
+
 		// 是否将字符驼峰命名;
 		if (chkUnlineCamel.isSelected()) {
 			toCamel();
 		} else {
 			notCamel();
 		}
-		indexContro.setFalg(true);
+		indexContro.setFalg(false);
 		log.debug("初始化属性页成功!");
 	}
-	
+
 	/**
 	 * 获得数据库列并初始化
 	 * 
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public ObservableList<AttributeCVF> getAttributeCVFs(DatabaseConfig config, String tableName) throws Exception {
 		List<AttributeCVF> attributeCVFs = DBUtil.getTableColumns(config, tableName);
 		return FXCollections.observableList(attributeCVFs);
 	}
+
 	/**
 	 * 初始化主键
 	 */
-	public void initTablePrimaryKey(DatabaseConfig selectedDatabaseConfig,String selectedTableName) {
+	public void initTablePrimaryKey(DatabaseConfig selectedDatabaseConfig, String selectedTableName) {
 		try {
 			log.debug("执行获取表的主键列...");
 			String key = DBUtil.getTablePrimaryKey(selectedDatabaseConfig, selectedTableName);
@@ -195,11 +194,11 @@ public class SetAttributeController implements Initializable {
 			}
 		} catch (Exception e) {
 			AlertUtil.showErrorAlert("获得主键失败!失败原因:\r\n" + e.getMessage());
-			log.error("获取表的主键列失败!!!"+e);
+			log.error("获取表的主键列失败!!!" + e);
 		}
 
 	}
-	
+
 	/**
 	 * 是否将java属性设置为驼峰命名
 	 * 
@@ -249,36 +248,40 @@ public class SetAttributeController implements Initializable {
 
 	/**
 	 * 生成主键策略
+	 * 
 	 * @param event
 	 */
 	public void selectKey(ActionEvent event) {
-		if (txtPrimaryKey.getText()==null||"".equals(txtPrimaryKey.getText())) {
+		if (txtPrimaryKey.getText() == null || "".equals(txtPrimaryKey.getText())) {
 			AlertUtil.showWarnAlert("你尚未选择表或者你所选择的表没有主键");
 			chkSelectKey.selectedProperty().set(false);
 			return;
 		}
-		if (chkSelectKey.isSelected()) {			
+		if (chkSelectKey.isSelected()) {
 			log.debug("执行添加主键策略...");
-		}else {
+		} else {
 			log.debug("取消添加主键策略...");
 		}
-		String keyType="";
+		String keyType = "";
+		String keyProperty = "";
 		for (AttributeCVF attr : tblEntityProperty.getItems()) {
 			if (attr.getConlumn().equals(txtPrimaryKey.getText())) {
-				keyType=attr.getJavaTypeValue();
+				keyType = attr.getJavaTypeValue();
+				keyProperty = attr.getPropertyName();
 				break;
 			}
 		}
-		String dbType=((IndexController) StageManager.CONTROLLER.get("index")).getSelectedDatabaseConfig().getDbType();
-		StringBuffer res=new StringBuffer();
-		res.append("        <selectKey keyProperty=\""+txtPrimaryKey.getText()+"\" resultType=\""+keyType+"\" ");
+		String dbType = ((IndexController) StageManager.CONTROLLER.get("index")).getSelectedDatabaseConfig()
+				.getDbType();
+		StringBuffer res = new StringBuffer();
+		res.append("        <selectKey keyProperty=\"" + keyProperty + "\" resultType=\"" + keyType + "\" ");
 		if ("MySQL".equals(dbType)) {
-			res.append("order=\"AFTER\">\r\n            SELECT LAST_INSERT_ID() AS "+txtPrimaryKey.getText());
-		}else if ("SqlServer".equals(dbType)) {
-			res.append("order=\"AFTER\">\r\n            SELECT SCOPE_IDENTITY() AS "+txtPrimaryKey.getText());
+			res.append("order=\"AFTER\">\r\n            SELECT LAST_INSERT_ID() AS " + keyProperty);
+		} else if ("SqlServer".equals(dbType)) {
+			res.append("order=\"AFTER\">\r\n            SELECT SCOPE_IDENTITY() AS " + keyProperty);
 		} else if ("PostgreSQL".equals(dbType)) {
-			res.append("order=\"BEFORE\">\r\n            SELECT nextval() AS "+txtPrimaryKey.getText());
-		}else {
+			res.append("order=\"BEFORE\">\r\n            SELECT nextval() AS " + keyProperty);
+		} else {
 			res.append("order=\"BEFORE\">\r\n            SELECT .Nextval FROM dual");
 		}
 		res.append("\r\n        </selectKey>");
@@ -287,13 +290,14 @@ public class SetAttributeController implements Initializable {
 		txtaSelectKey.setVisible(chkSelectKey.isSelected());
 		if (chkSelectKey.isSelected()) {
 			log.debug("添加主键策略成功!");
-		}else {
+		} else {
 			log.debug("取消添加主键策略成功!");
 		}
 	}
-	
+
 	/**
 	 * 将属性添加到属性表
+	 * 
 	 * @param event
 	 */
 	public void addToTable(ActionEvent event) {
@@ -305,19 +309,21 @@ public class SetAttributeController implements Initializable {
 		tblEntityProperty.getItems().add(attribute);
 		log.debug("添加自定义属性成功!");
 	}
-	
-	private boolean anyOpenPro=true;//用于作为判断打开添加属性(true)还是添加集合(false)
-	private int needOrNotCreatePages=0;//用于判断是否需要创建分页
+
+	private boolean anyOpenPro = true;// 用于作为判断打开添加属性(true)还是添加集合(false)
+	private int needOrNotCreatePages = 0;// 用于判断是否需要创建分页
+
 	/**
 	 * 添加新表作为属性
 	 */
 	public void addProperty() {
-		anyOpenPro=true;
+		anyOpenPro = true;
 		StageManager.CONTROLLER.put("attribute", this);
-		Stage stage=new Stage();
+		Stage stage = new Stage();
 		try {
 			log.debug("打开添加第二级添加新表作为属性窗口...");
-			Parent root= FXMLLoader.load(Thread.currentThread().getContextClassLoader().getResource(FXMLPage.ADD_SON_ATTRIBUTE.getFxml()));
+			Parent root = FXMLLoader.load(
+					Thread.currentThread().getContextClassLoader().getResource(FXMLPage.ADD_SON_ATTRIBUTE.getFxml()));
 			stage.setTitle("添加新表");
 			stage.getIcons().add(new Image("pers/resource/image/CMEUicon.png"));
 			stage.initModality(Modality.APPLICATION_MODAL);
@@ -325,21 +331,23 @@ public class SetAttributeController implements Initializable {
 			stage.show();
 			StageManager.STAGE.put("addPropertyBySon", stage);
 		} catch (IOException e) {
-			AlertUtil.showErrorAlert("初始化添加属性失败:\r\n原因:"+e.getMessage());
-			log.error("打开添加第二级添加新表作为属性窗口失败!!!"+e);
+			AlertUtil.showErrorAlert("初始化添加属性失败:\r\n原因:" + e.getMessage());
+			log.error("打开添加第二级添加新表作为属性窗口失败!!!" + e);
 		}
-		
+
 	}
+
 	/**
 	 * 添加新表作为集合
 	 */
 	public void addPropertyItem() {
-		anyOpenPro=false;
+		anyOpenPro = false;
 		StageManager.CONTROLLER.put("attribute", this);
-		Stage stage=new Stage();
+		Stage stage = new Stage();
 		try {
 			log.debug("打开添加第二级添加新表作为集合窗口...");
-			Parent root= FXMLLoader.load(Thread.currentThread().getContextClassLoader().getResource(FXMLPage.ADD_SON_ATTRIBUTE.getFxml()));
+			Parent root = FXMLLoader.load(
+					Thread.currentThread().getContextClassLoader().getResource(FXMLPage.ADD_SON_ATTRIBUTE.getFxml()));
 			stage.setTitle("添加新表");
 			stage.getIcons().add(new Image("pers/resource/image/CMEUicon.png"));
 			stage.initModality(Modality.APPLICATION_MODAL);
@@ -347,11 +355,11 @@ public class SetAttributeController implements Initializable {
 			stage.show();
 			StageManager.STAGE.put("addPropertyBySon", stage);
 		} catch (IOException e) {
-			AlertUtil.showErrorAlert("初始化添加属性失败:\r\n原因:"+e.getMessage());
-			log.error("打开添加第二级添加新表作为集合窗口失败!!!"+e);
+			AlertUtil.showErrorAlert("初始化添加属性失败:\r\n原因:" + e.getMessage());
+			log.error("打开添加第二级添加新表作为集合窗口失败!!!" + e);
 		}
 	}
-	
+
 	/**
 	 * 取消关闭该窗口
 	 * 
@@ -361,16 +369,24 @@ public class SetAttributeController implements Initializable {
 		boolean result = AlertUtil.showConfirmAlert("取消的话你全部的设置都不生效,确定取消吗?");
 		if (result) {
 			log.debug("取消所有属性的修改...");
-			// 表示不修改任何属性
-			((IndexController)StageManager.CONTROLLER.get("index")).setChangeInfo(false);
+			// 表示不修改任何属性并清除所有窗口
+			IndexController index = ((IndexController) StageManager.CONTROLLER.get("index"));
+			index.setChangeInfo(false);
+			index.setThisSuperAttribute(null);
+			if (index.getSuperAttributes() != null) {
+				index.getSuperAttributes().clear();
+			}
 			StageManager.STAGE.get("attribute").close();
 			StageManager.STAGE.remove("attribute");
+			StageManager.STAGE = null;
+			StageManager.CONTROLLER = null;
 		}
 	}
+
 	public void success() {
-		IndexController index=(IndexController)StageManager.CONTROLLER.get("index");
-		//设置当前页面所选择的信息
-		if (index.getThisSuperAttribute()==null) {
+		IndexController index = (IndexController) StageManager.CONTROLLER.get("index");
+		// 设置当前页面所选择的信息
+		if (index.getThisSuperAttribute() == null) {
 			index.setThisSuperAttribute(new SuperAttribute());
 		}
 		index.getThisSuperAttribute().setCamel(chkUnlineCamel.isSelected());
@@ -380,34 +396,44 @@ public class SetAttributeController implements Initializable {
 		index.getThisSuperAttribute().setConstructAll(chkConstructAll.isSelected());
 		index.getThisSuperAttribute().setCreateGetSet(chkGetAndSet.isSelected());
 		index.getThisSuperAttribute().setPrimaryKey(txtPrimaryKey.getText());
-		if (txtTableAlias!=null&&!(txtTableAlias.getText().isEmpty())) {
+		if (txtTableAlias != null && !(txtTableAlias.getText().isEmpty())) {
 			index.getThisSuperAttribute().setTableAlias(txtTableAlias.getText());
 		}
-		if (needOrNotCreatePages!=0) {
+		if (needOrNotCreatePages != 0) {
 			index.getThisSuperAttribute().setAnyHasColl(true);
 		}
 		if (chkSelectKey.isSelected()) {
 			index.getThisSuperAttribute().setSelectKey(txtaSelectKey.getText());
 		}
 		index.getThisSuperAttribute().setAttributes(tblEntityProperty.getItems());
-		List<ColumnItem> items=new ArrayList<ColumnItem>();
+		List<ColumnItem> items = new ArrayList<ColumnItem>();
 		for (AttributeCVF item : tblEntityProperty.getItems()) {
-			if (item.getColumnItem()==null) {
+			if (item.getColumnItem() == null) {
 				continue;
 			}
-			items.add(item.getColumnItem());
+			if (item.getCheck()) {
+				items.add(item.getColumnItem());
+			}else {
+				if (index.getThisSuperAttribute().getColumnItems()!=null) {
+					for (int i = 0; i < index.getThisSuperAttribute().getColumnItems().size(); i++) {
+						if (index.getThisSuperAttribute().getColumnItems().get(i).getClassName().equals(item.getColumnItem().getClassName())) {
+							index.getThisSuperAttribute().getColumnItems().remove(i);
+						}
+					}
+				}
+			}
 		}
-		if (items.size()>0) {
+		if (items.size() > 0) {
 			index.getThisSuperAttribute().setColumnItems(items);
 		}
-		
 		index.setChangeInfo(true);
 		StageManager.STAGE.get("attribute").close();
 		StageManager.STAGE.remove("attribute");
 		log.debug("保存修改属性的所有信息...");
 	}
-	//-----------------------get/set--------------------------------
-	public String getPrimaryKey(){
+
+	// -----------------------get/set--------------------------------
+	public String getPrimaryKey() {
 		return txtPrimaryKey.getText();
 	}
 
@@ -426,5 +452,5 @@ public class SetAttributeController implements Initializable {
 	public void setNeedOrNotCreatePages(int needOrNotCreatePages) {
 		this.needOrNotCreatePages = needOrNotCreatePages;
 	}
-	
+
 }

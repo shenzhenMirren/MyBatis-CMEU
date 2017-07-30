@@ -6,25 +6,24 @@ public class ServiceImplUtil {
 	private ServiceImplUtil() {
 	}
 
-	private static ServiceImplUtil serviceImplUtil = null;
-
 	public static ServiceImplUtil getInstance() {
-		if (serviceImplUtil == null) {
-			synchronized (ServiceImplUtil.class) {
-				if (serviceImplUtil == null) {
-					serviceImplUtil = new ServiceImplUtil();
-				}
-			}
-		}
-		return serviceImplUtil;
+		return new ServiceImplUtil();
 	}
 
-	public String getServiceImplString(String packageName,List<String> importSpaces, String daoName, String serviceName,
-			String serviceImplName, String entityName, String idType, boolean anyAssist,boolean anyHasColl) {
+	public String getServiceImplString(String packageName, List<String> importSpaces, String daoName,
+			String serviceName, String serviceImplName, String entityName, String idType, boolean anyAssist,
+			boolean anyHasColl, boolean anySpringAnno) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("package " + packageName + ";\r\n");
 		buffer.append(getImport(importSpaces));
+		if (anySpringAnno) {
+			buffer.append("import org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.stereotype.Service;\r\n");
+			buffer.append("@Service\r\n");
+		}
 		buffer.append("public class " + serviceImplName + " implements " + serviceName + "{\r\n");
+		if (anySpringAnno) {
+			buffer.append("    @Autowired\r\n");
+		}
 		buffer.append("    private " + daoName + " " + StrUtil.fristToLoCase(daoName) + ";\r\n");
 		buffer.append(getRowCount(StrUtil.fristToLoCase(daoName), entityName, anyAssist));
 		buffer.append(getSelectEntity(StrUtil.fristToLoCase(daoName), entityName, anyAssist));
@@ -54,7 +53,7 @@ public class ServiceImplUtil {
 	 * @return
 	 */
 	private String getImport(List<String> packages) {
-		if (packages == null ||packages.size()==0) {
+		if (packages == null || packages.size() == 0) {
 			return "";
 		}
 		StringBuffer result = new StringBuffer();
@@ -95,7 +94,8 @@ public class ServiceImplUtil {
 	private String getSelectEntity(String daoName, String entityName, boolean anyAssist) {
 		StringBuffer buffer = new StringBuffer();
 		if (anyAssist) {
-			buffer.append("    @Override\r\n    public List<" + entityName + "> select" + entityName + "(Assist assist){\r\n");
+			buffer.append("    @Override\r\n    public List<" + entityName + "> select" + entityName
+					+ "(Assist assist){\r\n");
 			buffer.append("        return " + daoName + ".select" + entityName + "(assist);\r\n");
 			buffer.append("    }\r\n");
 		} else {
@@ -105,6 +105,7 @@ public class ServiceImplUtil {
 		}
 		return buffer.toString();
 	}
+
 	/**
 	 * 获得需要分页的查询语句
 	 * 
@@ -115,11 +116,13 @@ public class ServiceImplUtil {
 	private String getSelectEntityOfPaging(String daoName, String entityName, boolean anyAssist) {
 		StringBuffer buffer = new StringBuffer();
 		if (anyAssist) {
-			buffer.append("    @Override\r\n    public List<" + entityName + "> select" + entityName + "OfPaging(Assist assist){\r\n");
+			buffer.append("    @Override\r\n    public List<" + entityName + "> select" + entityName
+					+ "OfPaging(Assist assist){\r\n");
 			buffer.append("        return " + daoName + ".select" + entityName + "OfPaging(assist);\r\n");
 			buffer.append("    }\r\n");
 		} else {
-			buffer.append("    @Override\r\n    public List<" + entityName + "> select" + entityName + "OfPaging(){\r\n");
+			buffer.append(
+					"    @Override\r\n    public List<" + entityName + "> select" + entityName + "OfPaging(){\r\n");
 			buffer.append("        return " + daoName + ".select" + entityName + "OfPaging();\r\n");
 			buffer.append("    }\r\n");
 		}
@@ -138,7 +141,8 @@ public class ServiceImplUtil {
 			return "";
 		}
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("    @Override\r\n    public " + entityName + " select" + entityName + "ById(" + idType + " id){\r\n");
+		buffer.append(
+				"    @Override\r\n    public " + entityName + " select" + entityName + "ById(" + idType + " id){\r\n");
 		buffer.append("        return " + daoName + ".select" + entityName + "ById(id);\r\n");
 		buffer.append("    }\r\n");
 		return buffer.toString();
@@ -166,7 +170,8 @@ public class ServiceImplUtil {
 	 */
 	private String getInsertNonEmpty(String daoName, String entityName) {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("    @Override\r\n    public int insertNonEmpty" + entityName + "(" + entityName + " value){\r\n");
+		buffer.append(
+				"    @Override\r\n    public int insertNonEmpty" + entityName + "(" + entityName + " value){\r\n");
 		buffer.append("        return " + daoName + ".insertNonEmpty" + entityName + "(value);\r\n");
 		buffer.append("    }\r\n");
 		return buffer.toString();
@@ -214,8 +219,8 @@ public class ServiceImplUtil {
 			buffer.append("        return " + daoName + ".update" + entityName + "ById(enti);\r\n");
 			buffer.append("    }\r\n");
 
-			buffer.append(
-					"    @Override\r\n    public int update" + entityName + "(" + entityName + " value, Assist assist){\r\n");
+			buffer.append("    @Override\r\n    public int update" + entityName + "(" + entityName
+					+ " value, Assist assist){\r\n");
 			buffer.append("        return " + daoName + ".update" + entityName + "(value,assist);\r\n");
 			buffer.append("    }\r\n");
 		} else {
@@ -236,8 +241,8 @@ public class ServiceImplUtil {
 	private String getUpdateNonEmpty(String daoName, String entityName, boolean anyAssist) {
 		StringBuffer buffer = new StringBuffer();
 		if (anyAssist) {
-			buffer.append(
-					"    @Override\r\n    public int updateNonEmpty" + entityName + "ById(" + entityName + " enti){\r\n");
+			buffer.append("    @Override\r\n    public int updateNonEmpty" + entityName + "ById(" + entityName
+					+ " enti){\r\n");
 			buffer.append("        return " + daoName + ".updateNonEmpty" + entityName + "ById(enti);\r\n");
 			buffer.append("    }\r\n");
 
@@ -246,8 +251,8 @@ public class ServiceImplUtil {
 			buffer.append("        return " + daoName + ".updateNonEmpty" + entityName + "(value,assist);\r\n");
 			buffer.append("    }\r\n");
 		} else {
-			buffer.append(
-					"    @Override\r\n    public int updateNonEmpty" + entityName + "ById(" + entityName + " enti){\r\n");
+			buffer.append("    @Override\r\n    public int updateNonEmpty" + entityName + "ById(" + entityName
+					+ " enti){\r\n");
 			buffer.append("        return " + daoName + ".updateNonEmpty" + entityName + "ById(enti);\r\n");
 			buffer.append("    }\r\n");
 		}

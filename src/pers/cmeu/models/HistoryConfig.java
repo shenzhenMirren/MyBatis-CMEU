@@ -22,6 +22,7 @@ public class HistoryConfig {
 	private String myUtilPackage;
 	private String myUtilName;
 	private boolean isService;
+	private boolean isSpringAnno;
 	private boolean isAssist;
 	private boolean isConfig;
 	private boolean isMyUtil;
@@ -176,13 +177,20 @@ public class HistoryConfig {
 	public void setService(boolean isService) {
 		this.isService = isService;
 	}
+	
+	public boolean isSpringAnno() {
+		return isSpringAnno;
+	}
+	public void setSpringAnno(boolean isSpringAnno) {
+		this.isSpringAnno = isSpringAnno;
+	}
 	public HistoryConfig() {
 		super();
 	}
 	public HistoryConfig(String projectPath, String rootDir, String daoPackage, String daoName, String servicePackage,
 			String serviceName, String serviceImplPackage, String serviceImplName, String entityPackage,
 			String entityName, String mapPackage, String mapName,String updateMapper, String assistPackage, String assistName,
-			String configPackage, String configName, String myUtilPackage, String myUtilName, boolean isService,
+			String configPackage, String configName, String myUtilPackage, String myUtilName, boolean isService,boolean isSpringAnno,
 			boolean isAssist, boolean isConfig, boolean isMyUtil) {
 		super();
 		this.projectPath = projectPath;
@@ -205,6 +213,7 @@ public class HistoryConfig {
 		this.myUtilPackage = myUtilPackage;
 		this.myUtilName = myUtilName;
 		this.isService = isService;
+		this.isSpringAnno = isSpringAnno;
 		this.isAssist = isAssist;
 		this.isConfig = isConfig;
 		this.isMyUtil = isMyUtil;

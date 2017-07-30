@@ -5,22 +5,13 @@ import java.util.List;
 public class DaoUtil {
 	private DaoUtil() {
 	};
-
-	private static DaoUtil daoUtil = null;
-
 	public static DaoUtil getInstance() {
-		if (daoUtil == null) {
-			synchronized (DaoUtil.class) {
-				if (daoUtil == null) {
-					daoUtil = new DaoUtil();
-				}
-			}
-		}
-		return daoUtil;
+		return new DaoUtil();
 	}
 
 	/**
 	 * 获得dao层字符串
+	 * 
 	 * @param packageName
 	 * @param importSpaces
 	 * @param daoName
@@ -30,7 +21,7 @@ public class DaoUtil {
 	 * @return
 	 */
 	public String getDaoString(String packageName, List<String> importSpaces, String daoName, String entityName,
-			String idType, boolean anyAssist,boolean anyHasColl) {
+			String idType, boolean anyAssist, boolean anyHasColl) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("package " + packageName + ";\r\n");
 		buffer.append(getImport(importSpaces));
@@ -75,11 +66,22 @@ public class DaoUtil {
 	 * @return
 	 */
 	private String getRowCount(String entityName, boolean anyAssist) {
+		StringBuffer countStr = new StringBuffer();
+		countStr.append("	/**\r\n");
 		if (anyAssist) {
-			return "    long get" + entityName + "RowCount(Assist assist);\r\n";
+			countStr.append("	 * 获得" + entityName + "数据的总行数,可以通过辅助工具Assist进行条件查询,如果没有条件则传入null\r\n");
+			countStr.append("	 * @param assist\r\n");
 		} else {
-			return "    long get" + entityName + "RowCount();\r\n";
+			countStr.append("	 * 获得" + entityName + "数据的总行数\r\n");
 		}
+		countStr.append("	 * @return\r\n");
+		countStr.append("	 */\r\n");
+		if (anyAssist) {
+			countStr.append("    long get" + entityName + "RowCount(Assist assist);\r\n");
+		} else {
+			countStr.append("    long get" + entityName + "RowCount();\r\n");
+		}
+		return countStr.toString();
 	}
 
 	/**
@@ -90,25 +92,50 @@ public class DaoUtil {
 	 * @return
 	 */
 	private String getSelectEntity(String entityName, boolean anyAssist) {
+		StringBuffer countStr = new StringBuffer();
+		countStr.append("	/**\r\n");
 		if (anyAssist) {
-			return "    List<" + entityName + "> select" + entityName + "(Assist assist);\r\n";
+			countStr.append("	 * 获得" + entityName + "数据集合,可以通过辅助工具Assist进行条件查询,如果没有条件则传入null\r\n");
+			countStr.append("	 * @param assist\r\n");
 		} else {
-			return "    List<" + entityName + "> select" + entityName + "();\r\n";
+			countStr.append("	 * 获得" + entityName + "数据集合\r\n");
 		}
+		countStr.append("	 * @return\r\n");
+		countStr.append("	 */\r\n");
+		if (anyAssist) {
+			countStr.append("    List<" + entityName + "> select" + entityName + "(Assist assist);\r\n");
+		} else {
+			countStr.append("    List<" + entityName + "> select" + entityName + "();\r\n");
+		}
+		return countStr.toString();
 	}
-	
+
 	/**
 	 * 获得需要分页的查询语句
+	 * 
 	 * @param entityName
 	 * @param anyAssist
 	 * @return
 	 */
-	private String getSelectEntityOfPaging(String entityName, boolean anyAssist){
+	private String getSelectEntityOfPaging(String entityName, boolean anyAssist) {
+		StringBuffer countStr = new StringBuffer();
+		countStr.append("	/**\r\n");
 		if (anyAssist) {
-			return "    List<" + entityName + "> select" + entityName + "OfPaging(Assist assist);\r\n";
+			countStr.append("	 * 获得" + entityName
+					+ "数据集合,该方法为多表关联时保证分页的数据不缺失不重复,可以正常得到所有数据,如果非多表分页的情况建议使用不带ofPaging的方法,可以通过辅助工具Assist进行查询,如果没有条件则传入null\r\n");
+			countStr.append("	 * @param assist\r\n");
 		} else {
-			return "    List<" + entityName + "> select" + entityName + "OfPaging();\r\n";
+			countStr.append(
+					"	 * 获得" + entityName + "数据集合,该方法为多表关联时保证分页的数据不缺失不重复,可以正常得到所有数据,如果非多表分页的情况建议使用不带ofPaging的方法\r\n");
 		}
+		countStr.append("	 * @return\r\n");
+		countStr.append("	 */\r\n");
+		if (anyAssist) {
+			countStr.append("    List<" + entityName + "> select" + entityName + "OfPaging(Assist assist);\r\n");
+		} else {
+			countStr.append("    List<" + entityName + "> select" + entityName + "OfPaging();\r\n");
+		}
+		return countStr.toString();
 	}
 
 	/**
@@ -122,7 +149,14 @@ public class DaoUtil {
 		if (idType == null) {
 			return "";
 		}
-		return "    " + entityName + " select" + entityName + "ById(" + idType + " id);\r\n";
+		StringBuffer countStr = new StringBuffer();
+		countStr.append("	/**\r\n");
+		countStr.append("	 * 通过" + entityName + "的id获得" + entityName + "对象\r\n");
+		countStr.append("	 * @param id\r\n");
+		countStr.append("	 * @return\r\n");
+		countStr.append("	 */\r\n");
+		countStr.append("    " + entityName + " select" + entityName + "ById(" + idType + " id);\r\n");
+		return countStr.toString();
 	}
 
 	/**
@@ -132,7 +166,14 @@ public class DaoUtil {
 	 * @return
 	 */
 	private String getInsert(String entityName) {
-		return "    int insert" + entityName + "(" + entityName + " value);\r\n";
+		StringBuffer countStr = new StringBuffer();
+		countStr.append("	/**\r\n");
+		countStr.append("	 * 插入" + entityName + "到数据库,包括null值\r\n");
+		countStr.append("	 * @param value\r\n");
+		countStr.append("	 * @return\r\n");
+		countStr.append("	 */\r\n");
+		countStr.append("    int insert" + entityName + "(" + entityName + " value);\r\n");
+		return countStr.toString();
 	}
 
 	/**
@@ -142,7 +183,14 @@ public class DaoUtil {
 	 * @return
 	 */
 	private String getInsertNonEmpty(String entityName) {
-		return "    int insertNonEmpty" + entityName + "(" + entityName + " value);\r\n";
+		StringBuffer countStr = new StringBuffer();
+		countStr.append("	/**\r\n");
+		countStr.append("	 * 插入" + entityName + "中属性值不为null的数据到数据库\r\n");
+		countStr.append("	 * @param value\r\n");
+		countStr.append("	 * @return\r\n");
+		countStr.append("	 */\r\n");
+		countStr.append("    int insertNonEmpty" + entityName + "(" + entityName + " value);\r\n");
+		return countStr.toString();
 	}
 
 	/**
@@ -156,12 +204,26 @@ public class DaoUtil {
 		if (idType == null) {
 			return "";
 		}
+		StringBuffer countStr = new StringBuffer();
+		countStr.append("	/**\r\n");
+		countStr.append("	 * 通过" + entityName + "的id删除" + entityName + "\r\n");
+		countStr.append("	 * @param id\r\n");
+		countStr.append("	 * @return\r\n");
+		countStr.append("	 */\r\n");
+
 		if (anyAssist) {
-			return "    int delete" + entityName + "ById(" + idType + " id);\r\n    int delete" + entityName
-					+ "(Assist assist);\r\n";
+			countStr.append("    int delete" + entityName + "ById(" + idType + " id);\r\n");
+			countStr.append("	/**\r\n");
+			countStr.append("	 * 通过辅助工具Assist的条件删除" + entityName + "\r\n");
+			countStr.append("	 * @param assist\r\n");
+			countStr.append("	 * @return\r\n");
+			countStr.append("	 */\r\n");
+			countStr.append("    int delete" + entityName + "(Assist assist);\r\n");
 		} else {
-			return "    int delete" + entityName + "ById(" + idType + " id);\r\n";
+			countStr.append("    int delete" + entityName + "ById(" + idType + " id);\r\n");
 		}
+
+		return countStr.toString();
 	}
 
 	/**
@@ -172,12 +234,28 @@ public class DaoUtil {
 	 * @return
 	 */
 	private String getUpdate(String entityName, boolean anyAssist) {
+		StringBuffer countStr = new StringBuffer();
+		countStr.append("	/**\r\n");
+		countStr.append("	 * 通过" + entityName + "的id更新" + entityName + "中的数据,包括null值\r\n");
+		countStr.append("	 * @param enti\r\n");
+		countStr.append("	 * @return\r\n");
+		countStr.append("	 */\r\n");
+
 		if (anyAssist) {
-			return "    int update" + entityName + "ById(" + entityName + " enti);\r\n    int update" + entityName
-					+ "(@Param(\"enti\") " + entityName + " value, @Param(\"assist\") Assist assist);\r\n";
+			countStr.append("    int update" + entityName + "ById(" + entityName + " enti);\r\n ");
+			countStr.append("	/**\r\n");
+			countStr.append("	 * 通过辅助工具Assist的条件更新" + entityName + "中的数据,包括null值\r\n");
+			countStr.append("	 * @param value\r\n");
+			countStr.append("	 * @param assist\r\n");
+			countStr.append("	 * @return\r\n");
+			countStr.append("	 */\r\n");
+			countStr.append("    int update" + entityName + "(@Param(\"enti\") " + entityName
+					+ " value, @Param(\"assist\") Assist assist);\r\n");
 		} else {
-			return "    int update" + entityName + "ById(" + entityName + " enti);\r\n";
+			countStr.append("    int update" + entityName + "ById(" + entityName + " enti);\r\n");
 		}
+
+		return countStr.toString();
 	}
 
 	/**
@@ -188,12 +266,29 @@ public class DaoUtil {
 	 * @return
 	 */
 	private String getUpdateNonEmpty(String entityName, boolean anyAssist) {
+		StringBuffer countStr = new StringBuffer();
+		countStr.append("	/**\r\n");
+		countStr.append("	 * 通过" + entityName + "的id更新" + entityName + "中属性不为null的数据\r\n");
+		countStr.append("	 * @param enti\r\n");
+		countStr.append("	 * @return\r\n");
+		countStr.append("	 */\r\n");
+
 		if (anyAssist) {
-			return "    int updateNonEmpty" + entityName + "ById(" + entityName + " enti);\r\n    int updateNonEmpty"
-					+ entityName + "(@Param(\"enti\") " + entityName + " value, @Param(\"assist\") Assist assist);\r\n";
+			countStr.append("    int updateNonEmpty" + entityName + "ById(" + entityName + " enti);\r\n ");
+			countStr.append("	/**\r\n");
+			countStr.append("	 * 通过辅助工具Assist的条件更新" + entityName + "中属性不为null的数据\r\n");
+			countStr.append("	 * @param value\r\n");
+			countStr.append("	 * @param assist\r\n");
+			countStr.append("	 * @return\r\n");
+			countStr.append("	 */\r\n");
+			countStr.append("    int updateNonEmpty" + entityName + "(@Param(\"enti\") " + entityName
+					+ " value, @Param(\"assist\") Assist assist);\r\n");
 		} else {
-			return "    int updateNonEmpty" + entityName + "ById(" + entityName + " enti);\r\n";
+			countStr.append("    int updateNonEmpty" + entityName + "ById(" + entityName + " enti);\r\n");
 		}
+
+		return countStr.toString();
+
 	}
 
 }

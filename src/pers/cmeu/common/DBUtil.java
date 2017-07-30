@@ -97,6 +97,7 @@ public class DBUtil {
 		while (rs.next()) {
 			AttributeCVF attribute = new AttributeCVF();
 			attribute.setConlumn(rs.getString("COLUMN_NAME"));
+			attribute.setComment(rs.getString("REMARKS"));
 			attribute.setJavaType(JavaType.jdbcTypeToJavaType(rs.getString("TYPE_NAME")));
 			attribute.setJdbcType(JDBCType.valiJDBCType(rs.getString("TYPE_NAME").toUpperCase()));
 			result.add(attribute);

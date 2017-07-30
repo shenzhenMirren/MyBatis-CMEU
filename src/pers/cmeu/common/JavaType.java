@@ -83,7 +83,7 @@ public class JavaType {
 	 * @return
 	 */
 	public static boolean isLong(String str) {
-		if (str.equalsIgnoreCase("Long") || str.equalsIgnoreCase("BIGINT")) {
+		if (str.equalsIgnoreCase("Long") || str.equalsIgnoreCase("BIGINT")||str.equalsIgnoreCase("unsigned")) {
 			return true;
 		} else {
 			return false;

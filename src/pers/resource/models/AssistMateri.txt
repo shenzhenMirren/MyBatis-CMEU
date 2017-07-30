@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * This is EUCM's helper class
+ * 
  * @author Mirren
  */
 public class Assist {
@@ -19,8 +20,10 @@ public class Assist {
 	private String resultColumn;
 	// 条件集
 	private List<whereRequire> require = null;
+
 	/**
 	 * 条件类,require属性为列的条件,value为条件值
+	 * 
 	 * @author Mirren
 	 */
 	public class whereRequire {
@@ -50,11 +53,12 @@ public class Assist {
 		}
 
 	}
-	
 
 	/**
 	 * 添加查询条件,参数为Assist的内部类whereRequire,推荐使用Assist的静态条件方法添加条件;
-	 * @param require 示例:Assist.and_lt("id",10),...
+	 * 
+	 * @param require
+	 *            示例:Assist.and_lt("id",10),...
 	 */
 	public void setRequires(whereRequire... require) {
 		if (this.require == null) {
@@ -67,148 +71,155 @@ public class Assist {
 
 	/**
 	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire and_eq(String column, String req) {
+	public static whereRequire andEq(String column, String req) {
 		return new Assist().new whereRequire("and " + column + " = ", req);
 	}
 
-
 	/**
 	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire or_eq(String column, String req) {
+	public static whereRequire orEq(String column, String req) {
 		return new Assist().new whereRequire("or " + column + " = ", req);
 	}
 
-
 	/**
 	 * 参数(列名)1 <>(不等于) 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire and_neq(String column, String req) {
+	public static whereRequire andNeq(String column, String req) {
 		return new Assist().new whereRequire("and " + column + " <> ", req);
 	}
 
-
 	/**
 	 * 参数(列名)1 <>(不等于) 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire or_neq(String column, String req) {
+	public static whereRequire orNeq(String column, String req) {
 		return new Assist().new whereRequire("or " + column + " <> ", req);
 	}
 
 	/**
 	 * 参数(列名)1 < 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire and_lt(String column, String req) {
+	public static whereRequire andLt(String column, String req) {
 		return new Assist().new whereRequire("and " + column + "< ", req);
 	}
 
 	/**
 	 * 参数(列名)1 < 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire or_lt(String column, String req) {
+	public static whereRequire orLt(String column, String req) {
 		return new Assist().new whereRequire("or " + column + " < ", req);
 	}
 
 	/**
 	 * 参数(列名)1 <= 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire and_lte(String column, String req) {
+	public static whereRequire andLte(String column, String req) {
 		return new Assist().new whereRequire("and " + column + " <= ", req);
 	}
 
-	
 	/**
 	 * 参数(列名)1 <= 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire or_lte(String column, String req) {
+	public static whereRequire orLte(String column, String req) {
 		return new Assist().new whereRequire("or " + column + " <= ", req);
 	}
 
-
 	/**
 	 * 参数(列名)1 > 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire and_gt(String column, String req) {
+	public static whereRequire andGt(String column, String req) {
 		return new Assist().new whereRequire("and " + column + " > ", req);
 	}
 
 	/**
 	 * 参数(列名)1 > 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire or_gt(String column, String req) {
+	public static whereRequire orGt(String column, String req) {
 		return new Assist().new whereRequire("or " + column + " > ", req);
 	}
 
-
 	/**
 	 * 参数(列名)1 >= 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire and_gte(String column, String req) {
+	public static whereRequire andGte(String column, String req) {
 		return new Assist().new whereRequire("and " + column + " >= ", req);
 	}
 
-
 	/**
 	 * 参数(列名)1 >= 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire or_gte(String column, String req) {
+	public static whereRequire orGte(String column, String req) {
 		return new Assist().new whereRequire("or " + column + " >= ", req);
 	}
 
 	/**
 	 * 参数(列名)1 like '参数(条件)2' ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire and_like(String column, String req) {
+	public static whereRequire andLike(String column, String req) {
 		return new Assist().new whereRequire("and " + column + " like ", req);
 	}
 
 	/**
 	 * 参数(列名)1 like '参数(条件)2' ;如果表中存在相同列名,使用表名.列名,如果不存在相同列名可以直接列名
+	 * 
 	 * @param column
 	 * @param req
 	 * @return
 	 */
-	public static whereRequire or_like(String column, String req) {
+	public static whereRequire orLike(String column, String req) {
 		return new Assist().new whereRequire("or " + column + " like ", req);
 	}
 
@@ -226,17 +237,19 @@ public class Assist {
 			this.order = "order By " + column + " desc";
 		}
 	}
-	
+
 	/**
 	 * 获得是否去重
+	 * 
 	 * @return
 	 */
 	public String getDistinct() {
 		return distinct;
 	}
-	
+
 	/**
 	 * 设置是否去重
+	 * 
 	 * @param distinct
 	 */
 	public void setDistinct(boolean distinct) {
@@ -244,16 +257,19 @@ public class Assist {
 			this.distinct = "distinct";
 		}
 	}
+
 	/**
 	 * 获得排序
+	 * 
 	 * @return
 	 */
 	public String getOrder() {
 		return order;
 	}
-	
+
 	/**
 	 * 获得开始分页行
+	 * 
 	 * @return
 	 */
 	public Integer getStartRow() {
@@ -268,9 +284,10 @@ public class Assist {
 	public void setStartRow(Integer startRow) {
 		this.startRow = startRow;
 	}
-	
+
 	/**
 	 * 获得每次取多少行数据
+	 * 
 	 * @return
 	 */
 	public Integer getRowSize() {
@@ -285,24 +302,29 @@ public class Assist {
 	public void setRowSize(Integer rowSize) {
 		this.rowSize = rowSize;
 	}
-	
+
 	/**
 	 * 获得返回指定列
+	 * 
 	 * @return
 	 */
 	public String getResultColumn() {
 		return resultColumn;
 	}
-	
+
 	/**
-	 * 设置返回指定列多个列以,逗号隔开;需要特别注意的是返回列需要起别名,别名以mapper里面的resultMap的column为准;一般是类名加上属性的顺序号,
+	 * 设置返回指定列多个列以,逗号隔开;需要特别注意的是返回列需要起别名,别名以mapper里面的resultMap的column为准;
+	 * 一般是类名加上属性的顺序号,
+	 * 
 	 * @return
 	 */
 	public void setResultColumn(String resultColumn) {
 		this.resultColumn = resultColumn;
 	}
+
 	/**
 	 * 获得条件集
+	 * 
 	 * @return
 	 */
 	public List<whereRequire> getRequire() {
@@ -329,6 +351,4 @@ public class Assist {
 		}
 	}
 
-
 }
-

@@ -26,23 +26,20 @@ import pers.cmeu.models.SuperAttribute;
  * @author Mirren
  *
  */
+/**
+ * @author Mirren
+ *
+ */
 public class CreateFileUtil {
-	private Logger log=Logger.getLogger(CreateFileUtil.class.getName());
-	private static CreateFileUtil createFileUtil = null;
+	private Logger log = Logger.getLogger(CreateFileUtil.class.getName());
 
 	private CreateFileUtil() {
 	}
 
 	public static CreateFileUtil getInstance() {
-		if (createFileUtil == null) {
-			synchronized (CreateFileUtil.class) {
-				if (createFileUtil == null) {
-					createFileUtil = new CreateFileUtil();
-				}
-			}
-		}
-		return createFileUtil;
+		return new CreateFileUtil();
 	}
+
 	private String codeFormat;
 	private String projectPath;
 	private String projectRoot;
@@ -50,12 +47,13 @@ public class CreateFileUtil {
 	private String daoPackage;
 	private String mapPackage;
 	private boolean createService;
+	private boolean createSpringAnno;
 	private String servicePackage;
 	private String serviceImplPackage;
 	private String updateMapperURL;
 	private DatabaseConfig databaseConfig;
 	private List<SuperAttribute> attributes;
-		
+
 	private boolean createAssist;
 	private String assistPackage;
 	private String assistName;
@@ -65,7 +63,6 @@ public class CreateFileUtil {
 	private boolean createMyUtil;
 	private String myUtilPackage;
 	private String myUtilName;
-	
 
 	/**
 	 * 初始化数据
@@ -89,20 +86,21 @@ public class CreateFileUtil {
 	 * @param myUtilPackage
 	 * @param myUtilName
 	 */
-	public void init(DatabaseConfig databaseConfig, List<SuperAttribute> attributes,String codeFormat, String projectPath,
-			String projectRoot, String entityPackage, String daoPackage, String mapPackage, boolean createService,
-			String servicePackage, String serviceImplPackage, String updateMapperURL, boolean createAssist,
-			String assistPackage, String assistName, boolean createConfig, String configPackage, String configName,
-			boolean createMyUtil, String myUtilPackage, String myUtilName) {
+	public void init(DatabaseConfig databaseConfig, List<SuperAttribute> attributes, String codeFormat,
+			String projectPath, String projectRoot, String entityPackage, String daoPackage, String mapPackage,
+			boolean createService, boolean createSpringAnno, String servicePackage, String serviceImplPackage,
+			String updateMapperURL, boolean createAssist, String assistPackage, String assistName, boolean createConfig,
+			String configPackage, String configName, boolean createMyUtil, String myUtilPackage, String myUtilName) {
 		setDatabaseConfig(databaseConfig);
 		setAttributes(attributes);
-		this.codeFormat=codeFormat;
+		this.codeFormat = codeFormat;
 		setProjectPath(projectPath);
 		setProjectRoot(projectRoot);
 		setEntityPackage(entityPackage);
 		setDaoPackage(daoPackage);
 		setMapPackage(mapPackage);
 		this.createService = createService;
+		this.createSpringAnno=createSpringAnno;
 		setServicePackage(servicePackage);
 		setServiceImplPackage(serviceImplPackage);
 		setUpdateMapperURL(updateMapperURL);
@@ -144,12 +142,12 @@ public class CreateFileUtil {
 		if (createService) {
 			andCreateDir = createServiceDir();
 		}
-		
-		Set<String> mapperURL=null;
-		if (!createConfig||updateMapperURL!=null) {
-			mapperURL=new HashSet<String>();
+
+		Set<String> mapperURL = null;
+		if (!createConfig || updateMapperURL != null) {
+			mapperURL = new HashSet<String>();
 		}
-		
+
 		// 生成相应的类与文件
 		for (SuperAttribute attr : attributes) {
 			// -----------通用变量--------------
@@ -158,13 +156,13 @@ public class CreateFileUtil {
 			String ketType = TableUtil.getParmaryKeyType(attr.getPrimaryKey(), attr.getAttributes());
 			log.debug("获得表主键列对应的java数据类型成功!");
 			// -------------------------------
-			//获得更新mapper更新的mapper包名及名称;
-			if (!createConfig||updateMapperURL!=null) {
-				if (attr.getMapperName()!=null) {
-					mapperURL.add(mapPackage+attr.getMapperName()+ ".xml");
+			// 获得更新mapper更新的mapper包名及名称;
+			if (!createConfig || updateMapperURL != null) {
+				if (attr.getMapperName() != null) {
+					mapperURL.add(mapPackage + attr.getMapperName() + ".xml");
 				}
 			}
-			
+
 			// 生成实体类
 			if (attr.getClassName() != null) {
 				log.debug("执行生成实体类...");
@@ -176,8 +174,8 @@ public class CreateFileUtil {
 				}
 				List<String[]> property = new ArrayList<String[]>();
 				for (AttributeCVF cvf : attr.getAttributes()) {
-					if (cvf.getCheck()==true) {
-						property.add(new String[] { cvf.getJavaTypeValue(), cvf.getPropertyName() });
+					if (cvf.getCheck() == true) {
+						property.add(new String[] { cvf.getJavaTypeValue(), cvf.getPropertyName(),cvf.getComment() });
 					}
 				}
 				Path entityPath = Paths.get(projectPath, projectRoot, entityPackage, attr.getClassName() + ".java");
@@ -198,7 +196,7 @@ public class CreateFileUtil {
 					daoInport.add("org.apache.ibatis.annotations.Param");
 				}
 				String daoStr = DaoUtil.getInstance().getDaoString(uriToPackage(daoPackage), daoInport,
-						attr.getDaoName(), attr.getClassName(), ketType, createAssist,attr.isAnyHasColl());
+						attr.getDaoName(), attr.getClassName(), ketType, createAssist, attr.isAnyHasColl());
 				Path daoPath = Paths.get(projectPath, projectRoot, daoPackage, attr.getDaoName() + ".java");
 				createFile(daoPath, daoStr);
 				log.debug("生成dao成功!");
@@ -207,8 +205,7 @@ public class CreateFileUtil {
 			if (attr.getMapperName() != null) {
 				log.debug("执行生成Mapper...");
 				String mapStr = MapperUtil.getInstance().getMapperString(
-						uriToPackage(daoPackage) + "." + attr.getDaoName(),
-						uriToPackage(entityPackage) ,
+						uriToPackage(daoPackage) + "." + attr.getDaoName(), uriToPackage(entityPackage),
 						uriToPackage(assistPackage), databaseConfig.getDbType(), attr, createAssist,
 						attr.isCreateJDBCType());
 				Path mapPath = Paths.get(projectPath, projectRoot, mapPackage, attr.getMapperName() + ".xml");
@@ -216,46 +213,53 @@ public class CreateFileUtil {
 				log.debug("生成Mapper成功!");
 			}
 
-			// 生成service
-			if (attr.getServiceName() != null) {
-				if (!andCreateDir) {
-					andCreateDir = createServiceDir();
-				}
-				// 生成接口
+			if (createService) {
+				// 生成service
 				if (attr.getServiceName() != null) {
-					log.debug("执行生成service...");
-					List<String> serImport =new ArrayList<String>();
-					serImport.add("java.util.List");
-					serImport.add(uriToPackage(entityPackage) + "." + attr.getClassName());
-					if (createAssist) {
-						serImport.add(uriToPackage(assistPackage) + "." + assistName);
+					if (!andCreateDir) {
+						andCreateDir = createServiceDir();
 					}
-					String serStr = ServiceUtil.getInstance().getServiceString(uriToPackage(servicePackage), serImport,
-							attr.getServiceName(), attr.getClassName(), ketType, createAssist,attr.isAnyHasColl());
-					Path serPath = Paths.get(projectPath, projectRoot, servicePackage, attr.getServiceName() + ".java");
-					createFile(serPath, serStr);
-					log.debug("生成service成功!");
-				}
-				// 生成实现
-				if (attr.getServiceImplName() != null) {
-					log.debug("执行生成serviceImpl...");
-					List<String> serImplImport =new ArrayList<String>();
-					serImplImport.add("java.util.List");
-					serImplImport.add(uriToPackage(daoPackage) + "." + attr.getDaoName());
-					serImplImport.add(uriToPackage(entityPackage) + "." + attr.getClassName());
-					if (createAssist) {
-						serImplImport.add(uriToPackage(assistPackage) + "." + assistName);
+					// 生成接口
+					if (attr.getServiceName() != null) {
+						log.debug("执行生成service...");
+						List<String> serImport = new ArrayList<String>();
+						serImport.add("java.util.List");
+						serImport.add(uriToPackage(entityPackage) + "." + attr.getClassName());
+						if (createAssist) {
+							serImport.add(uriToPackage(assistPackage) + "." + assistName);
+						}
+						String serStr = ServiceUtil.getInstance().getServiceString(uriToPackage(servicePackage),
+								serImport, attr.getServiceName(), attr.getClassName(), ketType, createAssist,
+								attr.isAnyHasColl());
+						Path serPath = Paths.get(projectPath, projectRoot, servicePackage,
+								attr.getServiceName() + ".java");
+						createFile(serPath, serStr);
+						log.debug("生成service成功!");
 					}
-					if (!serviceImplPackage.equals(servicePackage)) {
-						serImplImport.add(uriToPackage(servicePackage)+"."+attr.getServiceName());
+					// 生成实现
+					if (attr.getServiceImplName() != null) {
+						log.debug("执行生成serviceImpl...");
+						List<String> serImplImport = new ArrayList<String>();
+						serImplImport.add("java.util.List");
+						serImplImport.add(uriToPackage(daoPackage) + "." + attr.getDaoName());
+						serImplImport.add(uriToPackage(entityPackage) + "." + attr.getClassName());
+						if (createAssist) {
+							serImplImport.add(uriToPackage(assistPackage) + "." + assistName);
+						}
+						if (!serviceImplPackage.equals(servicePackage)) {
+							serImplImport.add(uriToPackage(servicePackage) + "." + attr.getServiceName());
+						}
+						String serImplStr = ServiceImplUtil.getInstance().getServiceImplString(
+								uriToPackage(serviceImplPackage), serImplImport, attr.getDaoName(),
+								attr.getServiceName(), attr.getServiceImplName(), attr.getClassName(), ketType,
+								createAssist, attr.isAnyHasColl(),this.createSpringAnno);
+						Path serImplPath = Paths.get(projectPath, projectRoot, serviceImplPackage,
+								attr.getServiceImplName() + ".java");
+						createFile(serImplPath, serImplStr);
+						log.debug("生成serviceImpl成功!");
 					}
-					String serImplStr=ServiceImplUtil.getInstance().getServiceImplString(uriToPackage(serviceImplPackage), serImplImport, attr.getDaoName(), attr.getServiceName(), attr.getServiceImplName(), attr.getClassName(), ketType, createAssist,attr.isAnyHasColl());
-					Path serImplPath = Paths.get(projectPath, projectRoot, serviceImplPackage, attr.getServiceImplName() + ".java");
-					createFile(serImplPath, serImplStr);
-					log.debug("生成serviceImpl成功!");
 				}
 			}
-
 		}
 
 		// 判断是否需要创建Assist,如果需要就创建
@@ -276,9 +280,9 @@ public class CreateFileUtil {
 				Path path = Paths.get(projectPath, projectRoot, configPackage, configName);
 				createMyBatisConfig(path);
 			}
-		} else if (updateMapperURL != null && !("".equals(updateMapperURL))&&mapperURL!=null) {
+		} else if (updateMapperURL != null && !("".equals(updateMapperURL)) && mapperURL != null) {
 			log.debug("执行更新MyBatis配置文件资源路径...");
-			String updateStr=MyBatisConfigUtil.getInstance().getNewConfig(updateMapperURL, mapperURL);
+			String updateStr = MyBatisConfigUtil.getInstance().getNewConfig(updateMapperURL, mapperURL);
 			createFile(Paths.get(updateMapperURL), updateStr);
 
 			log.debug("更新MyBatis配置文件资源路径成功!");
@@ -374,9 +378,9 @@ public class CreateFileUtil {
 	 */
 	private String getMapperResourceURL() {
 		StringBuffer result = new StringBuffer();
-		Set<String> set=new HashSet<String>();
+		Set<String> set = new HashSet<String>();
 		for (SuperAttribute attr : attributes) {
-			if (attr.getMapperName()!=null&&!(attr.getMapperName().isEmpty())) {
+			if (attr.getMapperName() != null && !(attr.getMapperName().isEmpty())) {
 				set.add(attr.getMapperName());
 			}
 		}
@@ -451,6 +455,7 @@ public class CreateFileUtil {
 		}
 		return new String(buffer, "UTF-8");
 	}
+
 	/**
 	 * 获得数据库的驱动
 	 * 
@@ -484,24 +489,26 @@ public class CreateFileUtil {
 				dbConfig.getListenPort(), dbConfig.getDbName(), dbConfig.getEncoding());
 		return connectionRUL.replace("&", "&amp;");
 	}
+
 	/**
 	 * 执行创建自定格式的文件
+	 * 
 	 * @param path
 	 * @param type
 	 * @param str
 	 * @throws Exception
 	 */
-	private  void createFile(Path path,String str) throws Exception {
+	private void createFile(Path path, String str) throws Exception {
 		OutputStream out = Files.newOutputStream(path, StandardOpenOption.CREATE);
-		OutputStreamWriter writer=new OutputStreamWriter(out,codeFormat);
+		OutputStreamWriter writer = new OutputStreamWriter(out, codeFormat);
 		writer.write(str);
 		writer.flush();
 		out.close();
 		writer.close();
 	}
-	
+
 	// -------------------get/set---------------------------
-	
+
 	public String getProjectPath() {
 		return projectPath;
 	}
@@ -585,7 +592,7 @@ public class CreateFileUtil {
 	}
 
 	public void setAttributes(List<SuperAttribute> attributes) {
-		if (attributes==null) {
+		if (attributes == null) {
 			return;
 		}
 		this.attributes = attributes;
@@ -681,6 +688,14 @@ public class CreateFileUtil {
 
 	public void setCreateService(boolean createService) {
 		this.createService = createService;
+	}
+
+	public boolean isCreateSpringAnno() {
+		return createSpringAnno;
+	}
+
+	public void setCreateSpringAnno(boolean createSpringAnno) {
+		this.createSpringAnno = createSpringAnno;
 	}
 
 }

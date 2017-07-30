@@ -6,17 +6,9 @@ public class ServiceUtil {
 	private ServiceUtil() {
 	}
 
-	private static ServiceUtil serviceUtil = null;
 
 	public static ServiceUtil getInstance() {
-		if (serviceUtil == null) {
-			synchronized (ServiceUtil.class) {
-				if (serviceUtil == null) {
-					serviceUtil = new ServiceUtil();
-				}
-			}
-		}
-		return serviceUtil;
+		return new ServiceUtil();
 	}
 	/**
 	 * 获得service

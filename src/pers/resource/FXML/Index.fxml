@@ -45,7 +45,7 @@
    					</AnchorPane>
    					<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="608.0" prefWidth="699.0">
    						<children>
-   							<GridPane layoutX="257.0" layoutY="179.0" prefHeight="486.0" prefWidth="829.0" AnchorPane.bottomAnchor="122.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="41.0" AnchorPane.topAnchor="0.0">
+   							<GridPane layoutX="11.0" layoutY="179.0" prefHeight="485.0" prefWidth="828.0" AnchorPane.bottomAnchor="133.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="41.0" AnchorPane.topAnchor="0.0">
    								<columnConstraints>
    									<ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="173.0" minWidth="10.0" prefWidth="173.0" />
    									<ColumnConstraints hgrow="SOMETIMES" maxWidth="252.0" minWidth="10.0" prefWidth="246.0" />
@@ -303,7 +303,7 @@
    									</CheckBox>
    								</children>
    							</GridPane>
-   							<Button fx:id="btnRunCreate" layoutX="178.0" layoutY="548.0" mnemonicParsing="false" onAction="#runCreate" text="执行创建" AnchorPane.bottomAnchor="26.0">
+   							<Button fx:id="btnRunCreate" layoutX="178.0" layoutY="557.0" mnemonicParsing="false" onAction="#runCreate" text="执行创建" AnchorPane.bottomAnchor="17.0">
    								<font>
    									<Font size="22.0" />
    								</font>
@@ -316,7 +316,7 @@
    								</cursor>
    							</Button>
    							<Label layoutX="729.0" layoutY="587.0" text="QQ交流群:519714660" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-   							<CheckBox fx:id="chkService" layoutX="22.0" layoutY="495.0" mnemonicParsing="false" onAction="#onchkService" selected="true" text="创建service层" AnchorPane.bottomAnchor="91.0">
+   							<CheckBox fx:id="chkService" layoutX="22.0" layoutY="488.0" mnemonicParsing="false" onAction="#onchkService" selected="true" text="创建service层" AnchorPane.bottomAnchor="108.0">
    								<font>
    									<Font size="16.0" />
    								</font>
@@ -327,7 +327,7 @@
    									<Cursor fx:constant="HAND" />
    								</cursor>
    							</CheckBox>
-   							<CheckBox fx:id="chkConfig" layoutX="321.0" layoutY="495.0" mnemonicParsing="false" onAction="#onchkMyConfig" text="创建配置文件" AnchorPane.bottomAnchor="91.0">
+   							<CheckBox fx:id="chkConfig" layoutX="321.0" layoutY="488.0" mnemonicParsing="false" onAction="#onchkMyConfig" text="创建配置文件" AnchorPane.bottomAnchor="108.0">
    								<font>
    									<Font size="16.0" />
    								</font>
@@ -338,7 +338,7 @@
    									<Cursor fx:constant="HAND" />
    								</cursor>
    							</CheckBox>
-   							<CheckBox fx:id="chkMyUtil" layoutX="468.0" layoutY="495.0" mnemonicParsing="false" onAction="#onchkMyUtil" text="创建帮助工具" AnchorPane.bottomAnchor="91.0">
+   							<CheckBox fx:id="chkMyUtil" layoutX="468.0" layoutY="488.0" mnemonicParsing="false" onAction="#onchkMyUtil" text="创建帮助工具" AnchorPane.bottomAnchor="108.0">
    								<font>
    									<Font size="16.0" />
    								</font>
@@ -349,7 +349,7 @@
    									<Cursor fx:constant="HAND" />
    								</cursor>
    							</CheckBox>
-   							<CheckBox fx:id="chkAssist" layoutX="175.0" layoutY="505.0" mnemonicParsing="false" onAction="#onchkAssist" selected="true" text="创建查询工具">
+   							<CheckBox fx:id="chkAssist" layoutX="175.0" layoutY="488.0" mnemonicParsing="false" onAction="#onchkAssist" selected="true" text="创建查询工具">
    								<cursor>
    									<Cursor fx:constant="HAND" />
    								</cursor>
@@ -360,7 +360,7 @@
    									<Tooltip text="查询工具Assist,该工具可以简化你的分页,排序,自定义sql语句等查询,当选中时系统会判断路径是否存在该工具如果存在则不创建,否则创建;" />
    								</tooltip>
    							</CheckBox>
-   							<Button fx:id="btnUpdateEntity" layoutX="326.0" layoutY="548.0" mnemonicParsing="false" onAction="#updateEntity" prefHeight="32.0" prefWidth="120.0" text="修改属性">
+   							<Button fx:id="btnUpdateEntity" layoutX="326.0" layoutY="557.0" mnemonicParsing="false" onAction="#updateEntity" prefHeight="32.0" prefWidth="120.0" text="修改属性">
    								<cursor>
    									<Cursor fx:constant="HAND" />
    								</cursor>
@@ -372,7 +372,7 @@
    									<String fx:value="btn-executable" />
    								</styleClass>
    							</Button>
-   							<Button fx:id="btnSaveConfig" alignment="CENTER_RIGHT" layoutX="471.0" layoutY="548.0" mnemonicParsing="false" onAction="#saveConfig" text="保存配置">
+   							<Button fx:id="btnSaveConfig" alignment="CENTER_RIGHT" layoutX="471.0" layoutY="557.0" mnemonicParsing="false" onAction="#saveConfig" text="保存配置">
    								<font>
    									<Font size="22.0" />
    								</font>
@@ -384,12 +384,17 @@
    									<Cursor fx:constant="HAND" />
    								</cursor>
    							</Button>
-                        <Label layoutX="613.0" layoutY="506.0" text="文件编码格式:">
+                        <Label layoutX="613.0" layoutY="489.0" text="文件编码格式:">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <ComboBox fx:id="cboCodeFormat" layoutX="715.0" layoutY="505.0" prefHeight="23.0" prefWidth="126.0" />
+                        <ComboBox fx:id="cboCodeFormat" layoutX="715.0" layoutY="488.0" prefHeight="23.0" prefWidth="126.0" />
+                        <CheckBox fx:id="chkSpringAnno" layoutX="22.0" layoutY="524.0" mnemonicParsing="false" selected="true" text="生成Spring-Service注解">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </CheckBox>
    						</children>
    					</AnchorPane>
    				</items>

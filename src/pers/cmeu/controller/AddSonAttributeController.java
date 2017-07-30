@@ -41,7 +41,7 @@ import pers.cmeu.models.SuperAttribute;
 import pers.cmeu.view.AlertUtil;
 
 public class AddSonAttributeController extends BaseController {
-	private Logger log=Logger.getLogger(AddSonAttributeController.class.getName());
+	private Logger log = Logger.getLogger(AddSonAttributeController.class.getName());
 	// 存储信息table里面的所有属性
 	ObservableList<AttributeCVF> attributeCVF;
 
@@ -191,11 +191,10 @@ public class AddSonAttributeController extends BaseController {
 								txtPrimaryKey.setPromptText("注意:该表没有主键!");
 							} else {
 								txtPrimaryKey.setText(primaryKey);
-								String tmpTb = ((IndexController) StageManager.CONTROLLER.get("index"))
-										.getTableName();
+								String tmpTb = ((IndexController) StageManager.CONTROLLER.get("index")).getTableName();
 								String tmp = ((SetAttributeController) StageManager.CONTROLLER.get("attribute"))
 										.getPrimaryKey();
-								if (tmpTb!=null) {
+								if (tmpTb != null) {
 									txtJoinTableName.setText(tmpTb);
 								}
 								if (tmp != null) {
@@ -211,7 +210,7 @@ public class AddSonAttributeController extends BaseController {
 							log.debug("将选择中的表加载到属性表格中成功!");
 						} catch (Exception e) {
 							AlertUtil.showErrorAlert("加载失败!失败原因:\r\n" + e.getMessage());
-							log.error("将选择中的表加载到属性表格中失败!!!"+e);
+							log.error("将选择中的表加载到属性表格中失败!!!" + e);
 						}
 
 					}
@@ -222,19 +221,20 @@ public class AddSonAttributeController extends BaseController {
 			log.debug("加载左侧所有表成功!");
 		} catch (Exception e) {
 			AlertUtil.showErrorAlert("获得子表失败!原因:" + e.getMessage());
-			log.debug("加载左侧所有表失败!!!"+e);
+			log.debug("加载左侧所有表失败!!!" + e);
 		}
 	}
 
 	/**
 	 * 初始化右边的表
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	public void initTable() throws Exception {
 		// 获得工厂数据
 
 		attributeCVF = getAttributeCVFs();
-	
+
 		tdCheck.setCellFactory(CheckBoxTableCell.forTableColumn(tdCheck));
 		tdCheck.setCellValueFactory(new PropertyValueFactory<>("check"));
 
@@ -261,13 +261,13 @@ public class AddSonAttributeController extends BaseController {
 	 * 获得数据库列并初始化
 	 * 
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public ObservableList<AttributeCVF> getAttributeCVFs() throws Exception {
-			List<AttributeCVF> attributeCVFs = DBUtil.getTableColumns(
-					((IndexController) StageManager.CONTROLLER.get("index")).getSelectedDatabaseConfig(),
-					txtTableName.getText());
-		return  FXCollections.observableList(attributeCVFs);
+		List<AttributeCVF> attributeCVFs = DBUtil.getTableColumns(
+				((IndexController) StageManager.CONTROLLER.get("index")).getSelectedDatabaseConfig(),
+				txtTableName.getText());
+		return FXCollections.observableList(attributeCVFs);
 	}
 
 	/**
@@ -310,21 +310,25 @@ public class AddSonAttributeController extends BaseController {
 		}
 
 	}
+
 	/**
 	 * 是否全部创建
+	 * 
 	 * @param event
 	 */
 	public void anyCreateAll(ActionEvent event) {
-		if (!chkCreateEntity.isSelected()||!chkCreateDao.isSelected()||!chkCreateMap.isSelected()||!chkCreateService.isSelected()||!chkCreateServiceImpl.isSelected()) {
+		if (!chkCreateEntity.isSelected() || !chkCreateDao.isSelected() || !chkCreateMap.isSelected()
+				|| !chkCreateService.isSelected() || !chkCreateServiceImpl.isSelected()) {
 			chkCreateAll.setSelected(true);
 		}
-		boolean value=chkCreateAll.isSelected();
+		boolean value = chkCreateAll.isSelected();
 		chkCreateEntity.setSelected(value);
 		chkCreateDao.setSelected(value);
 		chkCreateMap.setSelected(value);
 		chkCreateService.setSelected(value);
 		chkCreateServiceImpl.setSelected(value);
 	}
+
 	/**
 	 * 将属性添加到属性表
 	 */
@@ -349,29 +353,31 @@ public class AddSonAttributeController extends BaseController {
 			chkSelectKey.selectedProperty().set(false);
 			return;
 		}
-		if (chkSelectKey.isSelected()) {			
+		if (chkSelectKey.isSelected()) {
 			log.debug("执行添加主键策略...");
-		}else {
+		} else {
 			log.debug("取消添加主键策略...");
 		}
 		String keyType = "";
+		String keyProperty = "";
 		for (AttributeCVF attr : tblEntityProperty.getItems()) {
 			if (attr.getConlumn().equals(txtPrimaryKey.getText())) {
 				keyType = attr.getJavaTypeValue();
+				keyProperty = attr.getPropertyName();
 				break;
 			}
 		}
 		String dbType = ((IndexController) StageManager.CONTROLLER.get("index")).getSelectedDatabaseConfig()
 				.getDbType();
 		StringBuffer res = new StringBuffer();
-		res.append("        <selectKey keyProperty=\""+txtPrimaryKey.getText()+"\" resultType=\""+keyType+"\" ");
+		res.append("        <selectKey keyProperty=\"" + keyProperty + "\" resultType=\"" + keyType + "\" ");
 		if ("MySQL".equals(dbType)) {
-			res.append("order=\"AFTER\">\r\n            SELECT LAST_INSERT_ID() AS "+txtPrimaryKey.getText());
-		}else if ("SqlServer".equals(dbType)) {
-			res.append("order=\"AFTER\">\r\n            SELECT SCOPE_IDENTITY() AS "+txtPrimaryKey.getText());
+			res.append("order=\"AFTER\">\r\n            SELECT LAST_INSERT_ID() AS " + keyProperty);
+		} else if ("SqlServer".equals(dbType)) {
+			res.append("order=\"AFTER\">\r\n            SELECT SCOPE_IDENTITY() AS " + keyProperty);
 		} else if ("PostgreSQL".equals(dbType)) {
-			res.append("order=\"BEFORE\">\r\n            SELECT nextval() AS "+txtPrimaryKey.getText());
-		}else {
+			res.append("order=\"BEFORE\">\r\n            SELECT nextval() AS " + keyProperty);
+		} else {
 			res.append("order=\"BEFORE\">\r\n            SELECT .Nextval FROM dual");
 		}
 		res.append("\r\n        </selectKey>");
@@ -380,7 +386,7 @@ public class AddSonAttributeController extends BaseController {
 		txtaSelectKey.setVisible(chkSelectKey.isSelected());
 		if (chkSelectKey.isSelected()) {
 			log.debug("添加主键策略成功!");
-		}else {
+		} else {
 			log.debug("取消添加主键策略成功!");
 		}
 	}
@@ -410,7 +416,7 @@ public class AddSonAttributeController extends BaseController {
 			StageManager.STAGE.put("addPropertyByGrand", stage);
 		} catch (IOException e) {
 			AlertUtil.showErrorAlert("初始化添加属性失败:\r\n原因:" + e.getMessage());
-			log.error("打开添加第三级添加新表作为属性窗口失败!!!"+e);
+			log.error("打开添加第三级添加新表作为属性窗口失败!!!" + e);
 		}
 
 	}
@@ -438,7 +444,7 @@ public class AddSonAttributeController extends BaseController {
 			StageManager.STAGE.put("addPropertyByGrand", stage);
 		} catch (IOException e) {
 			AlertUtil.showErrorAlert("初始化添加属性失败:\r\n原因:" + e.getMessage());
-			log.error("打开添加第二级添加新表作为集合窗口失败!!!"+e);
+			log.error("打开添加第二级添加新表作为集合窗口失败!!!" + e);
 		}
 	}
 
@@ -481,7 +487,7 @@ public class AddSonAttributeController extends BaseController {
 				if (chkSelectKey.isSelected()) {
 					attr.setSelectKey(txtaSelectKey.getText());
 				}
-				if (txtTableAlias!=null&&!(txtTableAlias.getText().isEmpty())) {
+				if (txtTableAlias != null && !(txtTableAlias.getText().isEmpty())) {
 					attr.setTableAlias(txtTableAlias.getText());
 				}
 				attr.setJoinType(joinType.getSelectedToggle().getUserData().toString());
@@ -503,7 +509,9 @@ public class AddSonAttributeController extends BaseController {
 					if (item.getColumnItem() == null) {
 						continue;
 					}
-					items.add(item.getColumnItem());
+					if (item.getCheck()) {
+						items.add(item.getColumnItem());
+					}
 				}
 				if (items.size() > 0) {
 					attr.setColumnItems(items);
@@ -541,7 +549,7 @@ public class AddSonAttributeController extends BaseController {
 				item.setGrandItem(tempList);
 			}
 			attribute.setColumnItem(item);
-			addAttr.setNeedOrNotCreatePages(addAttr.getNeedOrNotCreatePages()+1);
+			addAttr.setNeedOrNotCreatePages(addAttr.getNeedOrNotCreatePages() + 1);
 			addAttr.attributeCVF.add(attribute);
 			addAttr.tblEntityProperty.getItems().add(attribute);
 		}

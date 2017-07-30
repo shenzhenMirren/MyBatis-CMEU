@@ -6,22 +6,13 @@ public class ClassUtil {
 	private ClassUtil() {
 	};
 
-	private static ClassUtil classUtil = null;
-
 	/**
 	 * 获得对象
 	 * 
 	 * @return
 	 */
 	public static ClassUtil getInstance() {
-		if (classUtil == null) {
-			synchronized (ClassUtil.class) {
-				if (classUtil == null) {
-					classUtil = new ClassUtil();
-				}
-			}
-		}
-		return classUtil;
+		return new ClassUtil();
 	}
 
 	/**
@@ -32,8 +23,9 @@ public class ClassUtil {
 	 * @param property
 	 * @return
 	 */
-	public String getEntityString(String packageName,List<String> importSpaces, String entityName, List<String[]> property,
-			boolean anySerializable, boolean createConstr, boolean createConstrAll, boolean createSetGet) {
+	public String getEntityString(String packageName, List<String> importSpaces, String entityName,
+			List<String[]> property, boolean anySerializable, boolean createConstr, boolean createConstrAll,
+			boolean createSetGet) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("package " + packageName + ";\r\n");
 		buffer.append(getImport(importSpaces));
@@ -56,6 +48,7 @@ public class ClassUtil {
 		buffer.append("}\r\n");
 		return buffer.toString();
 	}
+
 	/**
 	 * 获得导入空间的字符串
 	 * 
@@ -63,7 +56,7 @@ public class ClassUtil {
 	 * @return
 	 */
 	private String getImport(List<String> importSpaces) {
-		if (importSpaces == null ||importSpaces.size()==0) {
+		if (importSpaces == null || importSpaces.size() == 0) {
 			return "";
 		}
 		StringBuffer result = new StringBuffer();
@@ -95,7 +88,7 @@ public class ClassUtil {
 		}
 		StringBuffer result = new StringBuffer();
 		for (String[] list : str) {
-			result.append("    private " + list[0] + " " + list[1] + ";\r\n");
+			result.append("    private " + list[0] + " " + list[1] + ";//" + list[2] + "\r\n");
 		}
 		return result.toString();
 	}

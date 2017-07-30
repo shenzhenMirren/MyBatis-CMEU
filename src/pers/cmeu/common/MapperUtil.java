@@ -50,7 +50,7 @@ public class MapperUtil {
 		buffer.append(createSelectSql(attribute, assistSpace, dbtype, anyJDBC, anyAssist));
 		if (attribute.isAnyHasColl()) {
 			buffer.append(createSelectOfPagingSql(attribute, assistSpace, dbtype, anyJDBC, anyAssist));
-			buffer.append(createCollectionNeedSelectSql(attribute,anyJDBC));
+			buffer.append(createCollectionNeedSelectSql(attribute, anyJDBC));
 		}
 		buffer.append(createSelectById(attribute, anyJDBC));
 		buffer.append(createInsertAll(attribute, entitySpace, anyJDBC));
@@ -78,12 +78,14 @@ public class MapperUtil {
 	 * @return
 	 */
 	private String createResultMap(String entitySpace, boolean anyJDBC, SuperAttribute attr) {
-		StringBuffer result = new StringBuffer();
-		if (attr.getAttributes()==null) {
+		if (attr.getAttributes() == null) {
 			return "";
 		}
+		StringBuffer result = new StringBuffer();
 		List<AttributeCVF> item = attr.getAttributes();
 		// 创建resultMap
+		result.append("    <!-- " + attr.getClassName()
+				+ "的resultMap,column是给数据库列起的别名,它对应property类的属性,默认为column别名是类名加属性顺序,可以在MyBatis-CMEU工具中给表起别名,就会以表别名_列名起别名,他是一种防止列名超长或者重复的策略 -->\r\n");
 		result.append("    <resultMap id=\"result_" + attr.getClassName() + "_Map\" type=\"" + entitySpace + "."
 				+ attr.getClassName() + "\">\r\n");
 		// 创建resultMap的普通属性
@@ -92,21 +94,23 @@ public class MapperUtil {
 				continue;
 			}
 			if (i == 0 && item.get(i).getConlumn().equals(attr.getPrimaryKey())) {
-				if (attr.getTableAlias()!=null&&!(attr.getTableAlias().isEmpty())) {
-					result.append("        <id column=\"" + attr.getTableAlias() + "_"+item.get(i).getConlumn()+ "\"");
-				}else {
+				if (attr.getTableAlias() != null && !(attr.getTableAlias().isEmpty())) {
+					result.append(
+							"        <id column=\"" + attr.getTableAlias() + "_" + item.get(i).getConlumn() + "\"");
+				} else {
 					result.append("        <id column=\"" + attr.getClassName() + i + "\"");
 				}
-				
+
 				if (anyJDBC) {
 					result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
 				}
 				result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
 				continue;
 			}
-			if (attr.getTableAlias()!=null&&!(attr.getTableAlias().isEmpty())) {
-				result.append("        <result column=\"" + attr.getTableAlias() + "_"+item.get(i).getConlumn()+ "\"");
-			}else {
+			if (attr.getTableAlias() != null && !(attr.getTableAlias().isEmpty())) {
+				result.append(
+						"        <result column=\"" + attr.getTableAlias() + "_" + item.get(i).getConlumn() + "\"");
+			} else {
 				result.append("        <result column=\"" + attr.getClassName() + i + "\"");
 			}
 			if (anyJDBC) {
@@ -121,7 +125,7 @@ public class MapperUtil {
 		result.append("    </resultMap>\r\n\r\n");
 		return result.toString();
 	}
-	
+
 	/**
 	 * 添加子类ResultMap
 	 * 
@@ -131,7 +135,7 @@ public class MapperUtil {
 	 */
 	private StringBuffer addSonMap(String entitySpace, List<ColumnItem> item, boolean anyJDBC) {
 		StringBuffer result = new StringBuffer();
-		if (item==null) {
+		if (item == null) {
 			return result;
 		}
 		for (ColumnItem col : item) {
@@ -148,9 +152,10 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0 && list.get(i).getConlumn().equals(col.getPrimaryKey())) {
-						if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-							result.append("            <id column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
-						}else {
+						if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+							result.append("            <id column=\"" + col.getTableAlias() + "_"
+									+ list.get(i).getConlumn() + "\"");
+						} else {
 							result.append("            <id column=\"" + col.getClassName() + i + "\"");
 						}
 						if (anyJDBC) {
@@ -159,9 +164,10 @@ public class MapperUtil {
 						result.append(" property=\"" + list.get(i).getPropertyName() + "\" />\r\n");
 						continue;
 					}
-					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-						result.append("            <result column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
-					}else {
+					if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+						result.append("            <result column=\"" + col.getTableAlias() + "_"
+								+ list.get(i).getConlumn() + "\"");
+					} else {
 						result.append("            <result column=\"" + col.getClassName() + i + "\"");
 					}
 					if (anyJDBC) {
@@ -189,9 +195,10 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0 && list.get(i).getConlumn().equals(col.getPrimaryKey())) {
-						if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-							result.append("            <id column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
-						}else {
+						if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+							result.append("            <id column=\"" + col.getTableAlias() + "_"
+									+ list.get(i).getConlumn() + "\"");
+						} else {
 							result.append("            <id column=\"" + col.getClassName() + i + "\"");
 						}
 						if (anyJDBC) {
@@ -200,9 +207,10 @@ public class MapperUtil {
 						result.append(" property=\"" + list.get(i).getPropertyName() + "\" />\r\n");
 						continue;
 					}
-					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-						result.append("            <result column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
-					}else {
+					if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+						result.append("            <result column=\"" + col.getTableAlias() + "_"
+								+ list.get(i).getConlumn() + "\"");
+					} else {
 						result.append("            <result column=\"" + col.getClassName() + i + "\"");
 					}
 					if (anyJDBC) {
@@ -229,7 +237,7 @@ public class MapperUtil {
 	 */
 	private StringBuffer addGrandMap(String entitySpace, List<ColumnItem> item, boolean anyJDBC) {
 		StringBuffer result = new StringBuffer();
-		if (item==null) {
+		if (item == null) {
 			return result;
 		}
 		for (ColumnItem col : item) {
@@ -246,9 +254,10 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0 && list.get(i).getConlumn().equals(col.getPrimaryKey())) {
-						if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-							result.append("                <id column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
-						}else {
+						if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+							result.append("                <id column=\"" + col.getTableAlias() + "_"
+									+ list.get(i).getConlumn() + "\"");
+						} else {
 							result.append("                <id column=\"" + col.getClassName() + i + "\"");
 						}
 						if (anyJDBC) {
@@ -257,9 +266,10 @@ public class MapperUtil {
 						result.append(" property=\"" + list.get(i).getPropertyName() + "\" />\r\n");
 						continue;
 					}
-					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-						result.append("                <result column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
-					}else {
+					if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+						result.append("                <result column=\"" + col.getTableAlias() + "_"
+								+ list.get(i).getConlumn() + "\"");
+					} else {
 						result.append("                <result column=\"" + col.getClassName() + i + "\"");
 					}
 					if (anyJDBC) {
@@ -284,9 +294,10 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0 && list.get(i).getConlumn().equals(col.getPrimaryKey())) {
-						if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-							result.append("                <id column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
-						}else {
+						if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+							result.append("                <id column=\"" + col.getTableAlias() + "_"
+									+ list.get(i).getConlumn() + "\"");
+						} else {
 							result.append("                <id column=\"" + col.getClassName() + i + "\"");
 						}
 						if (anyJDBC) {
@@ -295,9 +306,10 @@ public class MapperUtil {
 						result.append(" property=\"" + list.get(i).getPropertyName() + "\" />\r\n");
 						continue;
 					}
-					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-						result.append("                <result column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
-					}else {
+					if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+						result.append("                <result column=\"" + col.getTableAlias() + "_"
+								+ list.get(i).getConlumn() + "\"");
+					} else {
 						result.append("                <result column=\"" + col.getClassName() + i + "\"");
 					}
 					if (anyJDBC) {
@@ -311,7 +323,7 @@ public class MapperUtil {
 
 		return result;
 	}
-	
+
 	/**
 	 * 创建resultMap方法
 	 * 
@@ -321,37 +333,41 @@ public class MapperUtil {
 	 * @return
 	 */
 	private String createResultOfPagingMap(String entitySpace, boolean anyJDBC, SuperAttribute attr) {
-		StringBuffer result = new StringBuffer();
-		if (attr.getAttributes()==null) {
+		if (attr.getAttributes() == null) {
 			return "";
 		}
+		StringBuffer result = new StringBuffer();
 		List<AttributeCVF> item = attr.getAttributes();
 		// 创建resultMap
+		result.append(
+				"    <!-- " + attr.getClassName() + "的resultMap,改resultMap是专门用在有多表关联的地方,它保证分页时数据映射不会丢失或者重复 -->\r\n");
 		result.append("    <resultMap id=\"result_" + attr.getClassName() + "OfPaging_Map\" type=\"" + entitySpace + "."
 				+ attr.getClassName() + "\">\r\n");
-		String tempSelectChildrenColumnId=null;
+		String tempSelectChildrenColumnId = null;
 		// 创建resultMap的普通属性
 		for (int i = 0; i < item.size(); i++) {
 			if (item.get(i).getConlumn() == null || item.get(i).getConlumn() == "" || item.get(i).getCheck() == false) {
 				continue;
 			}
 			if (i == 0 && item.get(i).getConlumn().equals(attr.getPrimaryKey())) {
-				if (attr.getTableAlias()!=null&&!(attr.getTableAlias().isEmpty())) {
-					result.append("        <id column=\"" + attr.getTableAlias() + "_"+item.get(i).getConlumn()+ "\"");
-				}else {
+				if (attr.getTableAlias() != null && !(attr.getTableAlias().isEmpty())) {
+					result.append(
+							"        <id column=\"" + attr.getTableAlias() + "_" + item.get(i).getConlumn() + "\"");
+				} else {
 					result.append("        <id column=\"" + attr.getClassName() + i + "\"");
 				}
-				
-				tempSelectChildrenColumnId=attr.getClassName() + i ;
+
+				tempSelectChildrenColumnId = attr.getClassName() + i;
 				if (anyJDBC) {
 					result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
 				}
 				result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
 				continue;
 			}
-			if (attr.getTableAlias()!=null&&!(attr.getTableAlias().isEmpty())) {
-				result.append("        <result column=\"" + attr.getTableAlias() + "_"+item.get(i).getConlumn()+ "\"");
-			}else {
+			if (attr.getTableAlias() != null && !(attr.getTableAlias().isEmpty())) {
+				result.append(
+						"        <result column=\"" + attr.getTableAlias() + "_" + item.get(i).getConlumn() + "\"");
+			} else {
 				result.append("        <result column=\"" + attr.getClassName() + i + "\"");
 			}
 			if (anyJDBC) {
@@ -361,39 +377,42 @@ public class MapperUtil {
 		}
 		if (attr.getColumnItems() != null) {
 			// 创建resultMap里面的association/collection
-			result.append(addSonOfPagingMap(entitySpace, attr.getColumnItems(), anyJDBC,tempSelectChildrenColumnId));
+			result.append(addSonOfPagingMap(entitySpace, attr.getColumnItems(), anyJDBC, tempSelectChildrenColumnId));
 		}
 		result.append("    </resultMap>\r\n\r\n");
-		result.append(createNeedOfPagingResultMap(entitySpace,attr.getColumnItems(),anyJDBC));
+		result.append(createNeedOfPagingResultMap(entitySpace, attr.getColumnItems(), anyJDBC));
 		return result.toString();
 	}
-	
+
 	/**
 	 * 获得分页查询子表需要返回的resultMap
+	 * 
 	 * @param entitySpace
 	 * @param item
 	 * @param anyJDBC
 	 * @return
 	 */
 	private String createNeedOfPagingResultMap(String entitySpace, List<ColumnItem> columnItem, boolean anyJDBC) {
-		StringBuffer result = new StringBuffer();
-		if (columnItem==null) {
+		if (columnItem == null) {
 			return "";
 		}
+		StringBuffer result = new StringBuffer();
 		for (ColumnItem col : columnItem) {
 			// 创建resultMap
-			result.append("    <resultMap id=\"result_" + col.getClassName() + "OfPaging_Map\" type=\"" + entitySpace + "."
-					+ col.getClassName() + "\">\r\n");
-			List<AttributeCVF> item =col.getAttributeCVFs();
+			result.append("    <resultMap id=\"result_" + col.getClassName() + "OfPaging_Map\" type=\"" + entitySpace
+					+ "." + col.getClassName() + "\">\r\n");
+			List<AttributeCVF> item = col.getAttributeCVFs();
 			// 创建resultMap的普通属性
 			for (int i = 0; i < item.size(); i++) {
-				if (item.get(i).getConlumn() == null || item.get(i).getConlumn() == "" || item.get(i).getCheck() == false) {
+				if (item.get(i).getConlumn() == null || item.get(i).getConlumn() == ""
+						|| item.get(i).getCheck() == false) {
 					continue;
 				}
 				if (i == 0 && item.get(i).getConlumn().equals(col.getPrimaryKey())) {
-					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-						result.append("        <id column=\"" + col.getTableAlias() + "_"+item.get(i).getConlumn()+ "\"");
-					}else {
+					if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+						result.append(
+								"        <id column=\"" + col.getTableAlias() + "_" + item.get(i).getConlumn() + "\"");
+					} else {
 						result.append("        <id column=\"" + col.getClassName() + i + "\"");
 					}
 					if (anyJDBC) {
@@ -402,12 +421,13 @@ public class MapperUtil {
 					result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
 					continue;
 				}
-				if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-					result.append("        <result column=\"" + col.getTableAlias() + "_"+item.get(i).getConlumn()+ "\"");
-				}else {
+				if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+					result.append(
+							"        <result column=\"" + col.getTableAlias() + "_" + item.get(i).getConlumn() + "\"");
+				} else {
 					result.append("        <result column=\"" + col.getClassName() + i + "\"");
 				}
-				
+
 				if (anyJDBC) {
 					result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
 				}
@@ -420,8 +440,9 @@ public class MapperUtil {
 			result.append("    </resultMap>\r\n\r\n");
 		}
 		return result.toString();
-		
+
 	}
+
 	/**
 	 * 添加子类ResultMap
 	 * 
@@ -429,9 +450,10 @@ public class MapperUtil {
 	 * @param anyAs
 	 * @return
 	 */
-	private StringBuffer addSonOfPagingMap(String entitySpace, List<ColumnItem> item, boolean anyJDBC,String basePrimaryKey) {
+	private StringBuffer addSonOfPagingMap(String entitySpace, List<ColumnItem> item, boolean anyJDBC,
+			String basePrimaryKey) {
 		StringBuffer result = new StringBuffer();
-		if (item==null||basePrimaryKey==null) {
+		if (item == null || basePrimaryKey == null) {
 			return result;
 		}
 		for (ColumnItem col : item) {
@@ -448,9 +470,10 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0 && list.get(i).getConlumn().equals(col.getPrimaryKey())) {
-						if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-							result.append("            <id column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
-						}else {
+						if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+							result.append("            <id column=\"" + col.getTableAlias() + "_"
+									+ list.get(i).getConlumn() + "\"");
+						} else {
 							result.append("            <id column=\"" + col.getClassName() + i + "\"");
 						}
 						if (anyJDBC) {
@@ -459,9 +482,10 @@ public class MapperUtil {
 						result.append(" property=\"" + list.get(i).getPropertyName() + "\" />\r\n");
 						continue;
 					}
-					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-						result.append("            <result column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
-					}else {
+					if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+						result.append("            <result column=\"" + col.getTableAlias() + "_"
+								+ list.get(i).getConlumn() + "\"");
+					} else {
 						result.append("            <result column=\"" + col.getClassName() + i + "\"");
 					}
 					if (anyJDBC) {
@@ -470,7 +494,7 @@ public class MapperUtil {
 					result.append(" property=\"" + list.get(i).getPropertyName() + "\" />\r\n");
 				}
 				if (col.getGrandItem() != null) {
-					result.append(addGrandOfPagingMap(entitySpace, col.getGrandItem(), anyJDBC,col.getPrimaryKey()));
+					result.append(addGrandOfPagingMap(entitySpace, col.getGrandItem(), anyJDBC, col.getPrimaryKey()));
 				}
 				result.append("        </association>\r\n");
 			}
@@ -481,13 +505,15 @@ public class MapperUtil {
 					continue;
 				}
 				result.append("        <collection property=\"" + col.getInPropertyName() + "\" ofType=\"" + entitySpace
-						+ "." + col.getClassName() + "\" column=\""+basePrimaryKey+"\" select=\"select"+col.getClassName()+"OfPaging\">");
+						+ "." + col.getClassName() + "\" column=\"" + basePrimaryKey + "\" select=\"select"
+						+ col.getClassName() + "OfPaging\">");
 				result.append("        </collection>\r\n");
 			}
 		}
 
 		return result;
 	}
+
 	/**
 	 * 添加孙类ResultMap
 	 * 
@@ -495,9 +521,10 @@ public class MapperUtil {
 	 * @param anyAs
 	 * @return
 	 */
-	private StringBuffer addGrandOfPagingMap(String entitySpace, List<ColumnItem> item, boolean anyJDBC,String basePrimaryKey) {
+	private StringBuffer addGrandOfPagingMap(String entitySpace, List<ColumnItem> item, boolean anyJDBC,
+			String basePrimaryKey) {
 		StringBuffer result = new StringBuffer();
-		if (item==null) {
+		if (item == null) {
 			return result;
 		}
 		for (ColumnItem col : item) {
@@ -514,9 +541,10 @@ public class MapperUtil {
 						continue;
 					}
 					if (i == 0 && list.get(i).getConlumn().equals(col.getPrimaryKey())) {
-						if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-							result.append("                <id column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
-						}else {
+						if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+							result.append("                <id column=\"" + col.getTableAlias() + "_"
+									+ list.get(i).getConlumn() + "\"");
+						} else {
 							result.append("                <id column=\"" + col.getClassName() + i + "\"");
 						}
 						if (anyJDBC) {
@@ -525,9 +553,10 @@ public class MapperUtil {
 						result.append(" property=\"" + list.get(i).getPropertyName() + "\" />\r\n");
 						continue;
 					}
-					if (col.getTableAlias()!=null&&!(col.getTableAlias().isEmpty())) {
-						result.append("                <result column=\"" + col.getTableAlias() + "_"+list.get(i).getConlumn()+ "\"");
-					}else {
+					if (col.getTableAlias() != null && !(col.getTableAlias().isEmpty())) {
+						result.append("                <result column=\"" + col.getTableAlias() + "_"
+								+ list.get(i).getConlumn() + "\"");
+					} else {
 						result.append("                <result column=\"" + col.getClassName() + i + "\"");
 					}
 					if (anyJDBC) {
@@ -545,14 +574,15 @@ public class MapperUtil {
 					continue;
 				}
 				result.append("        <collection property=\"" + col.getInPropertyName() + "\" ofType=\"" + entitySpace
-						+ "." + col.getClassName() + "\" column=\""+basePrimaryKey+"\" select=\"select"+col.getClassName()+"OfPaging\">");
+						+ "." + col.getClassName() + "\" column=\"" + basePrimaryKey + "\" select=\"select"
+						+ col.getClassName() + "OfPaging\">");
 				result.append("        </collection>\r\n");
 			}
 		}
 
 		return result;
 	}
-	
+
 	/**
 	 * 创建通用sql
 	 * 
@@ -564,6 +594,7 @@ public class MapperUtil {
 		StringBuffer result = new StringBuffer();
 
 		if (anyAssist) {
+			result.append("	   <!-- Assist用于辅助工具类setRequires设置的条件,${req.require}表示列名,#{req.value}表示值它是防SQL注入的 -->\r\n");
 			result.append("    <sql id=\"Assist\">\r\n");
 			result.append("        <where>\r\n");
 			result.append("            <foreach collection=\"require\" item=\"req\" separator=\" \">\r\n");
@@ -571,6 +602,8 @@ public class MapperUtil {
 			result.append("            </foreach>\r\n");
 			result.append("        </where>\r\n");
 			result.append("    </sql>\r\n\r\n");
+			result.append(
+					"	   <!-- updateAssist用于更新数据的使用它拓展自Assist,用于辅助工具类setRequires设置的条件,${req.require}表示列名,#{req.value}表示值它是防SQL注入的 -->\r\n");
 			result.append("    <sql id=\"updateAssist\">\r\n");
 			result.append("        <where>\r\n");
 			result.append("            <foreach collection=\"assist.require\" item=\"req\" separator=\" \">\r\n");
@@ -580,6 +613,8 @@ public class MapperUtil {
 			result.append("    </sql>\r\n\r\n");
 		}
 
+		result.append("    <!-- 数据库中表名为:" + attr.getTableName()
+				+ "的列名,as前是数据库的列明,as后是列的别名用于映射成实体类中的属性,需要注意的是别名必须与resultMap中的column别名一致 -->\r\n");
 		result.append("    <sql id=\"" + attr.getTableName() + "_Column\">\r\n");
 		List<AttributeCVF> item = attr.getAttributes();
 		for (int i = 0; i < item.size(); i++) {
@@ -588,17 +623,17 @@ public class MapperUtil {
 			}
 			if (i == 0) {
 				result.append("        " + attr.getTableName() + "." + item.get(i).getConlumn() + " as ");
-				if (attr.getTableAlias()!=null&&!(attr.getTableAlias().isEmpty())) {
-					result.append(attr.getTableAlias()+"_"+item.get(i).getConlumn());
-				}else {
+				if (attr.getTableAlias() != null && !(attr.getTableAlias().isEmpty())) {
+					result.append(attr.getTableAlias() + "_" + item.get(i).getConlumn());
+				} else {
 					result.append(attr.getClassName() + i);
 				}
 				continue;
 			}
 			result.append("\r\n        ," + attr.getTableName() + "." + item.get(i).getConlumn() + " as ");
-			if (attr.getTableAlias()!=null&&!(attr.getTableAlias().isEmpty())) {
-				result.append(attr.getTableAlias()+"_"+item.get(i).getConlumn());
-			}else {
+			if (attr.getTableAlias() != null && !(attr.getTableAlias().isEmpty())) {
+				result.append(attr.getTableAlias() + "_" + item.get(i).getConlumn());
+			} else {
 				result.append(attr.getClassName() + i);
 			}
 		}
@@ -620,12 +655,14 @@ public class MapperUtil {
 	 */
 	private StringBuffer addSonSql(List<ColumnItem> items, String original) {
 		StringBuffer result = new StringBuffer();
-		if (items==null) {
+		if (items == null) {
 			return result;
 		}
 		for (ColumnItem item : items) {
 			List<AttributeCVF> cvf = item.getAttributeCVFs();
 			if (cvf != null) {
+				result.append("    <!-- 数据库中表名为:" + item.getTableName()
+						+ "的列名,as前是数据库的列明,as后是列的别名用于映射成实体类中的属性,需要注意的是别名必须与resultMap中的column别名一致 -->\r\n");
 				result.append("    <sql id=\"" + item.getTableName() + "_Column\">\r\n");
 				for (int i = 0; i < cvf.size(); i++) {
 					if (cvf.get(i).getConlumn() == null || cvf.get(i).getConlumn() == "") {
@@ -633,17 +670,17 @@ public class MapperUtil {
 					}
 					if (i == 0) {
 						result.append("        " + item.getTableName() + "." + cvf.get(i).getConlumn() + " as ");
-						if (item.getTableAlias()!=null&&!(item.getTableAlias().isEmpty())) {
-							result.append(item.getTableAlias()+"_"+cvf.get(i).getConlumn());
-						}else {
+						if (item.getTableAlias() != null && !(item.getTableAlias().isEmpty())) {
+							result.append(item.getTableAlias() + "_" + cvf.get(i).getConlumn());
+						} else {
 							result.append(item.getClassName() + i);
 						}
 						continue;
 					}
 					result.append("\r\n        ," + item.getTableName() + "." + cvf.get(i).getConlumn() + " as ");
-					if (item.getTableAlias()!=null&&!(item.getTableAlias().isEmpty())) {
-						result.append(item.getTableAlias()+"_"+cvf.get(i).getConlumn());
-					}else {
+					if (item.getTableAlias() != null && !(item.getTableAlias().isEmpty())) {
+						result.append(item.getTableAlias() + "_" + cvf.get(i).getConlumn());
+					} else {
 						result.append(item.getClassName() + i);
 					}
 				}
@@ -665,7 +702,7 @@ public class MapperUtil {
 	 */
 	private StringBuffer addGrandSql(List<ColumnItem> items, String original) {
 		StringBuffer result = new StringBuffer();
-		if (items==null) {
+		if (items == null) {
 			return result;
 		}
 		for (ColumnItem item : items) {
@@ -674,6 +711,8 @@ public class MapperUtil {
 			}
 			List<AttributeCVF> cvf = item.getAttributeCVFs();
 			if (cvf != null) {
+				result.append("    <!-- 数据库中表名为:" + item.getTableName()
+						+ "的列名,as前是数据库的列明,as后是列的别名用于映射成实体类中的属性,需要注意的是别名必须与resultMap中的column别名一致 -->\r\n");
 				result.append("    <sql id=\"" + item.getTableName() + "_Column\">\r\n");
 				for (int i = 0; i < cvf.size(); i++) {
 					if (cvf.get(i).getConlumn() == null || cvf.get(i).getConlumn() == "") {
@@ -681,17 +720,17 @@ public class MapperUtil {
 					}
 					if (i == 0) {
 						result.append("        " + item.getTableName() + "." + cvf.get(i).getConlumn() + " as ");
-						if (item.getTableAlias()!=null&&!(item.getTableAlias().isEmpty())) {
-							result.append(item.getTableAlias()+"_"+cvf.get(i).getConlumn());
-						}else {
+						if (item.getTableAlias() != null && !(item.getTableAlias().isEmpty())) {
+							result.append(item.getTableAlias() + "_" + cvf.get(i).getConlumn());
+						} else {
 							result.append(item.getClassName() + i);
 						}
 						continue;
 					}
 					result.append("\r\n        ," + item.getTableName() + "." + cvf.get(i).getConlumn() + " as ");
-					if (item.getTableAlias()!=null&&!(item.getTableAlias().isEmpty())) {
-						result.append(item.getTableAlias()+"_"+cvf.get(i).getConlumn());
-					}else {
+					if (item.getTableAlias() != null && !(item.getTableAlias().isEmpty())) {
+						result.append(item.getTableAlias() + "_" + cvf.get(i).getConlumn());
+					} else {
 						result.append(item.getClassName() + i);
 					}
 				}
@@ -712,6 +751,7 @@ public class MapperUtil {
 	 */
 	private String createRowCount(String assistSpace, SuperAttribute attr, boolean anyAssist) {
 		StringBuffer result = new StringBuffer();
+		result.append("    <!--获得类名为:" + attr.getClassName() + "对应的数据库表的数据总行数 -->\r\n");
 		result.append("    <select id=\"get" + attr.getClassName() + "RowCount\"");
 		if (anyAssist) {
 			result.append(" parameterType=\"" + assistSpace + ".Assist\"");
@@ -745,11 +785,79 @@ public class MapperUtil {
 			return createOraclePage(attr, assistSpace, anyJDBC, anyAssist);
 		} else if (dbType.equals("SqlServer")) {
 			return createSqlServerPage(attr, assistSpace, anyJDBC, anyAssist);
+		} else if (dbType.equals("PostgreSQL")) {
+			return createMySqlAndPostgrePage(attr, assistSpace, anyJDBC, anyAssist);
 		} else {
 			return createMySqlAndPostgrePage(attr, assistSpace, anyJDBC, anyAssist);
 		}
 	}
 
+	/**
+	 * 创建mysql
+	 * 
+	 * @param attr
+	 * @param assistSpace
+	 * @param anyJDBC
+	 * @param anyAssist
+	 * @return
+	 */
+	private String createMySql(SuperAttribute attr, String assistSpace, boolean anyJDBC,
+			boolean anyAssist) {
+		StringBuffer result = new StringBuffer();
+		
+		result.append("    <!-- 获得类名为:" + attr.getClassName() + "对应数据库中表的数据集合 -->\r\n");
+		result.append("    <select id=\"select" + attr.getClassName() + "\"");
+		if (anyAssist) {
+			result.append(" parameterType=\"" + assistSpace + ".Assist\" ");
+		}
+		result.append(" resultMap=\"result_" + attr.getClassName() + "_Map\">\r\n");
+		result.append("        select ");
+		if (anyAssist) {
+			result.append(" <if test=\"distinct !=null\">${distinct}</if>");
+		}
+		if (anyAssist) {
+			result.append("\r\n        <choose>\r\n");
+			result.append("            <when test=\"resultColumn!=null\">${resultColumn}</when>\r\n");
+			result.append("            <otherwise>");
+		}
+		result.append("\r\n        <include refid=\"" + attr.getTableName() + "_Column\" /> \r\n");
+		if (attr.getColumnItems() != null) {
+			for (ColumnItem item : attr.getColumnItems()) {
+				result.append("        ,<include refid=\"" + item.getTableName() + "_Column\" /> \r\n");
+				if (item.getGrandItem() != null) {
+					for (ColumnItem itemg : item.getGrandItem()) {
+						if (attr.getTableName().equals(itemg.getTableName())) {
+							continue;
+						}
+						result.append("            ,<include refid=\"" + itemg.getTableName() + "_Column\" /> \r\n");
+					}
+				}
+			}
+		}
+		if (anyAssist) {
+			result.append("            </otherwise>\r\n");
+			result.append("        </choose>\r\n");
+		}
+		result.append("        from " + attr.getTableName() + "\r\n");
+		if (attr.getColumnItems() != null) {
+			result.append(getJoinStr(attr.getColumnItems(), attr.getTableName(), 8));
+		}
+		if (anyAssist) {
+			result.append("        <if test=\"require!=null\"><include refid=\"Assist\" /></if>\r\n");
+			result.append("        <if test=\"order !=null\">${order}</if>\r\n");
+			result.append("        <if test=\"rowSize !=null\"> LIMIT #{rowSize");
+			if (anyJDBC) {
+				result.append(",jdbcType=INTEGER");
+			}
+			result.append("} <if test=\"startRow !=null\"> OFFSET #{startRow");
+			if (anyJDBC) {
+				result.append(",jdbcType=INTEGER");
+			}
+			result.append("}</if></if>\r\n");
+		}
+		result.append("    </select> \r\n\r\n");
+		return result.toString();
+	}
 	/**
 	 * 创建mysql与postgre
 	 * 
@@ -762,6 +870,8 @@ public class MapperUtil {
 	private String createMySqlAndPostgrePage(SuperAttribute attr, String assistSpace, boolean anyJDBC,
 			boolean anyAssist) {
 		StringBuffer result = new StringBuffer();
+
+		result.append("    <!-- 获得类名为:" + attr.getClassName() + "对应数据库中表的数据集合 -->\r\n");
 		result.append("    <select id=\"select" + attr.getClassName() + "\"");
 		if (anyAssist) {
 			result.append(" parameterType=\"" + assistSpace + ".Assist\" ");
@@ -825,6 +935,7 @@ public class MapperUtil {
 	 */
 	private String createSqlServerPage(SuperAttribute attr, String assistSpace, boolean anyJDBC, boolean anyAssist) {
 		StringBuffer result = new StringBuffer();
+		result.append("    <!-- 获得类名为:" + attr.getClassName() + "对应数据库中表的数据集合 -->\r\n");
 		result.append("    <select id=\"select" + attr.getClassName() + "\"");
 		if (anyAssist) {
 			result.append(" parameterType=\"" + assistSpace + ".Assist\"");
@@ -876,7 +987,8 @@ public class MapperUtil {
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
-			result.append("} <if test=\"rowSize!=null\">and page &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
+			result.append(
+					"} <if test=\"rowSize!=null\">and page &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
@@ -903,6 +1015,7 @@ public class MapperUtil {
 	 */
 	private String createOraclePage(SuperAttribute attr, String assistSpace, boolean anyJDBC, boolean anyAssist) {
 		StringBuffer result = new StringBuffer();
+		result.append("    <!-- 获得类名为:" + attr.getClassName() + "对应数据库中表的数据集合 -->\r\n");
 		result.append("    <select id=\"select" + attr.getClassName() + "\"");
 		if (anyAssist) {
 			result.append(" parameterType=\"" + assistSpace + ".Assist\"");
@@ -953,7 +1066,8 @@ public class MapperUtil {
 		}
 		result.append("\r\n            ) result \r\n");
 		if (anyAssist) {
-			result.append("            <if test=\"rowSize!=null\">where rownum &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
+			result.append(
+					"            <if test=\"rowSize!=null\">where rownum &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
@@ -1007,6 +1121,7 @@ public class MapperUtil {
 	private String createMySqlAndPostgrePageOfPaging(SuperAttribute attr, String assistSpace, boolean anyJDBC,
 			boolean anyAssist) {
 		StringBuffer result = new StringBuffer();
+		result.append("    <!-- 获得类名为:" + attr.getClassName() + "对应数据库中表的数据集合,该查询语句用于多表关联分页查询使用 -->\r\n");
 		result.append("    <select id=\"select" + attr.getClassName() + "OfPaging\"");
 		if (anyAssist) {
 			result.append(" parameterType=\"" + assistSpace + ".Assist\" ");
@@ -1047,6 +1162,7 @@ public class MapperUtil {
 	private String createSqlServerPageOfPaging(SuperAttribute attr, String assistSpace, boolean anyJDBC,
 			boolean anyAssist) {
 		StringBuffer result = new StringBuffer();
+		result.append("    <!-- 获得类名为:" + attr.getClassName() + "对应数据库中表的数据集合,该查询语句用于多表关联分页查询使用 -->\r\n");
 		result.append("    <select id=\"select" + attr.getClassName() + "OfPaging\"");
 		if (anyAssist) {
 			result.append(" parameterType=\"" + assistSpace + ".Assist\"");
@@ -1074,12 +1190,14 @@ public class MapperUtil {
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
-			result.append("} <if test=\"rowSize!=null\">and page &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
+			result.append(
+					"} <if test=\"rowSize!=null\">and page &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
 			result.append("} </if></when>\r\n");
-			result.append("            <otherwise><if test=\"rowSize!=null\">where page &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
+			result.append(
+					"            <otherwise><if test=\"rowSize!=null\">where page &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
@@ -1102,6 +1220,7 @@ public class MapperUtil {
 	private String createOraclePageOfPaging(SuperAttribute attr, String assistSpace, boolean anyJDBC,
 			boolean anyAssist) {
 		StringBuffer result = new StringBuffer();
+		result.append("    <!-- 获得类名为:" + attr.getClassName() + "对应数据库中表的数据集合,该查询语句用于多表关联分页查询使用 -->\r\n");
 		result.append("    <select id=\"select" + attr.getClassName() + "OfPaging\"");
 		if (anyAssist) {
 			result.append(" parameterType=\"" + assistSpace + ".Assist\"");
@@ -1126,7 +1245,8 @@ public class MapperUtil {
 		}
 		result.append("\r\n            ) result \r\n");
 		if (anyAssist) {
-			result.append("            <if test=\"rowSize!=null\">where rownum &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
+			result.append(
+					"            <if test=\"rowSize!=null\">where rownum &lt;= <if test=\"startRow!=null\">#{startRow}+</if>#{rowSize");
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
@@ -1146,21 +1266,24 @@ public class MapperUtil {
 
 		return result.toString();
 	}
+
 	/**
 	 * 创建分页所需的查询
+	 * 
 	 * @param attrBase
 	 * @param anyJDBC
 	 * @return
 	 */
 	private String createCollectionNeedSelectSql(SuperAttribute attrBase, boolean anyJDBC) {
-		StringBuffer result = new StringBuffer();
-		if (attrBase.getColumnItems()==null) {
+		if (attrBase.getColumnItems() == null) {
 			return "";
 		}
+		StringBuffer result = new StringBuffer();
 		for (ColumnItem attr : attrBase.getColumnItems()) {
 			if (attr.isAnyAssociation()) {
 				continue;
 			}
+			result.append("    <!-- 获得类名为:" + attr.getClassName() + "对应数据库中表的数据集合,该查询语句用于多表关联分页查询所需要的子查询-->\r\n");
 			result.append("    <select id=\"select" + attr.getClassName() + "OfPaging\"");
 			result.append(" resultMap=\"result_" + attr.getClassName() + "OfPaging_Map\">\r\n");
 			result.append("        select ");
@@ -1183,11 +1306,11 @@ public class MapperUtil {
 			if (attr.getGrandItem() != null) {
 				result.append(getJoinStr(attr.getGrandItem(), attr.getTableName(), 8));
 			}
-			result.append("        where "+attrBase.getPrimaryKey()+"=#{"+attrBase.getPrimaryKey());
+			result.append("        where " + attrBase.getPrimaryKey() + "=#{" + attrBase.getPrimaryKey());
 			if (anyJDBC) {
 				if (attrBase.getAttributes() != null) {
 					String tmpType = selectJDBCType(attrBase.getAttributes(), attrBase.getPrimaryKey());
-					result.append("," + tmpType);
+					result.append(",jdbcType=" + tmpType);
 				}
 			}
 			result.append("}\r\n");
@@ -1206,10 +1329,10 @@ public class MapperUtil {
 	 * @return
 	 */
 	private String getJoinStr(List<ColumnItem> attrs, String original, int spaceCount) {
-		StringBuffer result = new StringBuffer();
-		if (attrs==null) {
+		if (attrs == null) {
 			return "";
 		}
+		StringBuffer result = new StringBuffer();
 		for (ColumnItem item : attrs) {
 			if (item.getJoinTableName() == null || "".equals(item.getJoinTableName()) || item.getJoinColumn() == null
 					|| "".equals(item.getJoinColumn())) {
@@ -1247,10 +1370,11 @@ public class MapperUtil {
 	 * @return
 	 */
 	private String createSelectById(SuperAttribute attr, boolean anyJDBC) {
-		StringBuffer result = new StringBuffer();
 		if (attr.getPrimaryKey() == null || attr.getPrimaryKey() == "") {
 			return "";
 		}
+		StringBuffer result = new StringBuffer();
+		result.append("    <!-- 通过" + attr.getClassName() + "的id获得对应数据库中表的数据对象-->\r\n");
 		result.append("    <select id=\"select" + attr.getClassName() + "ById\"");
 		if (attr.getAttributes() != null) {
 			String tmpType = selectIdType(attr.getAttributes(), attr.getPrimaryKey());
@@ -1280,7 +1404,7 @@ public class MapperUtil {
 		if (anyJDBC) {
 			if (attr.getAttributes() != null) {
 				String tmpType = selectJDBCType(attr.getAttributes(), attr.getPrimaryKey());
-				result.append("," + tmpType);
+				result.append(",jdbcType=" + tmpType);
 			}
 		}
 		result.append("}\r\n");
@@ -1297,6 +1421,7 @@ public class MapperUtil {
 	 */
 	private String createInsertAll(SuperAttribute attr, String entitySpace, boolean anyJDBC) {
 		StringBuffer result = new StringBuffer();
+		result.append("    <!-- 将" + attr.getClassName() + "插入到对应数据库的表中,包括属性值为null的数据-->\r\n");
 		result.append("\r\n    <insert id=\"insert" + attr.getClassName() + "\" parameterType=\"" + entitySpace + "."
 				+ attr.getClassName() + "\">\r\n");
 		if (attr.getSelectKey() != null) {
@@ -1351,6 +1476,7 @@ public class MapperUtil {
 	 */
 	private String createInsertNonEmpty(SuperAttribute attr, String entitySpace, boolean anyJDBC) {
 		StringBuffer result = new StringBuffer();
+		result.append("    <!-- 将" + attr.getClassName() + "中属性值不为null的数据,插入到对应数据库的表中-->\r\n");
 		result.append("    <insert id=\"insertNonEmpty" + attr.getClassName() + "\" parameterType=\"" + entitySpace
 				+ "." + attr.getClassName() + "\">\r\n");
 		if (attr.getSelectKey() != null) {
@@ -1397,6 +1523,7 @@ public class MapperUtil {
 		if (attr.getPrimaryKey() != null) {
 			String javaIdType = selectIdType(attr.getAttributes(), attr.getPrimaryKey());
 			if (javaIdType != null) {
+				result.append("    <!-- 通过" + attr.getClassName() + "的id将数据库表中对应的数据删除-->\r\n");
 				result.append("    <delete id=\"delete" + attr.getClassName() + "ById\" parameterType=\"java.lang."
 						+ javaIdType + "\">\r\n");
 				result.append("        delete from " + attr.getTableName() + "\r\n");
@@ -1422,6 +1549,7 @@ public class MapperUtil {
 	 */
 	private String createDeleteByAssist(SuperAttribute attr, String assistSpace) {
 		StringBuffer result = new StringBuffer();
+		result.append("    <!-- 通过辅助工具Assist中的条件将" + attr.getClassName() + "对应的数据库表的数据删除-->\r\n");
 		result.append("    <delete id=\"delete" + attr.getClassName() + "\" parameterType=\"" + assistSpace
 				+ ".Assist\">\r\n");
 		result.append("        delete from " + attr.getTableName() + "\r\n");
@@ -1443,6 +1571,8 @@ public class MapperUtil {
 		String tmpIdRow = "";
 		if (attr.getPrimaryKey() != null) {
 			boolean falg = true;
+			result.append("    <!-- 通过" + attr.getClassName() + "的id将" + attr.getClassName()
+					+ "的数据更新到数据库中对应的表,包括值null的数据-->\r\n");
 			result.append("    <update id=\"update" + attr.getClassName() + "ById\" parameterType=\"" + entitySpace
 					+ "." + attr.getClassName() + "\">\r\n");
 			result.append("        update " + attr.getTableName() + " set\r\n");
@@ -1501,6 +1631,8 @@ public class MapperUtil {
 		StringBuffer result = new StringBuffer();
 		String tmpIdRow = "";
 		if (attr.getPrimaryKey() != null) {
+			result.append("    <!-- 通过" + attr.getClassName() + "的id将" + attr.getClassName()
+					+ "中属性值不为null的数据更新到数据库对应的表中-->\r\n");
 			result.append("    <update id=\"updateNonEmpty" + attr.getClassName() + "ById\" parameterType=\""
 					+ entitySpace + "." + attr.getClassName() + "\">\r\n");
 			result.append("        update " + attr.getTableName() + "\r\n");
@@ -1547,6 +1679,7 @@ public class MapperUtil {
 	private String createUpdateByAssist(SuperAttribute attr, boolean anyJDBC) {
 		StringBuffer result = new StringBuffer();
 		if (attr.getPrimaryKey() != null) {
+			result.append("    <!-- 通过辅助工具Assist中的条件将" + attr.getClassName() + "中的数据更新到数据库对应的表中,包括值为null的数据-->\r\n");
 			result.append("    <update id=\"update" + attr.getClassName() + "\" parameterType=\"map\">\r\n");
 			result.append("        update " + attr.getTableName() + "\r\n");
 			result.append("        <set>\r\n");
@@ -1581,6 +1714,7 @@ public class MapperUtil {
 	private String createUpdateNonEmptyByAssist(SuperAttribute attr, boolean anyJDBC) {
 		StringBuffer result = new StringBuffer();
 		if (attr.getPrimaryKey() != null) {
+			result.append("    <!-- 通过辅助工具Assist中的条件将" + attr.getClassName() + "中属性值不为null的数据更新到数据库对应的表中-->\r\n");
 			result.append("    <update id=\"updateNonEmpty" + attr.getClassName() + "\" parameterType=\"map\">\r\n");
 			result.append("        update " + attr.getTableName() + "\r\n");
 			result.append("        <set>\r\n");

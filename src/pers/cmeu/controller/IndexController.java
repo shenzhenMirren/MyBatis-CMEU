@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -61,8 +62,8 @@ public class IndexController extends BaseController {
 	private List<SuperAttribute> superAttributes = new ArrayList<SuperAttribute>();
 	// 首页默认的属性集
 	private SuperAttribute thisSuperAttribute;
-	// 确定信息是否需要从新加载信息
-	private boolean falg = false;
+	// 确定信息是否需要从新加载信息,需要等于true,不需要等于false
+	private boolean falg = true;
 
 	@FXML
 	private Label lblConnection;
@@ -120,6 +121,8 @@ public class IndexController extends BaseController {
 	private CheckBox chkMyUtil;
 	@FXML
 	private CheckBox chkService;
+	@FXML
+	private CheckBox chkSpringAnno;
 	@FXML
 	private CheckBox chkFristCreateMybatis;
 
@@ -395,6 +398,9 @@ public class IndexController extends BaseController {
 			return;
 		}
 		// 将本窗口保存添加到管理器
+		if (StageManager.CONTROLLER==null) {
+			StageManager.CONTROLLER=new HashMap<String, Object>();
+		}
 		StageManager.CONTROLLER.put("index", this);
 		Stage stage = new Stage();
 		try {
@@ -408,6 +414,9 @@ public class IndexController extends BaseController {
 			stage.setScene(new Scene(root));
 			stage.show();
 			// 将本窗口保存添加到管理器
+			if (StageManager.STAGE==null) {
+				StageManager.STAGE=new HashMap<String, Stage>();
+			}
 			StageManager.STAGE.put("attribute", stage);
 			log.debug("打开修改属性窗口成功!");
 		} catch (IOException e) {
@@ -513,6 +522,7 @@ public class IndexController extends BaseController {
 				txtDaoPackage.getText(), 
 				txtMapPackage.getText(), 
 				chkService.isSelected(),
+				chkSpringAnno.isSelected(),
 				txtServicePackage.getText(), 
 				txtServiceImplPackage.getText(), 
 				txtUpdateMapper.getText(),
@@ -531,6 +541,7 @@ public class IndexController extends BaseController {
 		try {
 			fileUtil.createAll();
 			AlertUtil.showInfoAlert("创建完成!");
+			thisSuperAttribute=null;
 			changeInfo = false;
 			log.debug("创建所有文件成功!");
 		} catch (Exception e) {
@@ -708,9 +719,10 @@ public class IndexController extends BaseController {
 		boolean isAssist = chkAssist.isSelected();
 		boolean isConfig = chkConfig.isSelected();
 		boolean isMyUtil = chkMyUtil.isSelected();
+		boolean isSpringAnno=chkSpringAnno.isSelected();
 		HistoryConfig result = new HistoryConfig(projectPath, rootDir, daoPackage, daoName, servicePackage, serviceName,
 				serviceImplPackage, serviceImplName, entityPackage, entityName, mapPackage, mapName,updateMapper, assistPackage,
-				assistName, configPackage, configName, myUtilPackage, myUtilName, isService, isAssist, isConfig,
+				assistName, configPackage, configName, myUtilPackage, myUtilName, isService,isSpringAnno, isAssist, isConfig,
 				isMyUtil);
 		return result;
 	}
@@ -747,6 +759,7 @@ public class IndexController extends BaseController {
 		txtMyUtilName.setText(config.getMyUtilName());
 		chkService.setSelected(config.isService());
 		showOrHideService(config.isService());
+		chkSpringAnno.setSelected(config.isSpringAnno());
 		chkAssist.setSelected(config.isAssist());
 		showOrHideAssist(config.isAssist());
 		chkConfig.setSelected(config.isConfig());
@@ -1070,5 +1083,5 @@ public class IndexController extends BaseController {
 	public void setUpdateOfDatabaseConfig(DatabaseConfig updateOfDatabaseConfig) {
 		this.updateOfDatabaseConfig = updateOfDatabaseConfig;
 	}
-	
+
 }

@@ -15,7 +15,16 @@ public class AttributeCVF {
 	private StringProperty jdbcType =new SimpleStringProperty();
 	private ComboBox<String> javaType =new ComboBox<String>();
 	private StringProperty propertyName= new SimpleStringProperty();
+	private String comment;//表列的注释
+
 	
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
 
 	public ColumnItem getColumnItem() {
 		return columnItem;
@@ -90,6 +99,12 @@ public class AttributeCVF {
 				"java.util.Set<E>","java.util.Map<K, V>","String",
 				"Double","Integer","Long","Object");
 		  
+	}
+
+	@Override
+	public String toString() {
+		return "AttributeCVF [columnItem=" + columnItem + ", check=" + check + ", conlumn=" + conlumn + ", jdbcType="
+				+ jdbcType + ", javaType=" + javaType + ", propertyName=" + propertyName + "]";
 	}
 	
 	
