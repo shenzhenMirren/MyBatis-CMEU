@@ -269,6 +269,9 @@ public class IndexController extends BaseController {
 				}
 				//加载所有表
 				if (event.getClickCount() == 2) {
+					if (treeItem==null) {
+						return;
+					}
 					treeItem.setExpanded(true);
 					if (level == 1) {
 						log.debug("加载所有表....");
@@ -545,6 +548,7 @@ public class IndexController extends BaseController {
 			changeInfo = false;
 			log.debug("创建所有文件成功!");
 		} catch (Exception e) {
+			e.printStackTrace();
 			AlertUtil.showErrorAlert("创建失败!原因:\r\n" + e.getMessage());
 			btnRunCreate.setText("创建失败");			
 			log.error("创建所有文件失败!!!"+e);

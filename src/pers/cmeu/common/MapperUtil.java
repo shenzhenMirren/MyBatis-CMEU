@@ -52,6 +52,7 @@ public class MapperUtil {
 			buffer.append(createSelectOfPagingSql(attribute, assistSpace, dbtype, anyJDBC, anyAssist));
 			buffer.append(createCollectionNeedSelectSql(attribute, anyJDBC));
 		}
+		buffer.append(createSelectByObj(attribute, entitySpace, anyJDBC));
 		buffer.append(createSelectById(attribute, anyJDBC));
 		buffer.append(createInsertAll(attribute, entitySpace, anyJDBC));
 		buffer.append(createInsertNonEmpty(attribute, entitySpace, anyJDBC));
@@ -598,7 +599,7 @@ public class MapperUtil {
 			result.append("    <sql id=\"Assist\">\r\n");
 			result.append("        <where>\r\n");
 			result.append("            <foreach collection=\"require\" item=\"req\" separator=\" \">\r\n");
-			result.append("                ${req.require} #{req.value}\r\n");
+			result.append("                ${req.require} #{req.value} <if test=\"req.suffix != null\"> ${req.suffix}</if>\r\n");
 			result.append("            </foreach>\r\n");
 			result.append("        </where>\r\n");
 			result.append("    </sql>\r\n\r\n");
@@ -607,7 +608,7 @@ public class MapperUtil {
 			result.append("    <sql id=\"updateAssist\">\r\n");
 			result.append("        <where>\r\n");
 			result.append("            <foreach collection=\"assist.require\" item=\"req\" separator=\" \">\r\n");
-			result.append("                ${req.require} #{req.value}\r\n");
+			result.append("                ${req.require} #{req.value} <if test=\"req.suffix != null\"> ${req.suffix}</if>\r\n");
 			result.append("            </foreach>\r\n");
 			result.append("        </where>\r\n");
 			result.append("    </sql>\r\n\r\n");
@@ -786,9 +787,9 @@ public class MapperUtil {
 		} else if (dbType.equals("SqlServer")) {
 			return createSqlServerPage(attr, assistSpace, anyJDBC, anyAssist);
 		} else if (dbType.equals("PostgreSQL")) {
-			return createMySqlAndPostgrePage(attr, assistSpace, anyJDBC, anyAssist);
+			return createPostgrePage(attr, assistSpace, anyJDBC, anyAssist);
 		} else {
-			return createMySqlAndPostgrePage(attr, assistSpace, anyJDBC, anyAssist);
+			return createMySql(attr, assistSpace, anyJDBC, anyAssist);
 		}
 	}
 
@@ -801,10 +802,9 @@ public class MapperUtil {
 	 * @param anyAssist
 	 * @return
 	 */
-	private String createMySql(SuperAttribute attr, String assistSpace, boolean anyJDBC,
-			boolean anyAssist) {
+	private String createMySql(SuperAttribute attr, String assistSpace, boolean anyJDBC, boolean anyAssist) {
 		StringBuffer result = new StringBuffer();
-		
+
 		result.append("    <!-- 获得类名为:" + attr.getClassName() + "对应数据库中表的数据集合 -->\r\n");
 		result.append("    <select id=\"select" + attr.getClassName() + "\"");
 		if (anyAssist) {
@@ -843,21 +843,48 @@ public class MapperUtil {
 			result.append(getJoinStr(attr.getColumnItems(), attr.getTableName(), 8));
 		}
 		if (anyAssist) {
-			result.append("        <if test=\"require!=null\"><include refid=\"Assist\" /></if>\r\n");
-			result.append("        <if test=\"order !=null\">${order}</if>\r\n");
-			result.append("        <if test=\"rowSize !=null\"> LIMIT #{rowSize");
+			result.append("        <choose>\r\n");
+			result.append("            <when test=\"rowSize ==null\">\r\n");
+			result.append("                <if test=\"require!=null\">\r\n");
+			result.append("                    <include refid=\"Assist\" />\r\n");
+			result.append("                </if>\r\n");
+			result.append("                <if test=\"order !=null\">${order}</if>\r\n");
+			result.append("            </when>\r\n");
+			result.append("            <otherwise>\r\n");
+			result.append("                inner join\r\n");
+			result.append("                (\r\n");
+			result.append("                SELECT " + attr.getPrimaryKey() + " as primary_key FROM "
+					+ attr.getTableName() + "\r\n");
+			result.append("                <if test=\"require!=null\">\r\n");
+			result.append("                    <include refid=\"Assist\" />\r\n");
+			result.append("                </if>\r\n");
+			result.append("                <if test=\"order !=null\">${order}</if>\r\n");
+			result.append("                <choose>\r\n");
+			result.append("                    <when test=\"startRow !=null and rowSize !=null\">LIMIT #{startRow");
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
-			result.append("} <if test=\"startRow !=null\"> OFFSET #{startRow");
+			result.append("},#{rowSize");
 			if (anyJDBC) {
 				result.append(",jdbcType=INTEGER");
 			}
-			result.append("}</if></if>\r\n");
+			result.append("} </when>\r\n");
+			result.append("                    <when test=\"rowSize !=null\">LIMIT #{rowSize");
+			if (anyJDBC) {
+				result.append(",jdbcType=INTEGER");
+			}
+			result.append("}</when>\r\n");
+			result.append("                 </choose>\r\n");
+			result.append("                 ) as tmp\r\n");
+			result.append(
+					"                 on tmp.primary_key=" + attr.getTableName() + "." + attr.getPrimaryKey() + "\r\n");
+			result.append("            </otherwise>\r\n");
+			result.append("        </choose>\r\n");
 		}
 		result.append("    </select> \r\n\r\n");
 		return result.toString();
 	}
+
 	/**
 	 * 创建mysql与postgre
 	 * 
@@ -867,7 +894,7 @@ public class MapperUtil {
 	 * @param anyAssist
 	 * @return
 	 */
-	private String createMySqlAndPostgrePage(SuperAttribute attr, String assistSpace, boolean anyJDBC,
+	private String createPostgrePage(SuperAttribute attr, String assistSpace, boolean anyJDBC,
 			boolean anyAssist) {
 		StringBuffer result = new StringBuffer();
 
@@ -1104,9 +1131,77 @@ public class MapperUtil {
 			return createOraclePageOfPaging(attr, assistSpace, anyJDBC, anyAssist);
 		} else if (dbType.equals("SqlServer")) {
 			return createSqlServerPageOfPaging(attr, assistSpace, anyJDBC, anyAssist);
+		} else if (dbType.equals("PostgreSQL")) {
+			return createPostgrePageOfPaging(attr, assistSpace, anyJDBC, anyAssist);
 		} else {
-			return createMySqlAndPostgrePageOfPaging(attr, assistSpace, anyJDBC, anyAssist);
+			return createMySqlOfPaging(attr, assistSpace, anyJDBC, anyAssist);
 		}
+	}
+
+	/**
+	 * 创建mysql
+	 * 
+	 * @param attr
+	 * @param assistSpace
+	 * @param anyJDBC
+	 * @param anyAssist
+	 * @return
+	 */
+	private String createMySqlOfPaging(SuperAttribute attr, String assistSpace, boolean anyJDBC, boolean anyAssist) {
+		StringBuffer result = new StringBuffer();
+		result.append("    <!-- 获得类名为:" + attr.getClassName() + "对应数据库中表的数据集合,该查询语句用于多表关联分页查询使用 -->\r\n");
+		result.append("    <select id=\"select" + attr.getClassName() + "OfPaging\"");
+		if (anyAssist) {
+			result.append(" parameterType=\"" + assistSpace + ".Assist\" ");
+		}
+		result.append(" resultMap=\"result_" + attr.getClassName() + "OfPaging_Map\">\r\n");
+		result.append("        select ");
+		if (anyAssist) {
+			result.append(" <if test=\"distinct !=null\">${distinct}</if>");
+		}
+		result.append("\r\n        <include refid=\"" + attr.getTableName() + "_Column\" /> \r\n");
+		result.append("        from " + attr.getTableName() + "\r\n");
+		if (anyAssist) {
+			result.append("        <choose>\r\n");
+			result.append("            <when test=\"rowSize ==null\">\r\n");
+			result.append("                <if test=\"require!=null\">\r\n");
+			result.append("                    <include refid=\"Assist\" />\r\n");
+			result.append("                </if>\r\n");
+			result.append("                <if test=\"order !=null\">${order}</if>\r\n");
+			result.append("            </when>\r\n");
+			result.append("            <otherwise>\r\n");
+			result.append("                inner join\r\n");
+			result.append("                (\r\n");
+			result.append("                SELECT " + attr.getPrimaryKey() + " as primary_key FROM "
+					+ attr.getTableName() + "\r\n");
+			result.append("                <if test=\"require!=null\">\r\n");
+			result.append("                    <include refid=\"Assist\" />\r\n");
+			result.append("                </if>\r\n");
+			result.append("                <if test=\"order !=null\">${order}</if>\r\n");
+			result.append("                <choose>\r\n");
+			result.append("                    <when test=\"startRow !=null and rowSize !=null\">LIMIT #{startRow");
+			if (anyJDBC) {
+				result.append(",jdbcType=INTEGER");
+			}
+			result.append("},#{rowSize");
+			if (anyJDBC) {
+				result.append(",jdbcType=INTEGER");
+			}
+			result.append("} </when>\r\n");
+			result.append("                    <when test=\"rowSize !=null\">LIMIT #{rowSize");
+			if (anyJDBC) {
+				result.append(",jdbcType=INTEGER");
+			}
+			result.append("}</when>\r\n");
+			result.append("                 </choose>\r\n");
+			result.append("                 ) as tmp\r\n");
+			result.append(
+					"                 on tmp.primary_key=" + attr.getTableName() + "." + attr.getPrimaryKey() + "\r\n");
+			result.append("            </otherwise>\r\n");
+			result.append("        </choose>\r\n");
+		}
+		result.append("    </select> \r\n\r\n");
+		return result.toString();
 	}
 
 	/**
@@ -1118,7 +1213,7 @@ public class MapperUtil {
 	 * @param anyAssist
 	 * @return
 	 */
-	private String createMySqlAndPostgrePageOfPaging(SuperAttribute attr, String assistSpace, boolean anyJDBC,
+	private String createPostgrePageOfPaging(SuperAttribute attr, String assistSpace, boolean anyJDBC,
 			boolean anyAssist) {
 		StringBuffer result = new StringBuffer();
 		result.append("    <!-- 获得类名为:" + attr.getClassName() + "对应数据库中表的数据集合,该查询语句用于多表关联分页查询使用 -->\r\n");
@@ -1359,6 +1454,63 @@ public class MapperUtil {
 				}
 			}
 		}
+		return result.toString();
+	}
+
+	/**
+	 * 获得查询语句ById
+	 * 
+	 * @param attr
+	 * @param anyJDBC
+	 * @return
+	 */
+	private String createSelectByObj(SuperAttribute attr, String entitySpace, boolean anyJDBC) {
+		if (attr.getPrimaryKey() == null || attr.getPrimaryKey() == "") {
+			return "";
+		}
+		StringBuffer result = new StringBuffer();
+
+		result.append(
+				"    <!-- 获得一个" + attr.getClassName() + "对象,以参数" + attr.getClassName() + "对象中不为空的属性作为条件进行查询-->\r\n");
+		result.append("    <select id=\"select" + attr.getClassName() + "ByObj\"");
+		result.append(" parameterType=\"" + entitySpace + "." + attr.getClassName() + "\"");
+		result.append(" resultMap=\"result_" + attr.getClassName() + "_Map\">\r\n");
+		result.append("        select ");
+		result.append("\r\n            <include refid=\"" + attr.getTableName() + "_Column\" /> \r\n");
+		if (attr.getColumnItems() != null) {
+			for (ColumnItem item : attr.getColumnItems()) {
+				result.append("            ,<include refid=\"" + item.getTableName() + "_Column\" /> \r\n");
+				if (item.getGrandItem() != null) {
+					for (ColumnItem itemg : item.getGrandItem()) {
+						if (attr.getTableName().equals(itemg.getTableName())) {
+							continue;
+						}
+						result.append("            ,<include refid=\"" + itemg.getTableName() + "_Column\" /> \r\n");
+					}
+				}
+			}
+		}
+		result.append("        from " + attr.getTableName() + "\r\n");
+		if (attr.getColumnItems() != null) {
+			result.append(getJoinStr(attr.getColumnItems(), attr.getTableName(), 8));
+		}
+		List<AttributeCVF> cvf = attr.getAttributes();
+		if (cvf != null) {
+			result.append("        <where>\r\n");
+			for (int i = cvf.size() - 1; i >= 0; i--) {
+				if (cvf.get(i).getConlumn() != null) {
+					result.append("            <if test=\"" + cvf.get(i).getPropertyName() + " != null \"> " + "and "
+							+ attr.getTableName() + "." + cvf.get(i).getConlumn() + " = #{"
+							+ cvf.get(i).getPropertyName());
+					if (anyJDBC) {
+						result.append(",jdbcType=" + cvf.get(i).getJdbcType());
+					}
+					result.append("}</if>\r\n");
+				}
+			}
+			result.append("        </where>\r\n");
+		}
+		result.append("    </select> \r\n\r\n");
 		return result.toString();
 	}
 

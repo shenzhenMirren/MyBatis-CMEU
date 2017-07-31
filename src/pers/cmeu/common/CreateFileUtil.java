@@ -100,7 +100,7 @@ public class CreateFileUtil {
 		setDaoPackage(daoPackage);
 		setMapPackage(mapPackage);
 		this.createService = createService;
-		this.createSpringAnno=createSpringAnno;
+		this.createSpringAnno = createSpringAnno;
 		setServicePackage(servicePackage);
 		setServiceImplPackage(serviceImplPackage);
 		setUpdateMapperURL(updateMapperURL);
@@ -123,18 +123,24 @@ public class CreateFileUtil {
 	 */
 	public boolean createAll() throws Exception {
 		// 判断实体类包是否存在,不存在则创建
-		if (Files.notExists(Paths.get(projectPath, projectRoot, entityPackage))) {
-			Files.createDirectories(Paths.get(projectPath, projectRoot, entityPackage));
+		if (Files.notExists(
+				Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(entityPackage)))) {
+			Files.createDirectories(
+					Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(entityPackage)));
 			log.debug("执行创建实体类包!");
 		}
 		// 判断是否存在dao包是否存在,不存在则创建
-		if (Files.notExists(Paths.get(projectPath, projectRoot, daoPackage))) {
-			Files.createDirectories(Paths.get(projectPath, projectRoot, daoPackage));
+		if (Files
+				.notExists(Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(daoPackage)))) {
+			Files.createDirectories(
+					Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(daoPackage)));
 			log.debug("执行创建dao接口包!");
 		}
 		// 判断是否存在map包是否存在,不存在则创建
-		if (Files.notExists(Paths.get(projectPath, projectRoot, mapPackage))) {
-			Files.createDirectories(Paths.get(projectPath, projectRoot, mapPackage));
+		if (Files
+				.notExists(Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(mapPackage)))) {
+			Files.createDirectories(
+					Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(mapPackage)));
 			log.debug("执行创建mapper映射文件包!");
 		}
 		// 判断是否创建service/serviceImpl包是否存在,不存在则创建
@@ -159,7 +165,7 @@ public class CreateFileUtil {
 			// 获得更新mapper更新的mapper包名及名称;
 			if (!createConfig || updateMapperURL != null) {
 				if (attr.getMapperName() != null) {
-					mapperURL.add(mapPackage + attr.getMapperName() + ".xml");
+					mapperURL.add(packageToUri(uriToPackage(mapPackage)) + attr.getMapperName() + ".xml");
 				}
 			}
 
@@ -175,10 +181,14 @@ public class CreateFileUtil {
 				List<String[]> property = new ArrayList<String[]>();
 				for (AttributeCVF cvf : attr.getAttributes()) {
 					if (cvf.getCheck() == true) {
-						property.add(new String[] { cvf.getJavaTypeValue(), cvf.getPropertyName(),cvf.getComment() });
+						property.add(new String[] { cvf.getJavaTypeValue(), cvf.getPropertyName(), cvf.getComment() });
 					}
 				}
-				Path entityPath = Paths.get(projectPath, projectRoot, entityPackage, attr.getClassName() + ".java");
+				Path entityPath = Paths.get(packageToUri(projectPath), packageToUri(projectRoot),
+						packageToUri(entityPackage), attr.getClassName() + ".java");
+				if (Files.exists(entityPath)) {
+					Files.delete(entityPath);
+				}
 				String entityStr = ClassUtil.getInstance().getEntityString(uriToPackage(entityPackage), entitySpaces,
 						attr.getClassName(), property, attr.isSerializable(), attr.isConstruct(), attr.isConstructAll(),
 						attr.isCreateGetSet());
@@ -197,7 +207,11 @@ public class CreateFileUtil {
 				}
 				String daoStr = DaoUtil.getInstance().getDaoString(uriToPackage(daoPackage), daoInport,
 						attr.getDaoName(), attr.getClassName(), ketType, createAssist, attr.isAnyHasColl());
-				Path daoPath = Paths.get(projectPath, projectRoot, daoPackage, attr.getDaoName() + ".java");
+				Path daoPath = Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(daoPackage),
+						attr.getDaoName() + ".java");
+				if (Files.exists(daoPath)) {
+					Files.delete(daoPath);
+				}
 				createFile(daoPath, daoStr);
 				log.debug("生成dao成功!");
 			}
@@ -208,7 +222,11 @@ public class CreateFileUtil {
 						uriToPackage(daoPackage) + "." + attr.getDaoName(), uriToPackage(entityPackage),
 						uriToPackage(assistPackage), databaseConfig.getDbType(), attr, createAssist,
 						attr.isCreateJDBCType());
-				Path mapPath = Paths.get(projectPath, projectRoot, mapPackage, attr.getMapperName() + ".xml");
+				Path mapPath = Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(mapPackage),
+						attr.getMapperName() + ".xml");
+				if (Files.exists(mapPath)) {
+					Files.delete(mapPath);
+				}
 				createFile(mapPath, mapStr);
 				log.debug("生成Mapper成功!");
 			}
@@ -231,8 +249,11 @@ public class CreateFileUtil {
 						String serStr = ServiceUtil.getInstance().getServiceString(uriToPackage(servicePackage),
 								serImport, attr.getServiceName(), attr.getClassName(), ketType, createAssist,
 								attr.isAnyHasColl());
-						Path serPath = Paths.get(projectPath, projectRoot, servicePackage,
-								attr.getServiceName() + ".java");
+						Path serPath = Paths.get(packageToUri(projectPath), packageToUri(projectRoot),
+								packageToUri(servicePackage), attr.getServiceName() + ".java");
+						if (Files.exists(serPath)) {
+							Files.delete(serPath);
+						}
 						createFile(serPath, serStr);
 						log.debug("生成service成功!");
 					}
@@ -252,9 +273,12 @@ public class CreateFileUtil {
 						String serImplStr = ServiceImplUtil.getInstance().getServiceImplString(
 								uriToPackage(serviceImplPackage), serImplImport, attr.getDaoName(),
 								attr.getServiceName(), attr.getServiceImplName(), attr.getClassName(), ketType,
-								createAssist, attr.isAnyHasColl(),this.createSpringAnno);
-						Path serImplPath = Paths.get(projectPath, projectRoot, serviceImplPackage,
-								attr.getServiceImplName() + ".java");
+								createAssist, attr.isAnyHasColl(), this.createSpringAnno);
+						Path serImplPath = Paths.get(packageToUri(projectPath), packageToUri(projectRoot),
+								packageToUri(serviceImplPackage), attr.getServiceImplName() + ".java");
+						if (Files.exists(serImplPath)) {
+							Files.delete(serImplPath);
+						}
 						createFile(serImplPath, serImplStr);
 						log.debug("生成serviceImpl成功!");
 					}
@@ -264,20 +288,25 @@ public class CreateFileUtil {
 
 		// 判断是否需要创建Assist,如果需要就创建
 		if (createAssist) {
-			if (Files.notExists(Paths.get(projectPath, projectRoot, assistPackage, assistName + ".java"))) {
-				Files.createDirectories(Paths.get(projectPath, projectRoot, assistPackage));
+			if (Files.notExists(Paths.get(packageToUri(projectPath), packageToUri(projectRoot),
+					packageToUri(assistPackage), assistName + ".java"))) {
+				Files.createDirectories(
+						Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(assistPackage)));
 				log.debug("执行创建Assist包名!");
-				Path path = Paths.get(projectPath, projectRoot, assistPackage, assistName + ".java");
+				Path path = Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(assistPackage),
+						assistName + ".java");
 				createAssist(path);
 			}
 		}
 
-		// 判断是否创建config配置文件
+		// 判断是否创建mybatisconfig配置文件
 		if (createConfig) {
 			if (Files.notExists(Paths.get(projectPath, projectRoot, configPackage, configName))) {
-				Files.createDirectories(Paths.get(projectPath, projectRoot, configPackage));
+				Files.createDirectories(
+						Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(configPackage)));
 				log.debug("执行创建配置文件包名!");
-				Path path = Paths.get(projectPath, projectRoot, configPackage, configName);
+				Path path = Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(configPackage),
+						configName);
 				createMyBatisConfig(path);
 			}
 		} else if (updateMapperURL != null && !("".equals(updateMapperURL)) && mapperURL != null) {
@@ -289,10 +318,13 @@ public class CreateFileUtil {
 		}
 		// 判断是否需要创建MyUtil帮助工具
 		if (createMyUtil) {
-			if (Files.notExists(Paths.get(projectPath, projectRoot, myUtilPackage, myUtilName + ".java"))) {
-				Files.createDirectories(Paths.get(projectPath, projectRoot, myUtilPackage));
+			if (Files.notExists(Paths.get(packageToUri(projectPath), packageToUri(projectRoot),
+					packageToUri(myUtilPackage), myUtilName + ".java"))) {
+				Files.createDirectories(
+						Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(myUtilPackage)));
 				log.debug("执行创建MyBatis帮助工具包名!");
-				Path path = Paths.get(projectPath, projectRoot, myUtilPackage, myUtilName + ".java");
+				Path path = Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(myUtilPackage),
+						myUtilName + ".java");
 				createMyBatisUtil(path);
 			}
 		}
@@ -309,12 +341,16 @@ public class CreateFileUtil {
 	 * @throws Exception
 	 */
 	private boolean createServiceDir() throws Exception {
-		if (Files.notExists(Paths.get(projectPath, projectRoot, servicePackage))) {
-			Files.createDirectories(Paths.get(projectPath, projectRoot, servicePackage));
+		if (Files.notExists(
+				Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(servicePackage)))) {
+			Files.createDirectories(
+					Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(servicePackage)));
 			log.debug("执行创建Service包!");
 		}
-		if (Files.notExists(Paths.get(projectPath, projectRoot, serviceImplPackage))) {
-			Files.createDirectories(Paths.get(projectPath, projectRoot, serviceImplPackage));
+		if (Files.notExists(
+				Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(serviceImplPackage)))) {
+			Files.createDirectories(
+					Paths.get(packageToUri(projectPath), packageToUri(projectRoot), packageToUri(serviceImplPackage)));
 			log.debug("执行创建ServiceImpl包!");
 		}
 		return true;
@@ -385,7 +421,7 @@ public class CreateFileUtil {
 			}
 		}
 		for (String item : set) {
-			result.append("        <mapper resource=\"" + mapPackage + item + ".xml\" />\r\n");
+			result.append("        <mapper resource=\"" + packageToUri(uriToPackage(mapPackage)) + item + ".xml\" />\r\n");
 		}
 		return result.toString();
 	}
@@ -404,7 +440,7 @@ public class CreateFileUtil {
 		codeInfo.append("package " + uriToPackage(myUtilPackage) + ";" + "\r\n");
 
 		if (Materi.indexOf("{*resource*}") != -1) {
-			Materi = Materi.replace("{*resource*}", configPackage + configName);
+			Materi = Materi.replace("{*resource*}", packageToUri(uriToPackage(configPackage)) + configName);
 		}
 		codeInfo.append(Materi + "\r\n");
 		log.debug("执行创建...");
@@ -422,9 +458,21 @@ public class CreateFileUtil {
 	 * @return
 	 */
 	private String uriToPackage(String str) {
+		if (str == null || "".equalsIgnoreCase(str)) {
+			return "";
+		}
+		int leftBrace = str.indexOf("{");
+		int rightBrace = str.indexOf("}");
+		if (leftBrace != -1 && rightBrace != -1) {
+			String placeStr = str.substring(leftBrace, rightBrace + 1);
+			str = str.replace(placeStr, "");
+			if ("".equalsIgnoreCase(str)) {
+				return "";
+			}
+		}
 		String result = str.replace("\\", ".");
 		result = str.replace("/", ".");
-		return result.substring(0, result.length() - 1);
+		return result.substring(0, result.length());
 	}
 
 	/**
@@ -434,8 +482,17 @@ public class CreateFileUtil {
 	 * @return
 	 */
 	private String packageToUri(String str) {
+		if (str == null || "".equalsIgnoreCase(str)) {
+			return "";
+		}
+		str = str.replace("{", "");
+		str = str.replace("}", "/");
 		String result = str.replace(".", "/");
-		return result + "/";
+		if (result.substring(result.length() - 1).equals("/")) {
+			return result;
+		} else {
+			return result + "/";
+		}
 	}
 
 	/**
@@ -544,7 +601,7 @@ public class CreateFileUtil {
 	}
 
 	public void setEntityPackage(String entityPackage) {
-		this.entityPackage = packageToUri(entityPackage);
+		this.entityPackage = entityPackage;
 	}
 
 	public String getDaoPackage() {
@@ -552,7 +609,7 @@ public class CreateFileUtil {
 	}
 
 	public void setDaoPackage(String daoPackage) {
-		this.daoPackage = packageToUri(daoPackage);
+		this.daoPackage = daoPackage;
 	}
 
 	public String getMapPackage() {
@@ -560,7 +617,7 @@ public class CreateFileUtil {
 	}
 
 	public void setMapPackage(String mapPackage) {
-		this.mapPackage = packageToUri(mapPackage);
+		this.mapPackage = mapPackage;
 	}
 
 	public String getServicePackage() {
@@ -568,7 +625,7 @@ public class CreateFileUtil {
 	}
 
 	public void setServicePackage(String servicePackage) {
-		this.servicePackage = packageToUri(servicePackage);
+		this.servicePackage = servicePackage;
 	}
 
 	public String getServiceImplPackage() {
@@ -576,7 +633,7 @@ public class CreateFileUtil {
 	}
 
 	public void setServiceImplPackage(String serviceImplPackage) {
-		this.serviceImplPackage = packageToUri(serviceImplPackage);
+		this.serviceImplPackage = serviceImplPackage;
 	}
 
 	public String getUpdateMapperURL() {
@@ -619,7 +676,7 @@ public class CreateFileUtil {
 	}
 
 	public void setAssistPackage(String assistPackage) {
-		this.assistPackage = packageToUri(assistPackage);
+		this.assistPackage = assistPackage;
 	}
 
 	public String getAssistName() {
@@ -646,7 +703,7 @@ public class CreateFileUtil {
 		if (configPackage == null || configPackage.isEmpty() || "".equals(configPackage.trim())) {
 			this.configPackage = "";
 		} else {
-			this.configPackage = packageToUri(configPackage);
+			this.configPackage = configPackage;
 		}
 	}
 
@@ -671,7 +728,7 @@ public class CreateFileUtil {
 	}
 
 	public void setMyUtilPackage(String myUtilPackage) {
-		this.myUtilPackage = packageToUri(myUtilPackage);
+		this.myUtilPackage = myUtilPackage;
 	}
 
 	public String getMyUtilName() {

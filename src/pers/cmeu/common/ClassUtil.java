@@ -88,7 +88,12 @@ public class ClassUtil {
 		}
 		StringBuffer result = new StringBuffer();
 		for (String[] list : str) {
-			result.append("    private " + list[0] + " " + list[1] + ";//" + list[2] + "\r\n");
+			result.append("    private " + list[0] + " " + list[1] + ";");
+			if (list[2]!=null&&!("".equals(list[2]))) {
+				result.append("//" + list[2] + "\r\n");
+			}else{
+				result.append("\r\n");
+			}
 		}
 		return result.toString();
 	}

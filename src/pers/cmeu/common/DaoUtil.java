@@ -5,6 +5,7 @@ import java.util.List;
 public class DaoUtil {
 	private DaoUtil() {
 	};
+
 	public static DaoUtil getInstance() {
 		return new DaoUtil();
 	}
@@ -31,6 +32,7 @@ public class DaoUtil {
 		if (anyHasColl) {
 			buffer.append(getSelectEntityOfPaging(entityName, anyAssist));
 		}
+		buffer.append(getSelectEntityByObj(entityName));
 		buffer.append(getSelectEntityById(entityName, idType));
 		buffer.append(getInsert(entityName));
 		buffer.append(getInsertNonEmpty(entityName));
@@ -135,6 +137,24 @@ public class DaoUtil {
 		} else {
 			countStr.append("    List<" + entityName + "> select" + entityName + "OfPaging();\r\n");
 		}
+		return countStr.toString();
+	}
+
+	/**
+	 * 获得通过对象查找一个对象
+	 * 
+	 * @param entityName
+	 * @param idType
+	 * @return
+	 */
+	private String getSelectEntityByObj(String entityName) {
+		StringBuffer countStr = new StringBuffer();
+		countStr.append("	/**\r\n");
+		countStr.append("	 * 获得一个" + entityName + "对象,以参数" + entityName + "对象中不为空的属性作为条件进行查询\r\n");
+		countStr.append("	 * @param obj\r\n");
+		countStr.append("	 * @return\r\n");
+		countStr.append("	 */\r\n");
+		countStr.append("    " + entityName + " select" + entityName + "ByObj(" + entityName + " obj);\r\n");
 		return countStr.toString();
 	}
 

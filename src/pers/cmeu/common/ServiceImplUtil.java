@@ -17,7 +17,8 @@ public class ServiceImplUtil {
 		buffer.append("package " + packageName + ";\r\n");
 		buffer.append(getImport(importSpaces));
 		if (anySpringAnno) {
-			buffer.append("import org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.stereotype.Service;\r\n");
+			buffer.append(
+					"import org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.stereotype.Service;\r\n");
 			buffer.append("@Service\r\n");
 		}
 		buffer.append("public class " + serviceImplName + " implements " + serviceName + "{\r\n");
@@ -30,6 +31,7 @@ public class ServiceImplUtil {
 		if (anyHasColl) {
 			buffer.append(getSelectEntityOfPaging(StrUtil.fristToLoCase(daoName), entityName, anyAssist));
 		}
+		buffer.append(getSelectEntityByObj(StrUtil.fristToLoCase(daoName), entityName));
 		buffer.append(getSelectEntityById(StrUtil.fristToLoCase(daoName), entityName, idType));
 		buffer.append(getInsert(StrUtil.fristToLoCase(daoName), entityName));
 		buffer.append(getInsertNonEmpty(StrUtil.fristToLoCase(daoName), entityName));
@@ -126,6 +128,22 @@ public class ServiceImplUtil {
 			buffer.append("        return " + daoName + ".select" + entityName + "OfPaging();\r\n");
 			buffer.append("    }\r\n");
 		}
+		return buffer.toString();
+	}
+
+	/**
+	 * 获得查询语句通过Id
+	 * 
+	 * @param entityName
+	 * @param idType
+	 * @return
+	 */
+	private String getSelectEntityByObj(String daoName, String entityName) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("    @Override\r\n    public " + entityName + " select" + entityName + "ByObj(" + entityName
+				+ " obj){\r\n");
+		buffer.append("        return " + daoName + ".select" + entityName + "ByObj(obj);\r\n");
+		buffer.append("    }\r\n");
 		return buffer.toString();
 	}
 
