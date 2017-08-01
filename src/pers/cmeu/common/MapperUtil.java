@@ -86,7 +86,7 @@ public class MapperUtil {
 		List<AttributeCVF> item = attr.getAttributes();
 		// 创建resultMap
 		result.append("    <!-- " + attr.getClassName()
-				+ "的resultMap,column是给数据库列起的别名,它对应property类的属性,默认为column别名是类名加属性顺序,可以在MyBatis-CMEU工具中给表起别名,就会以表别名_列名起别名,他是一种防止列名超长或者重复的策略 -->\r\n");
+				+ "的resultMap,column是给数据库列起的别名,它对应property类的属性-->\r\n");
 		result.append("    <resultMap id=\"result_" + attr.getClassName() + "_Map\" type=\"" + entitySpace + "."
 				+ attr.getClassName() + "\">\r\n");
 		// 创建resultMap的普通属性
@@ -94,30 +94,47 @@ public class MapperUtil {
 			if (item.get(i).getConlumn() == null || item.get(i).getConlumn() == "" || item.get(i).getCheck() == false) {
 				continue;
 			}
-			if (i == 0 && item.get(i).getConlumn().equals(attr.getPrimaryKey())) {
+			if (attr.getColumnItems() != null) {
+				if (i == 0 && item.get(i).getConlumn().equals(attr.getPrimaryKey())) {
+					if (attr.getTableAlias() != null && !(attr.getTableAlias().isEmpty())) {
+						result.append(
+								"        <id column=\"" + attr.getTableAlias() + "_" + item.get(i).getConlumn() + "\"");
+					} else {
+						result.append("        <!-- 当你看到column=类名+数字0123时不要问这是什么鬼,请看文档==>  http://mybatiscmeu.com/  ,中=>修改属性页说明==>表的别名   ;它是MyBatis-CMEU生成多表关联时防止列名超长或者列名重复的策略,可以自义定表的别名,就会以表的别名_表列名命名  -->\r\n");
+						result.append("        <id column=\"" + attr.getClassName() + i + "\"");
+					}
+
+					if (anyJDBC) {
+						result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
+					}
+					result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
+					continue;
+				}
 				if (attr.getTableAlias() != null && !(attr.getTableAlias().isEmpty())) {
 					result.append(
-							"        <id column=\"" + attr.getTableAlias() + "_" + item.get(i).getConlumn() + "\"");
+							"        <result column=\"" + attr.getTableAlias() + "_" + item.get(i).getConlumn() + "\"");
 				} else {
-					result.append("        <id column=\"" + attr.getClassName() + i + "\"");
+					result.append("        <result column=\"" + attr.getClassName() + i + "\"");
 				}
-
 				if (anyJDBC) {
 					result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
 				}
 				result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
-				continue;
-			}
-			if (attr.getTableAlias() != null && !(attr.getTableAlias().isEmpty())) {
-				result.append(
-						"        <result column=\"" + attr.getTableAlias() + "_" + item.get(i).getConlumn() + "\"");
 			} else {
-				result.append("        <result column=\"" + attr.getClassName() + i + "\"");
+				if (i == 0 && item.get(i).getConlumn().equals(attr.getPrimaryKey())) {
+					result.append("        <id column=\"" + item.get(i).getConlumn()+ "\"");
+					if (anyJDBC) {
+						result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
+					}
+					result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
+					continue;
+				}
+				result.append("        <result column=\"" + item.get(i).getConlumn()+ "\"");
+				if (anyJDBC) {
+					result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
+				}
+				result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
 			}
-			if (anyJDBC) {
-				result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
-			}
-			result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
 		}
 		if (attr.getColumnItems() != null) {
 			// 创建resultMap里面的association/collection
@@ -341,7 +358,7 @@ public class MapperUtil {
 		List<AttributeCVF> item = attr.getAttributes();
 		// 创建resultMap
 		result.append(
-				"    <!-- " + attr.getClassName() + "的resultMap,改resultMap是专门用在有多表关联的地方,它保证分页时数据映射不会丢失或者重复 -->\r\n");
+				"    <!-- " + attr.getClassName() + "的resultMap,该resultMap是专门用在有多表关联的地方,它保证分页时数据映射不会丢失或者重复 -->\r\n");
 		result.append("    <resultMap id=\"result_" + attr.getClassName() + "OfPaging_Map\" type=\"" + entitySpace + "."
 				+ attr.getClassName() + "\">\r\n");
 		String tempSelectChildrenColumnId = null;
@@ -400,6 +417,9 @@ public class MapperUtil {
 		StringBuffer result = new StringBuffer();
 		for (ColumnItem col : columnItem) {
 			// 创建resultMap
+			result.append(
+					"    <!-- " + col.getClassName() + "的resultMap,该resultMap是专门用在有多表关联的地方,它保证分页时数据映射不会丢失或者重复 -->\r\n");
+
 			result.append("    <resultMap id=\"result_" + col.getClassName() + "OfPaging_Map\" type=\"" + entitySpace
 					+ "." + col.getClassName() + "\">\r\n");
 			List<AttributeCVF> item = col.getAttributeCVFs();
@@ -599,7 +619,8 @@ public class MapperUtil {
 			result.append("    <sql id=\"Assist\">\r\n");
 			result.append("        <where>\r\n");
 			result.append("            <foreach collection=\"require\" item=\"req\" separator=\" \">\r\n");
-			result.append("                ${req.require} #{req.value} <if test=\"req.suffix != null\"> ${req.suffix}</if>\r\n");
+			result.append(
+					"                ${req.require} #{req.value} <if test=\"req.suffix != null\"> ${req.suffix}</if>\r\n");
 			result.append("            </foreach>\r\n");
 			result.append("        </where>\r\n");
 			result.append("    </sql>\r\n\r\n");
@@ -608,7 +629,8 @@ public class MapperUtil {
 			result.append("    <sql id=\"updateAssist\">\r\n");
 			result.append("        <where>\r\n");
 			result.append("            <foreach collection=\"assist.require\" item=\"req\" separator=\" \">\r\n");
-			result.append("                ${req.require} #{req.value} <if test=\"req.suffix != null\"> ${req.suffix}</if>\r\n");
+			result.append(
+					"                ${req.require} #{req.value} <if test=\"req.suffix != null\"> ${req.suffix}</if>\r\n");
 			result.append("            </foreach>\r\n");
 			result.append("        </where>\r\n");
 			result.append("    </sql>\r\n\r\n");
@@ -622,20 +644,30 @@ public class MapperUtil {
 			if (item.get(i).getConlumn() == null || item.get(i).getConlumn() == "" || item.get(i).getCheck() == false) {
 				continue;
 			}
-			if (i == 0) {
-				result.append("        " + attr.getTableName() + "." + item.get(i).getConlumn() + " as ");
+			if (attr.getColumnItems() != null) {
+				if (i == 0) {
+					result.append("        " + attr.getTableName() + "." + item.get(i).getConlumn() + " as ");
+					if (attr.getTableAlias() != null && !(attr.getTableAlias().isEmpty())) {
+						result.append(attr.getTableAlias() + "_" + item.get(i).getConlumn());
+					} else {
+						result.append(attr.getClassName() + i);
+					}
+					continue;
+				}
+				result.append("\r\n        ," + attr.getTableName() + "." + item.get(i).getConlumn() + " as ");
 				if (attr.getTableAlias() != null && !(attr.getTableAlias().isEmpty())) {
 					result.append(attr.getTableAlias() + "_" + item.get(i).getConlumn());
 				} else {
 					result.append(attr.getClassName() + i);
 				}
-				continue;
-			}
-			result.append("\r\n        ," + attr.getTableName() + "." + item.get(i).getConlumn() + " as ");
-			if (attr.getTableAlias() != null && !(attr.getTableAlias().isEmpty())) {
-				result.append(attr.getTableAlias() + "_" + item.get(i).getConlumn());
 			} else {
-				result.append(attr.getClassName() + i);
+				if (i == 0) {
+					result.append("        " + attr.getTableName() + "." + item.get(i).getConlumn() + " as "
+							+ item.get(i).getConlumn());
+					continue;
+				}
+				result.append("\r\n        ," + attr.getTableName() + "." + item.get(i).getConlumn() + " as "
+						+ item.get(i).getConlumn());
 			}
 		}
 		result.append("\r\n");
@@ -894,8 +926,7 @@ public class MapperUtil {
 	 * @param anyAssist
 	 * @return
 	 */
-	private String createPostgrePage(SuperAttribute attr, String assistSpace, boolean anyJDBC,
-			boolean anyAssist) {
+	private String createPostgrePage(SuperAttribute attr, String assistSpace, boolean anyJDBC, boolean anyAssist) {
 		StringBuffer result = new StringBuffer();
 
 		result.append("    <!-- 获得类名为:" + attr.getClassName() + "对应数据库中表的数据集合 -->\r\n");
