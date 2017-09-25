@@ -36,6 +36,7 @@ public class DaoUtil {
 		buffer.append(getSelectEntityById(entityName, idType));
 		buffer.append(getInsert(entityName));
 		buffer.append(getInsertNonEmpty(entityName));
+		buffer.append(getInsertBatch(entityName));
 		buffer.append(getDelete(entityName, idType, anyAssist));
 		buffer.append(getUpdate(entityName, anyAssist));
 		buffer.append(getUpdateNonEmpty(entityName, anyAssist));
@@ -210,6 +211,23 @@ public class DaoUtil {
 		countStr.append("	 * @return\r\n");
 		countStr.append("	 */\r\n");
 		countStr.append("    int insertNonEmpty" + entityName + "(" + entityName + " value);\r\n");
+		return countStr.toString();
+	}
+
+	/**
+	 * 获得插入非空语句
+	 * 
+	 * @param entityName
+	 * @return
+	 */
+	private String getInsertBatch(String entityName) {
+		StringBuffer countStr = new StringBuffer();
+		countStr.append("	/**\r\n");
+		countStr.append("	 * 批量插入" + entityName + "到数据库,包括null值\r\n");
+		countStr.append("	 * @param value\r\n");
+		countStr.append("	 * @return\r\n");
+		countStr.append("	 */\r\n");
+		countStr.append("    int insert" + entityName + "ByBatch(List<" + entityName + "> value);\r\n");
 		return countStr.toString();
 	}
 

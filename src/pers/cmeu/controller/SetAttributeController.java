@@ -29,9 +29,11 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import pers.cmeu.common.ConfigUtil;
 import pers.cmeu.common.DBUtil;
 import pers.cmeu.common.StrUtil;
 import pers.cmeu.models.AttributeCVF;
+import pers.cmeu.models.ClassConfig;
 import pers.cmeu.models.ColumnItem;
 import pers.cmeu.models.DatabaseConfig;
 import pers.cmeu.models.SuperAttribute;
@@ -157,6 +159,21 @@ public class SetAttributeController implements Initializable {
 			event.getTableView().getItems().get(event.getTablePosition().getRow()).setPropertyName(event.getNewValue());
 		});
 
+		try {
+			log.debug("初始化创建类配置信息...");
+			// 从配置文件中获取配置信息并应用
+			ClassConfig classConfig = ConfigUtil.getClassConfig();
+			chkGetAndSet.setSelected(classConfig.isGetAndSet());
+			chkConstruct.setSelected(classConfig.isConstruct());
+			chkConstructAll.setSelected(classConfig.isConstructAll());
+			chkUnlineCamel.setSelected(classConfig.isUnlineCamel());
+			chkSerializable.setSelected(classConfig.isSeriz());
+			chkCreateJDBCtype.setSelected(classConfig.isCreateJDBCType());
+			log.debug("初始化创建类配置信息-->成功!");
+		} catch (Exception e) {
+			log.error("初始化创建类配置信息-->失败:" + e);
+		}
+
 		// 是否将字符驼峰命名;
 		if (chkUnlineCamel.isSelected()) {
 			toCamel();
@@ -164,6 +181,7 @@ public class SetAttributeController implements Initializable {
 			notCamel();
 		}
 		indexContro.setFalg(false);
+
 		log.debug("初始化属性页成功!");
 	}
 
@@ -413,10 +431,11 @@ public class SetAttributeController implements Initializable {
 			}
 			if (item.getCheck()) {
 				items.add(item.getColumnItem());
-			}else {
-				if (index.getThisSuperAttribute().getColumnItems()!=null) {
+			} else {
+				if (index.getThisSuperAttribute().getColumnItems() != null) {
 					for (int i = 0; i < index.getThisSuperAttribute().getColumnItems().size(); i++) {
-						if (index.getThisSuperAttribute().getColumnItems().get(i).getClassName().equals(item.getColumnItem().getClassName())) {
+						if (index.getThisSuperAttribute().getColumnItems().get(i).getClassName()
+								.equals(item.getColumnItem().getClassName())) {
 							index.getThisSuperAttribute().getColumnItems().remove(i);
 						}
 					}

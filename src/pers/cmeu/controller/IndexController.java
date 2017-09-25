@@ -50,7 +50,7 @@ import pers.cmeu.models.SuperAttribute;
 import pers.cmeu.view.AlertUtil;
 
 public class IndexController extends BaseController {
-	private Logger log=Logger.getLogger(this.getClass());
+	private Logger log = Logger.getLogger(this.getClass());
 	// 存储数据库指定数据库,修改属性时用
 	private DatabaseConfig selectedDatabaseConfig;
 	private DatabaseConfig updateOfDatabaseConfig;
@@ -162,7 +162,7 @@ public class IndexController extends BaseController {
 
 	@FXML
 	private ComboBox<String> cboCodeFormat;
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -189,7 +189,7 @@ public class IndexController extends BaseController {
 			controller.setIndexController(this);
 			controller.showDialogStage();
 		});
-		cboCodeFormat.getItems().addAll("UTF-8","GBK","UTF-16","UTF-32","GB2312","GB18030","ISO-8859-1");
+		cboCodeFormat.getItems().addAll("UTF-8", "GBK", "UTF-16", "UTF-32", "GB2312", "GB18030", "ISO-8859-1");
 		cboCodeFormat.setValue("UTF-8");
 		log.debug("初始化首页成功!");
 		log.debug("加载左侧数据库树与事件....");
@@ -226,10 +226,10 @@ public class IndexController extends BaseController {
 							}
 						} catch (CommunicationsException e) {
 							AlertUtil.showErrorAlert("连接超时");
-							log.error("打开连接失败!!!"+e);
+							log.error("打开连接失败!!!" + e);
 						} catch (Exception e) {
 							AlertUtil.showErrorAlert(e.getMessage());
-							log.error("打开连接失败!!!"+e);
+							log.error("打开连接失败!!!" + e);
 						}
 					});
 					MenuItem item1 = new MenuItem("关闭连接");
@@ -239,14 +239,14 @@ public class IndexController extends BaseController {
 					MenuItem item3 = new MenuItem("修改连接");
 					item3.setOnAction(event1 -> {
 						updateOfDatabaseConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
-						if (updateOfDatabaseConfig!=null) {
+						if (updateOfDatabaseConfig != null) {
 							log.debug("打开修改数据库连接窗口...");
-							UpdateConnection controller = (UpdateConnection) loadFXMLPage("修改数据库连接", FXMLPage.UPDATE_CONNECTION,
-									false);
+							UpdateConnection controller = (UpdateConnection) loadFXMLPage("修改数据库连接",
+									FXMLPage.UPDATE_CONNECTION, false);
 							controller.setIndexController(this);
 							controller.init();
 							controller.showDialogStage();
-							
+
 						}
 					});
 					MenuItem item2 = new MenuItem("删除连接");
@@ -261,15 +261,15 @@ public class IndexController extends BaseController {
 							this.loadTVDataBase();
 						} catch (Exception e) {
 							AlertUtil.showErrorAlert("删除数据库连接失败: " + e.getMessage());
-							log.error("删除数据库连接失败!!!"+e);
+							log.error("删除数据库连接失败!!!" + e);
 						}
 					});
 					contextMenu.getItems().addAll(item0, item1, item3, item2);
 					cell.setContextMenu(contextMenu);
 				}
-				//加载所有表
+				// 加载所有表
 				if (event.getClickCount() == 2) {
-					if (treeItem==null) {
+					if (treeItem == null) {
 						return;
 					}
 					treeItem.setExpanded(true);
@@ -295,10 +295,10 @@ public class IndexController extends BaseController {
 							log.debug("加载所有表成功!");
 						} catch (CommunicationsException e) {
 							AlertUtil.showErrorAlert("连接超时");
-							log.error("加载所有表失败!!!"+e);
+							log.error("加载所有表失败!!!" + e);
 						} catch (Exception e) {
 							AlertUtil.showErrorAlert(e.getMessage());
-							log.error("加载所有表失败!!!"+e);
+							log.error("加载所有表失败!!!" + e);
 						}
 					} else if (level == 2) {
 						log.debug("将表的数据加载到数据面板...");
@@ -318,13 +318,13 @@ public class IndexController extends BaseController {
 			return cell;
 		});
 		// 加载左边数据库树
-		
+
 		try {
 			loadTVDataBase();
 			log.debug("加载所有数据库到左侧树集成功!");
 		} catch (Exception e1) {
 			AlertUtil.showErrorAlert(e1.getMessage());
-			log.error("加载所有数据库到左侧树集失败!!!"+e1);
+			log.error("加载所有数据库到左侧树集失败!!!" + e1);
 		}
 		try {
 			// 加载首页配置信息
@@ -333,31 +333,31 @@ public class IndexController extends BaseController {
 			log.debug("加载配置信息到首页成功!");
 		} catch (Exception e) {
 			AlertUtil.showErrorAlert("加载配置失败!失败原因:\r\n" + e.getMessage());
-			log.error("加载配置信息失败!!!"+e);
+			log.error("加载配置信息失败!!!" + e);
 		}
 
 	}
 
-
 	/**
 	 * 加载数据库到树集
+	 * 
 	 * @throws Exception
 	 */
 	public void loadTVDataBase() throws Exception {
 		TreeItem<String> rootTreeItem = tvDataBase.getRoot();
 		rootTreeItem.getChildren().clear();
 		List<DatabaseConfig> item = null;
-			item = ConfigUtil.getDatabaseConfig();
-			for (DatabaseConfig dbConfig : item) {
-				TreeItem<String> treeItem = new TreeItem<String>();
-				treeItem.setValue(dbConfig.getConnName());
-				ImageView dbImage = new ImageView("pers/resource/image/database.png");
-				dbImage.setFitHeight(20);
-				dbImage.setFitWidth(20);
-				dbImage.setUserData(dbConfig);
-				treeItem.setGraphic(dbImage);
-				rootTreeItem.getChildren().add(treeItem);
-			}
+		item = ConfigUtil.getDatabaseConfig();
+		for (DatabaseConfig dbConfig : item) {
+			TreeItem<String> treeItem = new TreeItem<String>();
+			treeItem.setValue(dbConfig.getConnName());
+			ImageView dbImage = new ImageView("pers/resource/image/database.png");
+			dbImage.setFitHeight(20);
+			dbImage.setFitWidth(20);
+			dbImage.setUserData(dbConfig);
+			treeItem.setGraphic(dbImage);
+			rootTreeItem.getChildren().add(treeItem);
+		}
 	}
 
 	/**
@@ -370,7 +370,7 @@ public class IndexController extends BaseController {
 		File file = directoryChooser.showDialog(super.getPrimaryStage());
 		if (file != null) {
 			txtProjectPath.setText(file.getPath());
-			log.debug("选择文件项目目录:"+file.getPath());
+			log.debug("选择文件项目目录:" + file.getPath());
 		}
 	}
 
@@ -386,7 +386,7 @@ public class IndexController extends BaseController {
 		File file = fileChooser.showOpenDialog(super.getPrimaryStage());
 		if (file != null) {
 			txtUpdateMapper.setText(file.getPath());
-			log.debug("选择更新项目资源的配置文件:"+file.getPath());
+			log.debug("选择更新项目资源的配置文件:" + file.getPath());
 		}
 	}
 
@@ -401,8 +401,8 @@ public class IndexController extends BaseController {
 			return;
 		}
 		// 将本窗口保存添加到管理器
-		if (StageManager.CONTROLLER==null) {
-			StageManager.CONTROLLER=new HashMap<String, Object>();
+		if (StageManager.CONTROLLER == null) {
+			StageManager.CONTROLLER = new HashMap<String, Object>();
 		}
 		StageManager.CONTROLLER.put("index", this);
 		Stage stage = new Stage();
@@ -417,14 +417,14 @@ public class IndexController extends BaseController {
 			stage.setScene(new Scene(root));
 			stage.show();
 			// 将本窗口保存添加到管理器
-			if (StageManager.STAGE==null) {
-				StageManager.STAGE=new HashMap<String, Stage>();
+			if (StageManager.STAGE == null) {
+				StageManager.STAGE = new HashMap<String, Stage>();
 			}
 			StageManager.STAGE.put("attribute", stage);
 			log.debug("打开修改属性窗口成功!");
 		} catch (IOException e) {
 			AlertUtil.showErrorAlert("初始化修改属性失败:\r\n原因:" + e.getMessage());
-			log.error("初始化修改属性失败!!!"+e);
+			log.error("初始化修改属性失败!!!" + e);
 		}
 	}
 
@@ -449,7 +449,7 @@ public class IndexController extends BaseController {
 				log.debug("保存配置成功!");
 			} catch (Exception e) {
 				AlertUtil.showErrorAlert("保存配置失败!失败原因:\r\n" + e.getMessage());
-				log.error("保存配置失败!!!"+e);
+				log.error("保存配置失败!!!" + e);
 			}
 		}
 	}
@@ -467,7 +467,7 @@ public class IndexController extends BaseController {
 		}
 		log.debug("准备开始执行创建所有文件...");
 		btnRunCreate.setText("创建中...");
-				
+
 		if (changeInfo == false) {
 			SuperAttribute attr = new SuperAttribute();
 			attr.setClassName(txtEntityName.getText());
@@ -484,7 +484,7 @@ public class IndexController extends BaseController {
 				key = DBUtil.getTablePrimaryKey(selectedDatabaseConfig, selectedTableName);
 			} catch (Exception e) {
 				AlertUtil.showErrorAlert("获得主键失败!原因:\r\n" + e.getMessage());
-				log.error("获取表主键失败!!!"+e);
+				log.error("获取表主键失败!!!" + e);
 			}
 
 			try {
@@ -496,7 +496,7 @@ public class IndexController extends BaseController {
 
 			} catch (Exception e1) {
 				AlertUtil.showErrorAlert("获得属性失败!原因:\r\n" + e1.getMessage());
-				log.error("获得表的所有列失败!!!"+e1);
+				log.error("获得表的所有列失败!!!" + e1);
 			}
 
 			attr.setPrimaryKey(key);
@@ -514,45 +514,29 @@ public class IndexController extends BaseController {
 			superAttributes.add(thisSuperAttribute);
 		}
 		log.debug("初始化创建工具...");
-		//初始化文件工具
-		CreateFileUtil fileUtil=CreateFileUtil.getInstance();
-		fileUtil.init(selectedDatabaseConfig, 
-				superAttributes,
-				cboCodeFormat.getValue(),
-				txtProjectPath.getText(), 
-				txtRootDir.getText(), 
-				txtEntityPackage.getText(), 
-				txtDaoPackage.getText(), 
-				txtMapPackage.getText(), 
-				chkService.isSelected(),
-				chkSpringAnno.isSelected(),
-				txtServicePackage.getText(), 
-				txtServiceImplPackage.getText(), 
-				txtUpdateMapper.getText(),
-				chkAssist.isSelected(), 
-				txtAssistPackage.getText(), 
-				txtAssistName.getText(), 
-				chkConfig.isSelected(), 
-				txtConfigPackage.getText(), 
-				txtConfigName.getText(), 
-				chkMyUtil.isSelected(), 
-				txtMyUtilPackage.getText(), 
-				txtMyUtilName.getText());
-		
+		// 初始化文件工具
+		CreateFileUtil fileUtil = CreateFileUtil.getInstance();
+		fileUtil.init(selectedDatabaseConfig, superAttributes, cboCodeFormat.getValue(), txtProjectPath.getText(),
+				txtRootDir.getText(), txtEntityPackage.getText(), txtDaoPackage.getText(), txtMapPackage.getText(),
+				chkService.isSelected(), chkSpringAnno.isSelected(), txtServicePackage.getText(),
+				txtServiceImplPackage.getText(), txtUpdateMapper.getText(), chkAssist.isSelected(),
+				txtAssistPackage.getText(), txtAssistName.getText(), chkConfig.isSelected(), txtConfigPackage.getText(),
+				txtConfigName.getText(), chkMyUtil.isSelected(), txtMyUtilPackage.getText(), txtMyUtilName.getText());
+
 		log.debug("开始执行创建所有文件...");
 		// 执行创建
 		try {
 			fileUtil.createAll();
 			AlertUtil.showInfoAlert("创建完成!");
-			thisSuperAttribute=null;
+			thisSuperAttribute = null;
 			changeInfo = false;
 			log.debug("创建所有文件成功!");
 		} catch (Exception e) {
 			e.printStackTrace();
 			AlertUtil.showErrorAlert("创建失败!原因:\r\n" + e.getMessage());
-			btnRunCreate.setText("创建失败");			
-			log.error("创建所有文件失败!!!"+e);
-		}finally {
+			btnRunCreate.setText("创建失败");
+			log.error("创建所有文件失败!!!" + e);
+		} finally {
 			btnRunCreate.setText("执行创建");
 		}
 
@@ -572,10 +556,12 @@ public class IndexController extends BaseController {
 			btnSelectMapperFile.disableProperty().set(true);
 			txtUpdateMapper.disableProperty().set(true);
 			lblUpdateMapper.disableProperty().set(true);
+			chkConfig.setSelected(true);
 		} else {
 			btnSelectMapperFile.disableProperty().set(false);
 			txtUpdateMapper.disableProperty().set(false);
 			lblUpdateMapper.disableProperty().set(false);
+			chkConfig.setSelected(false);
 		}
 	}
 
@@ -712,7 +698,7 @@ public class IndexController extends BaseController {
 		String entityName = txtEntityName.getText();
 		String mapPackage = txtMapPackage.getText();
 		String mapName = txtMapName.getText();
-		String updateMapper=txtUpdateMapper.getText();
+		String updateMapper = txtUpdateMapper.getText();
 		String assistPackage = txtAssistPackage.getText();
 		String assistName = txtAssistName.getText();
 		String configPackage = txtConfigPackage.getText();
@@ -723,11 +709,11 @@ public class IndexController extends BaseController {
 		boolean isAssist = chkAssist.isSelected();
 		boolean isConfig = chkConfig.isSelected();
 		boolean isMyUtil = chkMyUtil.isSelected();
-		boolean isSpringAnno=chkSpringAnno.isSelected();
+		boolean isSpringAnno = chkSpringAnno.isSelected();
 		HistoryConfig result = new HistoryConfig(projectPath, rootDir, daoPackage, daoName, servicePackage, serviceName,
-				serviceImplPackage, serviceImplName, entityPackage, entityName, mapPackage, mapName,updateMapper, assistPackage,
-				assistName, configPackage, configName, myUtilPackage, myUtilName, isService,isSpringAnno, isAssist, isConfig,
-				isMyUtil);
+				serviceImplPackage, serviceImplName, entityPackage, entityName, mapPackage, mapName, updateMapper,
+				assistPackage, assistName, configPackage, configName, myUtilPackage, myUtilName, isService,
+				isSpringAnno, isAssist, isConfig, isMyUtil);
 		return result;
 	}
 
@@ -748,7 +734,7 @@ public class IndexController extends BaseController {
 		txtDaoName.setText(config.getDaoName());
 		txtServicePackage.setText(config.getServicePackage());
 		txtServiceName.setText(config.getServiceName());
-		txtServiceImplPackage.setText(config.getServicePackage());
+		txtServiceImplPackage.setText(config.getServiceImplPackage());
 		txtServiceImplName.setText(config.getServiceName());
 		txtEntityPackage.setText(config.getEntityPackage());
 		txtEntityName.setText(config.getEntityName());
@@ -777,7 +763,7 @@ public class IndexController extends BaseController {
 	public String getTableName() {
 		return txtTableName.getText();
 	}
-	
+
 	public SuperAttribute getThisSuperAttribute() {
 		return thisSuperAttribute;
 	}
@@ -1078,11 +1064,9 @@ public class IndexController extends BaseController {
 		this.selectedTableName = selectedTableName;
 	}
 
-
 	public DatabaseConfig getUpdateOfDatabaseConfig() {
 		return updateOfDatabaseConfig;
 	}
-
 
 	public void setUpdateOfDatabaseConfig(DatabaseConfig updateOfDatabaseConfig) {
 		this.updateOfDatabaseConfig = updateOfDatabaseConfig;

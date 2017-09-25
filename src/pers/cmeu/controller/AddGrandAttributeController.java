@@ -25,9 +25,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import pers.cmeu.common.ConfigUtil;
 import pers.cmeu.common.DBUtil;
 import pers.cmeu.common.StrUtil;
 import pers.cmeu.models.AttributeCVF;
+import pers.cmeu.models.ClassConfig;
 import pers.cmeu.models.ColumnItem;
 import pers.cmeu.models.SuperAttribute;
 import pers.cmeu.view.AlertUtil;
@@ -142,6 +144,20 @@ public class AddGrandAttributeController extends BaseController {
 		radioRight.setUserData("right");
 		radioWhere.setUserData("where");
 		log.debug("初始化第三级新表属性窗口成功!");
+		try {
+			log.debug("初始化创建类配置信息...");
+			// 从配置文件中获取配置信息并应用
+			ClassConfig classConfig = ConfigUtil.getClassConfig();
+			chkGetAndSet.setSelected(classConfig.isGetAndSet());
+			chkConstruct.setSelected(classConfig.isConstruct());
+			chkConstructAll.setSelected(classConfig.isConstructAll());
+			chkUnlineCamel.setSelected(classConfig.isUnlineCamel());
+			chkSerializable.setSelected(classConfig.isSeriz());
+			chkCreateJDBCtype.setSelected(classConfig.isCreateJDBCType());
+			log.debug("初始化创建类配置信息-->成功!");
+		} catch (Exception e) {
+			log.error("初始化创建类配置信息-->失败:" + e);
+		}
 	}
 
 	/**
@@ -214,6 +230,7 @@ public class AddGrandAttributeController extends BaseController {
 			AlertUtil.showErrorAlert("获得子表失败!原因:" + e.getMessage());
 			log.debug("加载左侧所有表失败!!!" + e);
 		}
+
 	}
 
 	/**
@@ -238,6 +255,20 @@ public class AddGrandAttributeController extends BaseController {
 			event.getTableView().getItems().get(event.getTablePosition().getRow()).setPropertyName(event.getNewValue());
 		});
 
+		try {
+			log.debug("初始化创建类配置信息...");
+			// 从配置文件中获取配置信息并应用
+			ClassConfig classConfig = ConfigUtil.getClassConfig();
+			chkGetAndSet.setSelected(classConfig.isGetAndSet());
+			chkConstruct.setSelected(classConfig.isConstruct());
+			chkConstructAll.setSelected(classConfig.isConstructAll());
+			chkUnlineCamel.setSelected(classConfig.isUnlineCamel());
+			chkSerializable.setSelected(classConfig.isSeriz());
+			chkCreateJDBCtype.setSelected(classConfig.isCreateJDBCType());
+			log.debug("初始化创建类配置信息-->成功!");
+		} catch (Exception e) {
+			log.error("初始化创建类配置信息-->失败:" + e);
+		}
 		// 是否将字符驼峰命名;
 		if (chkUnlineCamel.isSelected()) {
 			toCamel();

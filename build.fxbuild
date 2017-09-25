@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ASCII"?>
+<anttasks:AntTask xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:anttasks="http://org.eclipse.fx.ide.jdt/1.0" buildDirectory="${project}/build">
+  <deploy packagingFormat="image" proxyResolution="true">
+    <application name="MyBatis-CMEU" mainclass="pers.Main" version="2.1.2"/>
+    <info title="MyBatis-CMEU" vendor="MyBatis-CMEU"/>
+  </deploy>
+  <signjar/>
+</anttasks:AntTask>

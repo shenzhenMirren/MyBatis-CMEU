@@ -8,26 +8,44 @@ import org.apache.log4j.Logger;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import pers.cmeu.common.ConfigUtil;
+import pers.cmeu.models.ClassConfig;
 import pers.cmeu.models.HistoryConfig;
 import pers.cmeu.models.HistoryConfigCVF;
 import pers.cmeu.view.AlertUtil;
 
 public class HistoryConfigController extends BaseController {
-	private Logger log=Logger.getLogger(HistoryConfigController.class.getName());
+	private Logger log = Logger.getLogger(HistoryConfigController.class.getName());
 	private IndexController indexController;
 
 	@FXML
 	private TableView<HistoryConfigCVF> tblConfigInfo;
 
-	
+	@FXML
+	private CheckBox chkGetAndSet;
+	@FXML
+	private CheckBox chkConstruct;
+	@FXML
+	private CheckBox chkConstructAll;
+	@FXML
+	private CheckBox chkUnlineCamel;
+	@FXML
+	private CheckBox chkSerializable;
+	@FXML
+	private CheckBox chkCreateJDBCtype;
+
+	@FXML
+	private Button btnSaveClassConfig;
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		log.debug("初始化配置信息窗口....");
@@ -35,40 +53,83 @@ public class HistoryConfigController extends BaseController {
 		log.debug("初始化配置信息窗口完成!");
 		initTable();
 	}
-	
+
 	/**
 	 * 初始化配置table
 	 */
-	public void initTable(){
+	public void initTable() {
 		log.debug("初始化配置信息表格...");
 		ObservableList<HistoryConfigCVF> data = null;
 		try {
 			data = getHistoryConfig();
 		} catch (Exception e) {
 			tblConfigInfo.setPlaceholder(new Label("加载配置文件失败!失败原因:\r\n" + e.getMessage()));
-			log.error("初始化配置信息表格出现异常!!!"+e);
+			log.error("初始化配置信息表格出现异常!!!" + e);
 		}
-		
-		TableColumn<HistoryConfigCVF,String> tdInfo =new TableColumn<HistoryConfigCVF, String>("配置信息文件名");	
-		TableColumn<HistoryConfigCVF,String> tdOperation=new TableColumn<HistoryConfigCVF, String>("操作");	
-		
+
+		TableColumn<HistoryConfigCVF, String> tdInfo = new TableColumn<HistoryConfigCVF, String>("配置信息文件名");
+		TableColumn<HistoryConfigCVF, String> tdOperation = new TableColumn<HistoryConfigCVF, String>("操作");
+
 		tdInfo.setPrefWidth(320);
 		tdInfo.setCellValueFactory(new PropertyValueFactory<>("name"));
 
 		tdOperation.setPrefWidth(198);
 		tdOperation.setCellValueFactory(new PropertyValueFactory<>("hbox"));
-		
+
 		tblConfigInfo.getColumns().add(tdInfo);
 		tblConfigInfo.getColumns().add(tdOperation);
-		
+
 		tblConfigInfo.setItems(data);
 		log.debug("初始化配置信息完成!");
+
+		try {
+			log.debug("初始化创建类配置信息...");
+			// 从配置文件中获取配置信息并应用
+			ClassConfig classConfig = ConfigUtil.getClassConfig();
+			chkGetAndSet.setSelected(classConfig.isGetAndSet());
+			chkConstruct.setSelected(classConfig.isConstruct());
+			chkConstructAll.setSelected(classConfig.isConstructAll());
+			chkUnlineCamel.setSelected(classConfig.isUnlineCamel());
+			chkSerializable.setSelected(classConfig.isSeriz());
+			chkCreateJDBCtype.setSelected(classConfig.isCreateJDBCType());
+			log.debug("初始化创建类配置信息-->成功!");
+		} catch (Exception e) {
+			log.error("初始化创建类配置信息-->失败:" + e);
+		}
 
 	}
 
 	/**
-	 * 获得配置文件Table
-	 * 特别注意,条件添加的关系,加载与删除配置需要在这里面操作
+	 * 保存实体类配置信息
+	 * 
+	 * @param event
+	 */
+	public void saveClassConfig(ActionEvent event) {
+		log.info("执行实体类配置...");
+		boolean getAndSet = chkGetAndSet.isSelected();
+		boolean construct = chkConstruct.isSelected();
+		boolean constructAll = chkConstructAll.isSelected();
+		boolean unlineCamel = chkUnlineCamel.isSelected();
+		boolean serializable = chkSerializable.isSelected();
+		boolean createJDBCType = chkCreateJDBCtype.isSelected();
+		ClassConfig classConfig = new ClassConfig(getAndSet, construct, constructAll, unlineCamel, serializable,
+				createJDBCType);
+		try {
+			int result = ConfigUtil.saveClassConfig(classConfig);
+			if (result != 0) {
+				AlertUtil.showInfoAlert("保存成功!");
+			}
+			log.info("执行实体类配置-->成功:受影响:" + result);
+		} catch (Exception e) {
+			AlertUtil.showErrorAlert(e.toString());
+			log.error("执行实体类配置-->失败:" + e);
+		}
+
+	}
+
+	/**
+	 * 获得配置文件Table 特别注意,条件添加的关系,加载与删除配置需要在这里面操作
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -90,8 +151,8 @@ public class HistoryConfigController extends BaseController {
 					closeDialogStage();
 					log.debug("将配置信息加载到首页成功!");
 				} catch (Exception e) {
-					AlertUtil.showErrorAlert("加载配置失败!失败原因:\r\n"+e.getMessage());
-					log.error("将配置信息加载到首页失败!!!"+e);
+					AlertUtil.showErrorAlert("加载配置失败!失败原因:\r\n" + e.getMessage());
+					log.error("将配置信息加载到首页失败!!!" + e);
 				}
 			});
 			Button button1 = new Button("删除配置");
@@ -109,8 +170,8 @@ public class HistoryConfigController extends BaseController {
 						}
 						log.debug("执行删除配置完成!");
 					} catch (Exception e) {
-						AlertUtil.showErrorAlert("删除失败!失败原因:\r\n"+e.getMessage());
-						log.error("执行删除配置失败!!!"+e);
+						AlertUtil.showErrorAlert("删除失败!失败原因:\r\n" + e.getMessage());
+						log.error("执行删除配置失败!!!" + e);
 					}
 				}
 			});
@@ -140,8 +201,5 @@ public class HistoryConfigController extends BaseController {
 	public void setTblConfigInfo(TableView<HistoryConfigCVF> tblConfigInfo) {
 		this.tblConfigInfo = tblConfigInfo;
 	}
-	
-	
 
-	
 }

@@ -56,6 +56,7 @@ public class MapperUtil {
 		buffer.append(createSelectById(attribute, anyJDBC));
 		buffer.append(createInsertAll(attribute, entitySpace, anyJDBC));
 		buffer.append(createInsertNonEmpty(attribute, entitySpace, anyJDBC));
+		buffer.append(createInsertBatch(attribute, entitySpace, anyJDBC, dbtype));
 		buffer.append(createDeleteById(attribute, entitySpace, anyJDBC));
 		if (anyAssist) {
 			buffer.append(createDeleteByAssist(attribute, assistSpace));
@@ -85,8 +86,7 @@ public class MapperUtil {
 		StringBuffer result = new StringBuffer();
 		List<AttributeCVF> item = attr.getAttributes();
 		// 创建resultMap
-		result.append("    <!-- " + attr.getClassName()
-				+ "的resultMap,column是给数据库列起的别名,它对应property类的属性-->\r\n");
+		result.append("    <!-- " + attr.getClassName() + "的resultMap,column是给数据库列起的别名,它对应property类的属性-->\r\n");
 		result.append("    <resultMap id=\"result_" + attr.getClassName() + "_Map\" type=\"" + entitySpace + "."
 				+ attr.getClassName() + "\">\r\n");
 		// 创建resultMap的普通属性
@@ -100,7 +100,8 @@ public class MapperUtil {
 						result.append(
 								"        <id column=\"" + attr.getTableAlias() + "_" + item.get(i).getConlumn() + "\"");
 					} else {
-						result.append("        <!-- 当你看到column=类名+数字0123时不要问这是什么鬼,请看文档==>  http://mybatiscmeu.com/  ,中=>修改属性页说明==>表的别名   ;它是MyBatis-CMEU生成多表关联时防止列名超长或者列名重复的策略,可以自义定表的别名,就会以表的别名_表列名命名  -->\r\n");
+						result.append(
+								"        <!-- 当你看到column=类名+数字0123时不要问这是什么鬼,请看文档==>  http://mybatiscmeu.com/  ,中=>修改属性页说明==>表的别名   ;它是MyBatis-CMEU生成多表关联时防止列名超长或者列名重复的策略,可以自义定表的别名,就会以表的别名_表列名命名  -->\r\n");
 						result.append("        <id column=\"" + attr.getClassName() + i + "\"");
 					}
 
@@ -122,14 +123,14 @@ public class MapperUtil {
 				result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
 			} else {
 				if (i == 0 && item.get(i).getConlumn().equals(attr.getPrimaryKey())) {
-					result.append("        <id column=\"" + item.get(i).getConlumn()+ "\"");
+					result.append("        <id column=\"" + item.get(i).getConlumn() + "\"");
 					if (anyJDBC) {
 						result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
 					}
 					result.append(" property=\"" + item.get(i).getPropertyName() + "\" />\r\n");
 					continue;
 				}
-				result.append("        <result column=\"" + item.get(i).getConlumn()+ "\"");
+				result.append("        <result column=\"" + item.get(i).getConlumn() + "\"");
 				if (anyJDBC) {
 					result.append(" jdbcType=\"" + item.get(i).getJdbcType() + "\"");
 				}
@@ -1692,6 +1693,167 @@ public class MapperUtil {
 		result.append("    </insert>\r\n\r\n");
 		return result.toString();
 	}
+
+	/**
+	 * 获得插入全部语句 parameterType="ArrayList"
+	 * 
+	 * @param attr
+	 * @param entitySpace
+	 * @return
+	 */
+	private String createInsertBatch(SuperAttribute attr, String entitySpace, boolean anyJDBC, String dbType) {
+		StringBuffer result = new StringBuffer();
+		result.append("    <!-- 将" + attr.getClassName() + "批量插入到对应数据库的表中-->\r\n");
+		result.append("    <insert id=\"insert" + attr.getClassName() + "ByBatch\" parameterType=\"ArrayList\">\r\n");
+		if (attr.getSelectKey() != null) {
+			result.append(attr.getSelectKey() + "\r\n");
+		}
+		result.append("        insert into " + attr.getTableName() + "(");
+		List<AttributeCVF> cvf = attr.getAttributes();
+		for (int i = 0; i < cvf.size(); i++) {
+			if (cvf.get(i).getConlumn() != null) {
+				if (i == 0) {
+					result.append(cvf.get(i).getConlumn());
+				} else {
+					result.append("," + cvf.get(i).getConlumn());
+				}
+			}
+		}
+		result.append(") ");
+		result.append(getInsertBatchValues(cvf, anyJDBC, dbType));
+		result.append("    </insert>\r\n\r\n");
+		return result.toString();
+	}
+
+	/**
+	 * 获得批量插入的值
+	 * 
+	 * @param cvf
+	 * @param anyJDBC
+	 * @param dbType
+	 * @return
+	 */
+	private String getInsertBatchValues(List<AttributeCVF> cvf, boolean anyJDBC, String dbType) {
+		if (dbType.equals("Oracle")) {
+			return getOracleBatchValue(cvf, anyJDBC, dbType);
+		} else if (dbType.equals("SqlServer")) {
+			return getSqlServerBatchValue(cvf, anyJDBC, dbType);
+		} else {
+			return getPostgreAndMySqlBatchValue(cvf, anyJDBC, dbType);
+		}
+
+	}
+
+	/**
+	 * 获得oracle批量插入的值
+	 * 
+	 * @param cvf
+	 * @param anyJDBC
+	 * @param dbType
+	 * @return
+	 */
+	private String getOracleBatchValue(List<AttributeCVF> cvf, boolean anyJDBC, String dbType) {
+		StringBuffer result = new StringBuffer();
+		result.append(
+				"\r\n        <foreach collection=\"list\" item=\"item\" index=\"index\" separator=\" union all \" >");
+		for (int i = 0; i < cvf.size(); i++) {
+			if (cvf.get(i).getConlumn() != null) {
+				if (i == 0) {
+					result.append("\r\n            select #{item." + cvf.get(i).getPropertyName());
+					if (anyJDBC) {
+						if (cvf.get(i).getJdbcType() != null) {
+							result.append(",jdbcType=" + cvf.get(i).getJdbcType());
+						}
+					}
+					result.append("}");
+				} else {
+					result.append(",#{item." + cvf.get(i).getPropertyName());
+					if (anyJDBC) {
+						if (cvf.get(i).getJdbcType() != null) {
+							result.append(",jdbcType=" + cvf.get(i).getJdbcType());
+						}
+					}
+					result.append("} from dual ");
+				}
+			}
+		}
+		result.append("\r\n        </foreach>\r\n");
+		return result.toString();
+	};
+
+	/**
+	 * 获得sqlserver批量插入的值
+	 * 
+	 * @param cvf
+	 * @param anyJDBC
+	 * @param dbType
+	 * @return
+	 */
+	private String getSqlServerBatchValue(List<AttributeCVF> cvf, boolean anyJDBC, String dbType) {
+		StringBuffer result = new StringBuffer();
+		result.append(
+				"\r\n        <foreach collection=\"list\" item=\"item\" index=\"index\" separator=\" union all \" >");
+		for (int i = 0; i < cvf.size(); i++) {
+			if (cvf.get(i).getConlumn() != null) {
+				if (i == 0) {
+					result.append("\r\n            select #{item." + cvf.get(i).getPropertyName());
+					if (anyJDBC) {
+						if (cvf.get(i).getJdbcType() != null) {
+							result.append(",jdbcType=" + cvf.get(i).getJdbcType());
+						}
+					}
+					result.append("}");
+				} else {
+					result.append(",#{item." + cvf.get(i).getPropertyName());
+					if (anyJDBC) {
+						if (cvf.get(i).getJdbcType() != null) {
+							result.append(",jdbcType=" + cvf.get(i).getJdbcType());
+						}
+					}
+					result.append("}");
+				}
+			}
+		}
+		result.append("\r\n        </foreach>\r\n");
+		return result.toString();
+	};
+
+	/**
+	 * 获得mysql与postgre的批量插入值
+	 * 
+	 * @param cvf
+	 * @param anyJDBC
+	 * @param dbType
+	 * @return
+	 */
+	private String getPostgreAndMySqlBatchValue(List<AttributeCVF> cvf, boolean anyJDBC, String dbType) {
+		StringBuffer result = new StringBuffer();
+		result.append("values\r\n");
+		result.append("        <foreach collection=\"list\" item=\"item\" index=\"index\" separator=\",\" >");
+		for (int i = 0; i < cvf.size(); i++) {
+			if (cvf.get(i).getConlumn() != null) {
+				if (i == 0) {
+					result.append("\r\n            (#{item." + cvf.get(i).getPropertyName());
+					if (anyJDBC) {
+						if (cvf.get(i).getJdbcType() != null) {
+							result.append(",jdbcType=" + cvf.get(i).getJdbcType());
+						}
+					}
+					result.append("}");
+				} else {
+					result.append(",#{item." + cvf.get(i).getPropertyName());
+					if (anyJDBC) {
+						if (cvf.get(i).getJdbcType() != null) {
+							result.append(",jdbcType=" + cvf.get(i).getJdbcType());
+						}
+					}
+					result.append("})");
+				}
+			}
+		}
+		result.append("\r\n        </foreach>\r\n");
+		return result.toString();
+	};
 
 	/**
 	 * 创建删除ById

@@ -6,7 +6,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pers.cmeu.models.AttributeCVF;
 import pers.cmeu.models.DBType;
@@ -70,7 +72,7 @@ public class DBUtil {
 			String[] types = { "TABLE", "VIEW" };
 			if (config.getDbType().equalsIgnoreCase("PostgreSQL")) {
 				rs = md.getTables(null, null, null, types);
-			}else {
+			} else {
 				rs = md.getTables(null, config.getUserName().toUpperCase(), null, types);
 			}
 			while (rs.next()) {
@@ -93,15 +95,19 @@ public class DBUtil {
 		Connection conn = getConnection(config);
 		DatabaseMetaData md = conn.getMetaData();
 		ResultSet rs = md.getColumns(null, null, tableName, null);
-		List<AttributeCVF> result = new ArrayList<>();
+		Map<String, AttributeCVF> columnMap = new HashMap<>();
 		while (rs.next()) {
 			AttributeCVF attribute = new AttributeCVF();
 			attribute.setConlumn(rs.getString("COLUMN_NAME"));
 			attribute.setComment(rs.getString("REMARKS"));
 			attribute.setJavaType(JavaType.jdbcTypeToJavaType(rs.getString("TYPE_NAME")));
 			attribute.setJdbcType(JDBCType.valiJDBCType(rs.getString("TYPE_NAME").toUpperCase()));
-			result.add(attribute);
+			columnMap.put(rs.getString("COLUMN_NAME"), attribute);
 		}
+		if (columnMap.size() == 0) {
+			throw new NullPointerException("从表中获取字段失败!获取不到任何字段!");
+		}
+		List<AttributeCVF> result = new ArrayList<>(columnMap.values());
 		// 将主键放在第一位
 		String key = null;
 		key = getTablePrimaryKey(config, tableName);
@@ -115,11 +121,11 @@ public class DBUtil {
 				}
 			}
 			if (!anyKeyInFrist) {
-				int keyIndex=0;
+				int keyIndex = 0;
 				for (int i = 0; i < result.size(); i++) {
-					if (result.get(i).getConlumn()!=null) {
+					if (result.get(i).getConlumn() != null) {
 						if (result.get(i).getConlumn().equals(key)) {
-							keyIndex=i;
+							keyIndex = i;
 							break;
 						}
 					}

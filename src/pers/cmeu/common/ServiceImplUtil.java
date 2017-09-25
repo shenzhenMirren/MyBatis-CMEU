@@ -35,6 +35,7 @@ public class ServiceImplUtil {
 		buffer.append(getSelectEntityById(StrUtil.fristToLoCase(daoName), entityName, idType));
 		buffer.append(getInsert(StrUtil.fristToLoCase(daoName), entityName));
 		buffer.append(getInsertNonEmpty(StrUtil.fristToLoCase(daoName), entityName));
+		buffer.append(getInsertBatch(StrUtil.fristToLoCase(daoName), entityName));
 		buffer.append(getDelete(StrUtil.fristToLoCase(daoName), entityName, idType, anyAssist));
 		buffer.append(getUpdate(StrUtil.fristToLoCase(daoName), entityName, anyAssist));
 		buffer.append(getUpdateNonEmpty(StrUtil.fristToLoCase(daoName), entityName, anyAssist));
@@ -191,6 +192,21 @@ public class ServiceImplUtil {
 		buffer.append(
 				"    @Override\r\n    public int insertNonEmpty" + entityName + "(" + entityName + " value){\r\n");
 		buffer.append("        return " + daoName + ".insertNonEmpty" + entityName + "(value);\r\n");
+		buffer.append("    }\r\n");
+		return buffer.toString();
+	}
+
+	/**
+	 * 获得批量插入语句
+	 * 
+	 * @param entityName
+	 * @return
+	 */
+	private String getInsertBatch(String daoName, String entityName) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(
+				"    @Override\r\n    public int insert" + entityName + "ByBatch(List<" + entityName + "> value){\r\n");
+		buffer.append("        return " + daoName + ".insert" + entityName + "ByBatch(value);\r\n");
 		buffer.append("    }\r\n");
 		return buffer.toString();
 	}

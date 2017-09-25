@@ -37,6 +37,7 @@ public class ServiceUtil {
 		buffer.append(getSelectEntityById(entityName, idType));
 		buffer.append(getInsert(entityName));
 		buffer.append(getInsertNonEmpty(entityName));
+		buffer.append(getInsertBatch(entityName));
 		buffer.append(getDelete(entityName, idType, anyAssist));
 		buffer.append(getUpdate(entityName, anyAssist));
 		buffer.append(getUpdateNonEmpty(entityName, anyAssist));
@@ -216,6 +217,23 @@ public class ServiceUtil {
 	}
 
 	/**
+	 * 获得批量插入语句
+	 * 
+	 * @param entityName
+	 * @return
+	 */
+	private String getInsertBatch(String entityName) {
+		StringBuffer countStr = new StringBuffer();
+		countStr.append("	/**\r\n");
+		countStr.append("	 * 批量插入" + entityName + "到数据库\r\n");
+		countStr.append("	 * @param value\r\n");
+		countStr.append("	 * @return\r\n");
+		countStr.append("	 */\r\n");
+		countStr.append("    int insert" + entityName + "ByBatch(List<" + entityName + "> value);\r\n");
+		return countStr.toString();
+	}
+
+	/**
 	 * 创建删除语句
 	 * 
 	 * @param entityName
@@ -271,8 +289,7 @@ public class ServiceUtil {
 			countStr.append("	 * @param assist\r\n");
 			countStr.append("	 * @return\r\n");
 			countStr.append("	 */\r\n");
-			countStr.append("    int update" + entityName + "(" + entityName
-					+ " value,  Assist assist);\r\n");
+			countStr.append("    int update" + entityName + "(" + entityName + " value,  Assist assist);\r\n");
 		} else {
 			countStr.append("    int update" + entityName + "ById(" + entityName + " enti);\r\n");
 		}
@@ -303,8 +320,7 @@ public class ServiceUtil {
 			countStr.append("	 * @param assist\r\n");
 			countStr.append("	 * @return\r\n");
 			countStr.append("	 */\r\n");
-			countStr.append("    int updateNonEmpty" + entityName + "(" + entityName
-					+ " value, Assist assist);\r\n");
+			countStr.append("    int updateNonEmpty" + entityName + "(" + entityName + " value, Assist assist);\r\n");
 		} else {
 			countStr.append("    int updateNonEmpty" + entityName + "ById(" + entityName + " enti);\r\n");
 		}

@@ -1,3 +1,4 @@
+package com.common;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class Assist {
 	private List<WhereRequire<?>> require = null;
 
 	/**
-	 * 条件类,require属性为列的条件,value为条件值
+	 * 条件类,require属性为列的条件,value为条件值,suffix为结尾
 	 * 
 	 * @author Mirren
 	 */
@@ -30,7 +31,7 @@ public class Assist {
 		private String require;
 		private T value;
 		private String suffix;
-		
+
 		public WhereRequire(String require, T value) {
 			super();
 			this.require = require;
@@ -43,7 +44,6 @@ public class Assist {
 			this.value = value;
 			this.suffix = suffix;
 		}
-
 
 		public String getRequire() {
 			return require;
@@ -68,7 +68,39 @@ public class Assist {
 		public void setSuffix(String suffix) {
 			this.suffix = suffix;
 		}
-		
+	}
+
+	/**
+	 * 排序类用于排序column为列名,mode为排序方式,true=asc,false=desc
+	 * 
+	 * @author Mirren
+	 *
+	 */
+	public class WhereOrder {
+		private String column;
+		private boolean mode;
+
+		public WhereOrder(String column, boolean mode) {
+			super();
+			this.column = column;
+			this.mode = mode;
+		}
+
+		public String getColumn() {
+			return column;
+		}
+
+		public void setColumn(String column) {
+			this.column = column;
+		}
+
+		public boolean isMode() {
+			return mode;
+		}
+
+		public void setMode(boolean mode) {
+			this.mode = mode;
+		}
 
 	}
 
@@ -242,36 +274,77 @@ public class Assist {
 	}
 
 	/**
-	 * 自定义查询条件 :参数(自定义开头语句)1    参数(条件值)2     参数(自定义结尾语句)3 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名<br>
-	 * 示例子查询:<br> 
+	 * 自定义查询条件 :参数(自定义开头语句)1 参数(条件值)2 参数(自定义结尾语句)3
+	 * ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名<br>
+	 * 示例子查询:<br>
 	 * 参数1= 列名 in (select 返回列名 from 表名 where 列名 = <br>
 	 * 参数2= 123456<br>
 	 * 参数3= ) <br>
 	 * 假设有一张user表,里面有id列结果为:<br>
 	 * select * from user where id in (select id from user where id=123456)<br>
 	 * <b>需要特别注意的是,当where中不止一个条件的时候需要加上and或者or,根据自己的情况而定</b>
+	 * 
 	 * @param prefix
 	 * @param value
 	 * @param suffix
 	 * @return
 	 */
-	public static <T> WhereRequire<T> customRequire(String prefix, T value,String suffix) {
-		return new Assist().new WhereRequire<T>(prefix, value,suffix);
+	public static <T> WhereRequire<T> customRequire(String prefix, T value, String suffix) {
+		return new Assist().new WhereRequire<T>(prefix, value, suffix);
 	}
-	
+
 	/**
-	 * 将(列名)参数1 按 参数2排序(true=ASC/false=DESC)
-	 * ;如果表中存在相同列名,列名为XML配置文件中的列名:一般为:表名.列名/实体类名+列名
+	 * 获得一个排序对象,将(列名)参数1 按 参数2排序(true=ASC/false=DESC)<br>
+	 * ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名<br>
+	 * 
+	 * @param column
+	 *            列名
+	 * @param mode
+	 *            排序类型,true=asc,false=desc
+	 * @return
+	 */
+	public static WhereOrder order(String column, boolean mode) {
+		return new Assist().new WhereOrder(column, mode);
+	}
+
+	/**
+	 * 设置排序,通过Assist.order(列名,排序方式)<br>
+	 * 示例:assist.setOrder(Assist.order("id",true))//将id正序排序
 	 * 
 	 * @param column
 	 * @param mode
 	 */
-	public void setOrder(String column, boolean mode) {
-		if (mode) {
-			this.order = "order By " + column + " asc";
-		} else {
-			this.order = "order By " + column + " desc";
+	public void setOrder(WhereOrder... order) {
+		if (order == null || order.length == 0) {
+			this.order = null;
+			return;
 		}
+		if (order.length == 1) {
+			if (order[0].isMode()) {
+				this.order = "order By " + order[0].getColumn() + " asc";
+			} else {
+				this.order = "order By " + order[0].getColumn() + " desc";
+			}
+			return;
+		}
+		StringBuffer sql = new StringBuffer("order By ");
+		for (int i = 0; i < order.length; i++) {
+			if (i == 0) {
+				if (order[i].isMode()) {
+					sql.append(order[i].getColumn() + " asc");
+				} else {
+					sql.append(order[i].getColumn() + " desc");
+				}
+			} else {
+				if (order[i].isMode()) {
+					sql.append(", " + order[i].getColumn() + " asc");
+				} else {
+					sql.append(", " + order[i].getColumn() + " desc");
+				}
+			}
+		}
+
+		this.order = sql.toString();
 	}
 
 	/**
@@ -387,4 +460,3 @@ public class Assist {
 		}
 	}
 }
-
