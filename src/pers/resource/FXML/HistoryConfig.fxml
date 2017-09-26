@@ -7,8 +7,7 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity"
-	minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
-	prefWidth="510.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8"
+	minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8"
 	xmlns:fx="http://javafx.com/fxml/1" fx:controller="pers.cmeu.controller.HistoryConfigController">
 	<center>
 
@@ -24,8 +23,7 @@
 						<Font size="14.0" />
 					</font>
 				</Button>
-				<TableView fx:id="tblConfigInfo" prefHeight="469.0"
-					prefWidth="510.0" AnchorPane.leftAnchor="0.0"
+				<TableView fx:id="tblConfigInfo" prefHeight="469.0" AnchorPane.leftAnchor="0.0"
 					AnchorPane.rightAnchor="0.0" />
 				<CheckBox fx:id="chkGetAndSet" layoutX="14.0" layoutY="499.0"
 					mnemonicParsing="false" selected="true" text="创建get与set方法">
