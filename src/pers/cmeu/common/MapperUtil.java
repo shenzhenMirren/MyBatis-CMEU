@@ -1847,10 +1847,11 @@ public class MapperUtil {
 							result.append(",jdbcType=" + cvf.get(i).getJdbcType());
 						}
 					}
-					result.append("})");
+					result.append("}");
 				}
 			}
 		}
+		result.append(")");
 		result.append("\r\n        </foreach>\r\n");
 		return result.toString();
 	};
