@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -53,4 +54,7 @@
          </children>
       </AnchorPane>
    </center>
+   <padding>
+      <Insets left="15.0" right="15.0" />
+   </padding>
 </BorderPane>
