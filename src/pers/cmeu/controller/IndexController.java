@@ -44,6 +44,7 @@ import pers.cmeu.common.CreateFileUtil;
 import pers.cmeu.common.DBUtil;
 import pers.cmeu.common.StrUtil;
 import pers.cmeu.models.AttributeCVF;
+import pers.cmeu.models.ClassConfig;
 import pers.cmeu.models.DatabaseConfig;
 import pers.cmeu.models.HistoryConfig;
 import pers.cmeu.models.SuperAttribute;
@@ -476,6 +477,7 @@ public class IndexController extends BaseController {
 			attr.setMapperName(txtMapName.getText());
 			attr.setServiceName(txtServiceName.getText());
 			attr.setServiceImplName(txtServiceImplName.getText());
+
 			List<AttributeCVF> attributes = null;
 
 			String key = null;
@@ -499,6 +501,20 @@ public class IndexController extends BaseController {
 				log.error("获得表的所有列失败!!!" + e1);
 			}
 
+			try {
+				log.debug("初始化创建类配置信息...");
+				// 从配置文件中获取配置信息并应用
+				ClassConfig classConfig = ConfigUtil.getClassConfig();
+				attr.setCreateGetSet(classConfig.isGetAndSet());
+				attr.setConstruct(classConfig.isConstruct());
+				attr.setConstructAll(classConfig.isConstructAll());
+				attr.setCamel(classConfig.isUnlineCamel());
+				attr.setSerializable(classConfig.isSeriz());
+				attr.setCreateJDBCType(classConfig.isCreateJDBCType());
+				log.debug("初始化创建类配置信息-->成功!");
+			} catch (Exception e) {
+				log.error("初始化创建类配置信息-->失败:" + e);
+			}
 			attr.setPrimaryKey(key);
 			attr.setAttributes(attributes);
 			superAttributes.add(attr);
