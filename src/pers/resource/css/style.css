@@ -10,9 +10,9 @@
     -fx-border-color: #4cae4c;
 }
 .btn {
-    -fx-border-width: 1px;
+    -fx-border-width: 1.0px;
     -fx-border-color: transparent;
-    -fx-border-radius: 4px;
+    -fx-border-radius: 4.0px;
 }
 .btn-executable {
     -fx-text-fill: #333;
@@ -34,4 +34,8 @@
 .btn-default:hover {
     -fx-background-color: #e6e6e6;
     -fx-border-color: #adadad;
+}
+
+.pane-padding{
+	-fx-padding: 0.0px 10.0px;
 }

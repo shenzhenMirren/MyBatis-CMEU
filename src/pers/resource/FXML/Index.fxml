@@ -238,7 +238,7 @@
    											<Font size="16.0" />
    										</font>
    									</TextField>
-   									<Label fx:id="lblServiceName" text="service名:" GridPane.columnIndex="2" GridPane.rowIndex="6">
+   									<Label fx:id="lblServiceName" text="service类名:" GridPane.columnIndex="2" GridPane.rowIndex="6">
    										<font>
    											<Font size="20.0" />
    										</font>
