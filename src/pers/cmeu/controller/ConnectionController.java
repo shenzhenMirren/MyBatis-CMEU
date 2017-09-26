@@ -47,7 +47,7 @@ public class ConnectionController extends BaseController {
 		log.debug("初始化数据库连接窗口....");
 		//初始化下拉列表
 		cboDBType.getItems().addAll("Oracle","MySQL","SqlServer","PostgreSQL");
-		cboDBCoding.getItems().addAll("utf8","utf16","utf32","gb2312","gbk","utf8mb4","ascii");
+		cboDBCoding.getItems().addAll("utf8","utf16","utf32","utf8mb4","gb2312","gbk","ascii");
 		cboDBCoding.setValue("utf8");
 		log.debug("初始化数据库连接成功!");
 	}
