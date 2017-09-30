@@ -1037,7 +1037,7 @@ public class MapperUtil {
 		}
 		if (anyAssist) {
 			result.append("\r\n            <if test=\"require!=null\"><include refid=\"Assist\" /></if>");
-			result.append("\r\n            <if test=\"order !=null\">${order}</if>");
+			//result.append("\r\n            <if test=\"order !=null\">${order}</if>");
 		}
 		result.append("\r\n        ) result \r\n");
 		if (anyAssist) {
@@ -1058,6 +1058,9 @@ public class MapperUtil {
 			}
 			result.append("}</if></otherwise>\r\n");
 			result.append("        </choose>\r\n");
+			
+			result.append("\r\n            <if test=\"order !=null\">${order}</if>");
+			
 		}
 		result.append("    </select> \r\n\r\n");
 		return result.toString();
