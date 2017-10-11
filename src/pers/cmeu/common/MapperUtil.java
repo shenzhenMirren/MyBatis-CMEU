@@ -1037,7 +1037,7 @@ public class MapperUtil {
 		}
 		if (anyAssist) {
 			result.append("\r\n            <if test=\"require!=null\"><include refid=\"Assist\" /></if>");
-			//result.append("\r\n            <if test=\"order !=null\">${order}</if>");
+			result.append("\r\n            <if test=\"order !=null\">${order}</if>");
 		}
 		result.append("\r\n        ) result \r\n");
 		if (anyAssist) {
@@ -1058,9 +1058,6 @@ public class MapperUtil {
 			}
 			result.append("}</if></otherwise>\r\n");
 			result.append("        </choose>\r\n");
-			
-			result.append("        <if test=\"order !=null\">${order}</if>\r\n");
-			
 		}
 		result.append("    </select> \r\n\r\n");
 		return result.toString();
@@ -1311,7 +1308,7 @@ public class MapperUtil {
 
 		if (anyAssist) {
 			result.append("\r\n            <if test=\"require!=null\"><include refid=\"Assist\" /></if>");
-			result.append("\r\n            <if test=\"order !=null\">${order}</if>");
+			//result.append("\r\n            <if test=\"order !=null\">${order}</if>");
 		}
 		result.append("\r\n        ) result \r\n");
 		if (anyAssist) {
@@ -1333,6 +1330,7 @@ public class MapperUtil {
 			}
 			result.append("}</if></otherwise>\r\n");
 			result.append("        </choose>\r\n");
+			result.append("        <if test=\"order !=null\">${order}</if>\r\n");
 		}
 		result.append("    </select> \r\n\r\n");
 		return result.toString();
@@ -1850,10 +1848,11 @@ public class MapperUtil {
 							result.append(",jdbcType=" + cvf.get(i).getJdbcType());
 						}
 					}
-					result.append("})");
+					result.append("}");
 				}
 			}
 		}
+		result.append(")");
 		result.append("\r\n        </foreach>\r\n");
 		return result.toString();
 	};
