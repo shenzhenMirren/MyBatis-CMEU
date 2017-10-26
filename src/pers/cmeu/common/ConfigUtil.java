@@ -318,7 +318,6 @@ public class ConfigUtil {
 			conn = getConnection();
 			stat = conn.createStatement();
 			String jsonStr = JSON.toJSONString(config);
-			System.out.println(jsonStr);
 			String sql = String.format("replace into ClassConfig(name,value) values('classConfig', '%s')", jsonStr);
 			int result = stat.executeUpdate(sql);
 			return result;

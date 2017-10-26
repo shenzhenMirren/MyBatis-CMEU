@@ -27,9 +27,10 @@ public class Assist {
 	 * @author Mirren
 	 */
 	public class WhereRequire<T> {
-		private String require;
-		private T value;
-		private String suffix;
+		private String require;// 条件语句
+		private T value;// 单个值
+		private Object[] values;// 多个值
+		private String suffix;// 结束语句
 
 		public WhereRequire(String require, T value) {
 			super();
@@ -41,6 +42,13 @@ public class Assist {
 			super();
 			this.require = require;
 			this.value = value;
+			this.suffix = suffix;
+		}
+
+		public WhereRequire(String require, String suffix, Object... values) {
+			super();
+			this.require = require;
+			this.values = values;
 			this.suffix = suffix;
 		}
 
@@ -58,6 +66,14 @@ public class Assist {
 
 		public void setValue(T value) {
 			this.value = value;
+		}
+
+		public Object[] getValues() {
+			return values;
+		}
+
+		public void setValues(Object[] values) {
+			this.values = values;
 		}
 
 		public String getSuffix() {
@@ -282,7 +298,7 @@ public class Assist {
 	 * 参数3= ) <br>
 	 * 假设有一张user表,里面有id列结果为:<br>
 	 * select * from user where id in (select id from user where id=123456)<br>
-	 * <b>需要特别注意的是,当where中不止一个条件的时候需要加上and或者or,根据自己的情况而定</b>
+	 * <b>需要特别注意的是,当where中不止一个条件的时候需要加上and或者or,根据自己的情况而定,多个值使用重载方法</b>
 	 * 
 	 * @param prefix
 	 * @param value
@@ -291,6 +307,20 @@ public class Assist {
 	 */
 	public static <T> WhereRequire<T> customRequire(String prefix, T value, String suffix) {
 		return new Assist().new WhereRequire<T>(prefix, value, suffix);
+	}
+
+	/**
+	 * * 自定义查询条件 :参数(自定义开头语句)1 参数(条件值)2 参数(自定义结尾语句)3
+	 * ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名<br>
+	 * 示例: Assist.customRequire("select in (",")",1,2,3,4)
+	 * 
+	 * @param prefix
+	 * @param suffix
+	 * @param value
+	 * @return
+	 */
+	public static <T> WhereRequire<T> customRequire(String prefix, String suffix, Object... value) {
+		return new Assist().new WhereRequire<T>(prefix, suffix, value);
 	}
 
 	/**

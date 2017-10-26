@@ -10,6 +10,9 @@ public class StrUtil {
 	 */
 	public static String unlineToPascal(String str) {
 		if (str != null) {
+			if (str.indexOf("_") == -1) {
+				return fristToUpCase(str);
+			}
 			StringBuilder result = new StringBuilder();
 			String[] temp = str.split("_");
 			for (int i = 0; i < temp.length; i++) {
@@ -32,6 +35,9 @@ public class StrUtil {
 	 */
 	public static String unlineToCamel(String str) {
 		if (str != null) {
+			if (str.indexOf("_") == -1) {
+				return fristToLoCase(str);
+			}
 			StringBuilder result = new StringBuilder();
 			String[] temp = str.split("_");
 			boolean falg = false;

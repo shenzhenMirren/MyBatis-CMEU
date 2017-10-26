@@ -620,8 +620,15 @@ public class MapperUtil {
 			result.append("    <sql id=\"Assist\">\r\n");
 			result.append("        <where>\r\n");
 			result.append("            <foreach collection=\"require\" item=\"req\" separator=\" \">\r\n");
-			result.append(
-					"                ${req.require} #{req.value} <if test=\"req.suffix != null\"> ${req.suffix}</if>\r\n");
+			result.append("                ${req.require} \r\n");
+			result.append("                <if test=\"req.value != null\"> #{req.value}</if> \r\n");
+			result.append("                <if test=\"req.values != null\"> #{req.value}</if> \r\n");
+			result.append("                <if test=\"req.values != null\">\r\n");
+			result.append("                    <foreach collection=\"req.values\" item=\"val\" separator=\",\"> \r\n");
+			result.append("                        #{val} \r\n");
+			result.append("                    </foreach> \r\n");
+			result.append("                </if> \r\n");
+			result.append("                <if test=\"req.suffix != null\"> ${req.suffix}</if> \r\n");
 			result.append("            </foreach>\r\n");
 			result.append("        </where>\r\n");
 			result.append("    </sql>\r\n\r\n");
@@ -630,8 +637,15 @@ public class MapperUtil {
 			result.append("    <sql id=\"updateAssist\">\r\n");
 			result.append("        <where>\r\n");
 			result.append("            <foreach collection=\"assist.require\" item=\"req\" separator=\" \">\r\n");
-			result.append(
-					"                ${req.require} #{req.value} <if test=\"req.suffix != null\"> ${req.suffix}</if>\r\n");
+			result.append("                ${req.require} \r\n");
+			result.append("                <if test=\"req.value != null\"> #{req.value}</if> \r\n");
+			result.append("                <if test=\"req.values != null\"> #{req.value}</if> \r\n");
+			result.append("                <if test=\"req.values != null\">\r\n");
+			result.append("                    <foreach collection=\"req.values\" item=\"val\" separator=\",\"> \r\n");
+			result.append("                        #{val} \r\n");
+			result.append("                    </foreach> \r\n");
+			result.append("                </if> \r\n");
+			result.append("                <if test=\"req.suffix != null\"> ${req.suffix}</if> \r\n");
 			result.append("            </foreach>\r\n");
 			result.append("        </where>\r\n");
 			result.append("    </sql>\r\n\r\n");
