@@ -622,7 +622,6 @@ public class MapperUtil {
 			result.append("            <foreach collection=\"require\" item=\"req\" separator=\" \">\r\n");
 			result.append("                ${req.require} \r\n");
 			result.append("                <if test=\"req.value != null\"> #{req.value}</if> \r\n");
-			result.append("                <if test=\"req.values != null\"> #{req.value}</if> \r\n");
 			result.append("                <if test=\"req.values != null\">\r\n");
 			result.append("                    <foreach collection=\"req.values\" item=\"val\" separator=\",\"> \r\n");
 			result.append("                        #{val} \r\n");
@@ -639,7 +638,6 @@ public class MapperUtil {
 			result.append("            <foreach collection=\"assist.require\" item=\"req\" separator=\" \">\r\n");
 			result.append("                ${req.require} \r\n");
 			result.append("                <if test=\"req.value != null\"> #{req.value}</if> \r\n");
-			result.append("                <if test=\"req.values != null\"> #{req.value}</if> \r\n");
 			result.append("                <if test=\"req.values != null\">\r\n");
 			result.append("                    <foreach collection=\"req.values\" item=\"val\" separator=\",\"> \r\n");
 			result.append("                        #{val} \r\n");
