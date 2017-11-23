@@ -1059,7 +1059,7 @@ public class MapperUtil {
 			result.append("        </choose>\r\n");
 		}
 		result.append("        <if test=\"order !=null\">${order}</if>");
-		result.append("\\r\\n    </select> \r\n\r\n");
+		result.append("\r\n   </select> \r\n\r\n");
 		return result.toString();
 	}
 
