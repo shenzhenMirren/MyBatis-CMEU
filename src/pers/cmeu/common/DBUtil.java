@@ -6,6 +6,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,6 +110,26 @@ public class DBUtil {
 			throw new NullPointerException("从表中获取字段失败!获取不到任何字段!");
 		}
 		List<AttributeCVF> result = new ArrayList<>(columnMap.values());
+		
+		//字段进行排序
+		Collections.sort(result, new Comparator<AttributeCVF>() {
+			public int compare(AttributeCVF o1, AttributeCVF o2) {
+				String str = o1.getConlumn();
+				String otherStr = o2.getConlumn();
+				int length = Math.min(otherStr.length(),str.length());
+				int compare = 0;
+				for(int i=0;i<length;i++){
+					if((compare = (str.charAt(i) - otherStr.charAt(i)))!=0){
+						break;
+					}
+				}
+				if(0 == compare){
+					compare = str.length() - otherStr.length();
+				}
+				return compare;
+			}
+		});
+		
 		// 将主键放在第一位
 		String key = null;
 		key = getTablePrimaryKey(config, tableName);
