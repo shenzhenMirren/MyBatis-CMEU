@@ -76,6 +76,7 @@ public class ServiceUtil {
 	private String getRowCount(String daoName, String entityName, boolean anyAssist) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("	/**\r\n");
+		buffer.append("	 * @Author CodeGenerator \r\n ");
 		//生成注释
 		if (anyAssist) {
 			buffer.append("	 * 获得" + entityName + "数据的总行数,可以通过辅助工具Assist进行条件查询,如果没有条件则传入null\r\n");
@@ -86,11 +87,11 @@ public class ServiceUtil {
 		buffer.append("	 * @return\r\n");
 		buffer.append("	 */\r\n");
 		if (anyAssist) {
-			buffer.append("    \r\n    public long get" + entityName + "RowCount(Assist assist){\r\n");
+			buffer.append("    public long get" + entityName + "RowCount(Assist assist){\r\n");
 			buffer.append("        return " + daoName + ".get" + entityName + "RowCount(assist);\r\n");
 			buffer.append("    }\r\n");
 		} else {
-			buffer.append("    \r\n    public long get" + entityName + "RowCount(){\r\n");
+			buffer.append("    public long get" + entityName + "RowCount(){\r\n");
 			buffer.append("        return " + daoName + ".get" + entityName + "RowCount();\r\n");
 			buffer.append("    }\r\n");
 		}
@@ -108,6 +109,7 @@ public class ServiceUtil {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("	/**\r\n");
+		buffer.append("	 * @Author CodeGenerator \r\n ");
 		if (anyAssist) {
 			buffer.append("	 * 获得" + entityName + "数据集合,可以通过辅助工具Assist进行条件查询,如果没有条件则传入null\r\n");
 			buffer.append("	 * @param assist\r\n");
@@ -118,12 +120,12 @@ public class ServiceUtil {
 		buffer.append("	 */\r\n");
 		
 		if (anyAssist) {
-			buffer.append("    \r\n    public List<" + entityName + "> select" + entityName
+			buffer.append("   public List<" + entityName + "> select" + entityName
 					+ "(Assist assist){\r\n");
 			buffer.append("        return " + daoName + ".select" + entityName + "(assist);\r\n");
 			buffer.append("    }\r\n");
 		} else {
-			buffer.append("    \r\n    public List<" + entityName + "> select" + entityName + "(){\r\n");
+			buffer.append("    public List<" + entityName + "> select" + entityName + "(){\r\n");
 			buffer.append("        return " + daoName + ".select" + entityName + "();\r\n");
 			buffer.append("    }\r\n");
 		}
@@ -141,6 +143,7 @@ public class ServiceUtil {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("	/**\r\n");
+		buffer.append("	 * @Author CodeGenerator \r\n ");
 		if (anyAssist) {
 			buffer.append("	 * 获得" + entityName
 					+ "数据集合,该方法为多表关联时保证分页的数据不缺失不重复,可以正常得到所有数据,如果非多表分页的情况建议使用不带ofPaging的方法,可以通过辅助工具Assist进行查询,如果没有条件则传入null\r\n");
@@ -153,13 +156,13 @@ public class ServiceUtil {
 		buffer.append("	 */\r\n");
 		
 		if (anyAssist) {
-			buffer.append("    \r\n    public List<" + entityName + "> select" + entityName
+			buffer.append("    public List<" + entityName + "> select" + entityName
 					+ "OfPaging(Assist assist){\r\n");
 			buffer.append("        return " + daoName + ".select" + entityName + "OfPaging(assist);\r\n");
 			buffer.append("    }\r\n");
 		} else {
 			buffer.append(
-					"    \r\n    public List<" + entityName + "> select" + entityName + "OfPaging(){\r\n");
+					"    public List<" + entityName + "> select" + entityName + "OfPaging(){\r\n");
 			buffer.append("        return " + daoName + ".select" + entityName + "OfPaging();\r\n");
 			buffer.append("    }\r\n");
 		}
@@ -177,12 +180,13 @@ public class ServiceUtil {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("	/**\r\n");
+		buffer.append("	 * @Author CodeGenerator \r\n ");
 		buffer.append("	 * 获得一个" + entityName + "对象,以参数" + entityName + "对象中不为空的属性作为条件进行查询\r\n");
 		buffer.append("	 * @param obj\r\n");
 		buffer.append("	 * @return\r\n");
 		buffer.append("	 */\r\n");
 		
-		buffer.append("    \r\n    public " + entityName + " select" + entityName + "ByObj(" + entityName
+		buffer.append("    public " + entityName + " select" + entityName + "ByObj(" + entityName
 				+ " obj){\r\n");
 		buffer.append("        return " + daoName + ".select" + entityName + "ByObj(obj);\r\n");
 		buffer.append("    }\r\n");
@@ -203,13 +207,14 @@ public class ServiceUtil {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("	/**\r\n");
+		buffer.append("	 * @Author CodeGenerator \r\n ");
 		buffer.append("	 * 通过" + entityName + "的id获得" + entityName + "对象\r\n");
 		buffer.append("	 * @param id\r\n");
 		buffer.append("	 * @return\r\n");
 		buffer.append("	 */\r\n");
 		
 		buffer.append(
-				"    \r\n    public " + entityName + " select" + entityName + "ById(" + idType + " id){\r\n");
+				"    public " + entityName + " select" + entityName + "ById(" + idType + " id){\r\n");
 		buffer.append("        return " + daoName + ".select" + entityName + "ById(id);\r\n");
 		buffer.append("    }\r\n");
 		return buffer.toString();
@@ -225,12 +230,13 @@ public class ServiceUtil {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("	/**\r\n");
+		buffer.append("	 * @Author CodeGenerator \r\n ");
 		buffer.append("	 * 插入" + entityName + "到数据库,包括null值\r\n");
 		buffer.append("	 * @param value\r\n");
 		buffer.append("	 * @return\r\n");
 		buffer.append("	 */\r\n");
 		
-		buffer.append("    \r\n    public int insert" + entityName + "(" + entityName + " value){\r\n");
+		buffer.append("    public int insert" + entityName + "(" + entityName + " value){\r\n");
 		buffer.append("        return " + daoName + ".insert" + entityName + "(value);\r\n");
 		buffer.append("    }\r\n");
 		return buffer.toString();
@@ -246,13 +252,14 @@ public class ServiceUtil {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("	/**\r\n");
+		buffer.append("	 * @Author CodeGenerator \r\n ");
 		buffer.append("	 * 插入" + entityName + "中属性值不为null的数据到数据库\r\n");
 		buffer.append("	 * @param value\r\n");
 		buffer.append("	 * @return\r\n");
 		buffer.append("	 */\r\n");
 		
 		buffer.append(
-				"    \r\n    public int insertNonEmpty" + entityName + "(" + entityName + " value){\r\n");
+				"    public int insertNonEmpty" + entityName + "(" + entityName + " value){\r\n");
 		buffer.append("        return " + daoName + ".insertNonEmpty" + entityName + "(value);\r\n");
 		buffer.append("    }\r\n");
 		return buffer.toString();
@@ -268,13 +275,14 @@ public class ServiceUtil {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("	/**\r\n");
+		buffer.append("	 * @Author CodeGenerator \r\n ");
 		buffer.append("	 * 批量插入" + entityName + "到数据库\r\n");
 		buffer.append("	 * @param value\r\n");
 		buffer.append("	 * @return\r\n");
 		buffer.append("	 */\r\n");
 		
 		buffer.append(
-				"    \r\n    public int insert" + entityName + "ByBatch(List<" + entityName + "> value){\r\n");
+				"    public int insert" + entityName + "ByBatch(List<" + entityName + "> value){\r\n");
 		buffer.append("        return " + daoName + ".insert" + entityName + "ByBatch(value);\r\n");
 		buffer.append("    }\r\n");
 		return buffer.toString();
@@ -294,26 +302,28 @@ public class ServiceUtil {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("	/**\r\n");
+		buffer.append("	 * @Author CodeGenerator \r\n ");
 		buffer.append("	 * 通过" + entityName + "的id删除" + entityName + "\r\n");
 		buffer.append("	 * @param id\r\n");
 		buffer.append("	 * @return\r\n");
 		buffer.append("	 */\r\n");
 		
 		if (anyAssist) {
-			buffer.append("    \r\n    public int delete" + entityName + "ById(" + idType + " id){\r\n");
+			buffer.append("    public int delete" + entityName + "ById(" + idType + " id){\r\n");
 			buffer.append("        return " + daoName + ".delete" + entityName + "ById(id);\r\n");
 			buffer.append("    }\r\n");
 			
 			buffer.append("	/**\r\n");
+			buffer.append("	 * @Author CodeGenerator \r\n ");
 			buffer.append("	 * 通过辅助工具Assist的条件删除" + entityName + "\r\n");
 			buffer.append("	 * @param assist\r\n");
 			buffer.append("	 * @return\r\n");
 			buffer.append("	 */\r\n");
-			buffer.append("    \r\n    public int delete" + entityName + "(Assist assist){\r\n");
+			buffer.append("    public int delete" + entityName + "(Assist assist){\r\n");
 			buffer.append("        return " + daoName + ".delete" + entityName + "(assist);\r\n");
 			buffer.append("    }\r\n");
 		} else {
-			buffer.append("    \r\n    public int delete" + entityName + "ById(" + idType + " id){\r\n");
+			buffer.append("    public int delete" + entityName + "ById(" + idType + " id){\r\n");
 			buffer.append("        return " + daoName + ".delete" + entityName + "ById(id);\r\n");
 			buffer.append("    }\r\n");
 		}
@@ -331,28 +341,30 @@ public class ServiceUtil {
 	private String getUpdate(String daoName, String entityName, boolean anyAssist) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("	/**\r\n");
+		buffer.append("	 * @Author CodeGenerator \r\n ");
 		buffer.append("	 * 通过" + entityName + "的id更新" + entityName + "中的数据,包括null值\r\n");
 		buffer.append("	 * @param enti\r\n");
 		buffer.append("	 * @return\r\n");
 		buffer.append("	 */\r\n");
 		
 		if (anyAssist) {
-			buffer.append("    \r\n    public int update" + entityName + "ById(" + entityName + " enti){\r\n");
+			buffer.append("    public int update" + entityName + "ById(" + entityName + " enti){\r\n");
 			buffer.append("        return " + daoName + ".update" + entityName + "ById(enti);\r\n");
 			buffer.append("    }\r\n");
 
 			buffer.append("	/**\r\n");
+			buffer.append("	 * @Author CodeGenerator \r\n ");
 			buffer.append("	 * 通过辅助工具Assist的条件更新" + entityName + "中的数据,包括null值\r\n");
 			buffer.append("	 * @param value\r\n");
 			buffer.append("	 * @param assist\r\n");
 			buffer.append("	 * @return\r\n");
 			buffer.append("	 */\r\n");
-			buffer.append("    \r\n    public int update" + entityName + "(" + entityName
+			buffer.append("   public int update" + entityName + "(" + entityName
 					+ " value, Assist assist){\r\n");
 			buffer.append("        return " + daoName + ".update" + entityName + "(value,assist);\r\n");
 			buffer.append("    }\r\n");
 		} else {
-			buffer.append("    \r\n    public int update" + entityName + "ById(" + entityName + " enti){\r\n");
+			buffer.append("    public int update" + entityName + "ById(" + entityName + " enti){\r\n");
 			buffer.append("        return " + daoName + ".update" + entityName + "ById(enti);\r\n");
 			buffer.append("    }\r\n");
 		}
@@ -369,28 +381,30 @@ public class ServiceUtil {
 	private String getUpdateNonEmpty(String daoName, String entityName, boolean anyAssist) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("	/**\r\n");
+		buffer.append("	 * @Author CodeGenerator \r\n ");
 		buffer.append("	 * 通过" + entityName + "的id更新" + entityName + "中属性不为null的数据\r\n");
 		buffer.append("	 * @param enti\r\n");
 		buffer.append("	 * @return\r\n");
 		buffer.append("	 */\r\n");
 		if (anyAssist) {
-			buffer.append("    \r\n    public int updateNonEmpty" + entityName + "ById(" + entityName
+			buffer.append("    public int updateNonEmpty" + entityName + "ById(" + entityName
 					+ " enti){\r\n");
 			buffer.append("        return " + daoName + ".updateNonEmpty" + entityName + "ById(enti);\r\n");
 			buffer.append("    }\r\n");
 
 			buffer.append("	/**\r\n");
+			buffer.append("	 * @Author CodeGenerator \r\n ");
 			buffer.append("	 * 通过辅助工具Assist的条件更新" + entityName + "中属性不为null的数据\r\n");
 			buffer.append("	 * @param value\r\n");
 			buffer.append("	 * @param assist\r\n");
 			buffer.append("	 * @return\r\n");
 			buffer.append("	 */\r\n");
-			buffer.append("    \r\n    public int updateNonEmpty" + entityName + "(" + entityName
+			buffer.append("    public int updateNonEmpty" + entityName + "(" + entityName
 					+ " value, Assist assist){\r\n");
 			buffer.append("        return " + daoName + ".updateNonEmpty" + entityName + "(value,assist);\r\n");
 			buffer.append("    }\r\n");
 		} else {
-			buffer.append("    \r\n    public int updateNonEmpty" + entityName + "ById(" + entityName
+			buffer.append("    public int updateNonEmpty" + entityName + "ById(" + entityName
 					+ " enti){\r\n");
 			buffer.append("        return " + daoName + ".updateNonEmpty" + entityName + "ById(enti);\r\n");
 			buffer.append("    }\r\n");
