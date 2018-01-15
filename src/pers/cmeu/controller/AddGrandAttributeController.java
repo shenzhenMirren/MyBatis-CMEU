@@ -62,8 +62,6 @@ public class AddGrandAttributeController extends BaseController {
 	@FXML
 	private CheckBox chkCreateService;
 	@FXML
-	private CheckBox chkCreateServiceImpl;
-	@FXML
 	private CheckBox chkCreateAll;
 
 	@FXML
@@ -351,7 +349,7 @@ public class AddGrandAttributeController extends BaseController {
 	 */
 	public void anyCreateAll(ActionEvent event) {
 		if (!chkCreateEntity.isSelected() || !chkCreateDao.isSelected() || !chkCreateMap.isSelected()
-				|| !chkCreateService.isSelected() || !chkCreateServiceImpl.isSelected()) {
+				|| !chkCreateService.isSelected()) {
 			chkCreateAll.setSelected(true);
 		}
 		boolean value = chkCreateAll.isSelected();
@@ -359,7 +357,6 @@ public class AddGrandAttributeController extends BaseController {
 		chkCreateDao.setSelected(value);
 		chkCreateMap.setSelected(value);
 		chkCreateService.setSelected(value);
-		chkCreateServiceImpl.setSelected(value);
 	}
 
 	/**
@@ -445,9 +442,6 @@ public class AddGrandAttributeController extends BaseController {
 				}
 				if (chkCreateService.isSelected()) {
 					attr.setServiceName(txtServiceName.getText());
-				}
-				if (chkCreateServiceImpl.isSelected()) {
-					attr.setServiceImplName(txtServiceImplName.getText());
 				}
 				if (chkSelectKey.isSelected()) {
 					attr.setSelectKey(txtaSelectKey.getText());

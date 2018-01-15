@@ -88,10 +88,6 @@ public class IndexController extends BaseController {
 	@FXML
 	private TextField txtServiceName;
 	@FXML
-	private TextField txtServiceImplPackage;
-	@FXML
-	private TextField txtServiceImplName;
-	@FXML
 	private TextField txtEntityPackage;
 	@FXML
 	private TextField txtEntityName;
@@ -131,10 +127,6 @@ public class IndexController extends BaseController {
 	private Label lblServicePackage;
 	@FXML
 	private Label lblServiceName;
-	@FXML
-	private Label lblServiceImplPackage;
-	@FXML
-	private Label lblServiceImplName;
 	@FXML
 	private Label lblAssistPackage;
 	@FXML
@@ -311,7 +303,6 @@ public class IndexController extends BaseController {
 						txtDaoName.setText(StrUtil.unlineToPascal(tableName) + "Dao");
 						txtMapName.setText(StrUtil.unlineToPascal(tableName) + "Mapper");
 						txtServiceName.setText(StrUtil.unlineToPascal(tableName) + "Service");
-						txtServiceImplName.setText(StrUtil.unlineToPascal(tableName) + "ServiceImpl");
 						log.debug("将表的数据加载到数据面板成功!");
 					}
 				}
@@ -476,7 +467,6 @@ public class IndexController extends BaseController {
 			attr.setDaoName(txtDaoName.getText());
 			attr.setMapperName(txtMapName.getText());
 			attr.setServiceName(txtServiceName.getText());
-			attr.setServiceImplName(txtServiceImplName.getText());
 
 			List<AttributeCVF> attributes = null;
 
@@ -525,7 +515,6 @@ public class IndexController extends BaseController {
 			thisSuperAttribute.setMapperName(txtMapName.getText());
 			if (chkService.isSelected()) {
 				thisSuperAttribute.setServiceName(txtServiceName.getText());
-				thisSuperAttribute.setServiceImplName(txtServiceImplName.getText());
 			}
 			superAttributes.add(thisSuperAttribute);
 		}
@@ -535,7 +524,7 @@ public class IndexController extends BaseController {
 		fileUtil.init(selectedDatabaseConfig, superAttributes, cboCodeFormat.getValue(), txtProjectPath.getText(),
 				txtRootDir.getText(), txtEntityPackage.getText(), txtDaoPackage.getText(), txtMapPackage.getText(),
 				chkService.isSelected(), chkSpringAnno.isSelected(), txtServicePackage.getText(),
-				txtServiceImplPackage.getText(), txtUpdateMapper.getText(), chkAssist.isSelected(),
+				txtUpdateMapper.getText(), chkAssist.isSelected(),
 				txtAssistPackage.getText(), txtAssistName.getText(), chkConfig.isSelected(), txtConfigPackage.getText(),
 				txtConfigName.getText(), chkMyUtil.isSelected(), txtMyUtilPackage.getText(), txtMyUtilName.getText());
 
@@ -596,19 +585,11 @@ public class IndexController extends BaseController {
 			txtServicePackage.disableProperty().set(false);
 			lblServicePackage.disableProperty().set(false);
 			lblServiceName.disableProperty().set(false);
-			txtServiceImplName.disableProperty().set(false);
-			txtServiceImplPackage.disableProperty().set(false);
-			lblServiceImplPackage.disableProperty().set(false);
-			lblServiceImplName.disableProperty().set(false);
 		} else {
 			txtServiceName.disableProperty().set(true);
 			txtServicePackage.disableProperty().set(true);
 			lblServicePackage.disableProperty().set(true);
 			lblServiceName.disableProperty().set(true);
-			txtServiceImplName.disableProperty().set(true);
-			txtServiceImplPackage.disableProperty().set(true);
-			lblServiceImplPackage.disableProperty().set(true);
-			lblServiceImplName.disableProperty().set(true);
 		}
 	}
 
@@ -708,8 +689,6 @@ public class IndexController extends BaseController {
 		String daoName = txtDaoName.getText();
 		String servicePackage = txtServicePackage.getText();
 		String serviceName = txtServiceName.getText();
-		String serviceImplPackage = txtServiceImplPackage.getText();
-		String serviceImplName = txtServiceImplName.getText();
 		String entityPackage = txtEntityPackage.getText();
 		String entityName = txtEntityName.getText();
 		String mapPackage = txtMapPackage.getText();
@@ -727,7 +706,7 @@ public class IndexController extends BaseController {
 		boolean isMyUtil = chkMyUtil.isSelected();
 		boolean isSpringAnno = chkSpringAnno.isSelected();
 		HistoryConfig result = new HistoryConfig(projectPath, rootDir, daoPackage, daoName, servicePackage, serviceName,
-				serviceImplPackage, serviceImplName, entityPackage, entityName, mapPackage, mapName, updateMapper,
+				entityPackage, entityName, mapPackage, mapName, updateMapper,
 				assistPackage, assistName, configPackage, configName, myUtilPackage, myUtilName, isService,
 				isSpringAnno, isAssist, isConfig, isMyUtil);
 		return result;
@@ -750,8 +729,6 @@ public class IndexController extends BaseController {
 		txtDaoName.setText(config.getDaoName());
 		txtServicePackage.setText(config.getServicePackage());
 		txtServiceName.setText(config.getServiceName());
-		txtServiceImplPackage.setText(config.getServiceImplPackage());
-		txtServiceImplName.setText(config.getServiceName());
 		txtEntityPackage.setText(config.getEntityPackage());
 		txtEntityName.setText(config.getEntityName());
 		txtMapPackage.setText(config.getMapPackage());

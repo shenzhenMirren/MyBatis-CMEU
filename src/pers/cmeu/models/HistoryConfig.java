@@ -8,8 +8,6 @@ public class HistoryConfig {
 	private String daoName;
 	private String servicePackage;
 	private String serviceName;
-	private String serviceImplPackage;
-	private String serviceImplName;
 	private String entityPackage;
 	private String entityName;
 	private String mapPackage;
@@ -84,18 +82,6 @@ public class HistoryConfig {
 		this.serviceName = serviceName;
 	}
 	
-	public String getServiceImplPackage() {
-		return serviceImplPackage;
-	}
-	public void setServiceImplPackage(String serviceImplPackage) {
-		this.serviceImplPackage = serviceImplPackage;
-	}
-	public String getServiceImplName() {
-		return serviceImplName;
-	}
-	public void setServiceImplName(String serviceImplName) {
-		this.serviceImplName = serviceImplName;
-	}
 	public String getEntityPackage() {
 		return entityPackage;
 	}
@@ -188,7 +174,7 @@ public class HistoryConfig {
 		super();
 	}
 	public HistoryConfig(String projectPath, String rootDir, String daoPackage, String daoName, String servicePackage,
-			String serviceName, String serviceImplPackage, String serviceImplName, String entityPackage,
+			String serviceName, String entityPackage,
 			String entityName, String mapPackage, String mapName,String updateMapper, String assistPackage, String assistName,
 			String configPackage, String configName, String myUtilPackage, String myUtilName, boolean isService,boolean isSpringAnno,
 			boolean isAssist, boolean isConfig, boolean isMyUtil) {
@@ -199,8 +185,6 @@ public class HistoryConfig {
 		this.daoName = daoName;
 		this.servicePackage = servicePackage;
 		this.serviceName = serviceName;
-		this.serviceImplPackage = serviceImplPackage;
-		this.serviceImplName = serviceImplName;
 		this.entityPackage = entityPackage;
 		this.entityName = entityName;
 		this.mapPackage = mapPackage;

@@ -18,7 +18,6 @@ public class SuperAttribute {
 	private String daoName;
 	private String mapperName;
 	private String serviceName;
-	private String serviceImplName;
 	private String joinType;
 	private String joinColumn;
 	private String selectKey;
@@ -91,14 +90,6 @@ public class SuperAttribute {
 
 	public void setServiceName(String serviceName) {
 		this.serviceName = serviceName;
-	}
-
-	public String getServiceImplName() {
-		return serviceImplName;
-	}
-
-	public void setServiceImplName(String serviceImplName) {
-		this.serviceImplName = serviceImplName;
 	}
 
 	public String getJoinType() {

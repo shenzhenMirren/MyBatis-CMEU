@@ -497,9 +497,6 @@ public class AddSonAttributeController extends BaseController {
 				if (chkCreateService.isSelected()) {
 					attr.setServiceName(txtServiceName.getText());
 				}
-				if (chkCreateServiceImpl.isSelected()) {
-					attr.setServiceImplName(txtServiceImplName.getText());
-				}
 				if (chkSelectKey.isSelected()) {
 					attr.setSelectKey(txtaSelectKey.getText());
 				}
