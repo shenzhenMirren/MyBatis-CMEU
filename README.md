@@ -1,5 +1,5 @@
 # 软件说明,软件已经不再维护,使用新版的Spring-generator代替它,欢迎使用新版Spring-generator
-[Spring-generator](https://github.com/EliMirren/Spring-generator/)<br/>
+欢迎使用更强大更灵活的[Spring-generator](https://github.com/EliMirren/Spring-generator/)<br/>
 
 # 基本介绍
 官方QQ交流群号:519714660;<br/>
